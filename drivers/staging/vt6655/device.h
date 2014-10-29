@@ -77,7 +77,6 @@
 #include "wcmd.h"
 #include "mib.h"
 #include "srom.h"
-#include "rc4.h"
 #include "desc.h"
 #include "key.h"
 #include "mac.h"
@@ -544,7 +543,6 @@ struct vnt_private {
 	u64 qwPacketNumber; /* For CCMP and TKIP as TSC(6 bytes) */
 	unsigned int	uCurrentWEPMode;
 
-	RC4Ext                  SBox;
 	unsigned char abyPRNG[WLAN_WEPMAX_KEYLEN+3];
 	unsigned char byKeyIndex;
 	unsigned int	uKeyLength;

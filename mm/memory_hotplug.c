@@ -1354,10 +1354,41 @@ int test_pages_in_a_zone(unsigned long start_pfn, unsigned long end_pfn)
 			i++;
 		if (i == MAX_ORDER_NR_PAGES)
 			continue;
+<<<<<<< HEAD
 		page = pfn_to_page(pfn + i);
 		if (zone && page_zone(page) != zone)
 			return 0;
 		zone = page_zone(page);
+=======
+		for (; pfn < sec_end_pfn && pfn < end_pfn;
+		     pfn += MAX_ORDER_NR_PAGES) {
+			i = 0;
+			/* This is just a CONFIG_HOLES_IN_ZONE check.*/
+			while ((i < MAX_ORDER_NR_PAGES) &&
+				!pfn_valid_within(pfn + i))
+				i++;
+			if (i == MAX_ORDER_NR_PAGES)
+				continue;
+			/* Check if we got outside of the zone */
+			if (zone && !zone_spans_pfn(zone, pfn + i))
+				return 0;
+			page = pfn_to_page(pfn + i);
+			if (zone && page_zone(page) != zone)
+				return 0;
+			if (!zone)
+				start = pfn + i;
+			zone = page_zone(page);
+			end = pfn + MAX_ORDER_NR_PAGES;
+		}
+	}
+
+	if (zone) {
+		*valid_start = start;
+		*valid_end = end;
+		return 1;
+	} else {
+		return 0;
+>>>>>>> fcd11325572d2... mm, memory_hotplug: test_pages_in_a_zone do not pass the end of zone
 	}
 	return 1;
 }

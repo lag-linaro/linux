@@ -2188,7 +2188,7 @@ static void batadv_tt_req_list_free(struct batadv_priv *bat_priv)
 	spin_lock_bh(&bat_priv->tt.req_list_lock);
 
 	hlist_for_each_entry_safe(node, safe, &bat_priv->tt.req_list, list) {
-		list_del(&node->list);
+		hlist_del(&node->list);
 		batadv_tt_req_node_put(node);
 	}
 

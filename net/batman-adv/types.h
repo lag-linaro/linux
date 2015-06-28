@@ -521,7 +521,7 @@ struct batadv_priv_tt {
 	struct list_head changes_list;
 	struct batadv_hashtable *local_hash;
 	struct batadv_hashtable *global_hash;
-	struct list_head req_list;
+	struct hlist_head req_list;
 	struct list_head roam_list;
 	spinlock_t changes_list_lock; /* protects changes */
 	spinlock_t req_list_lock; /* protects req_list */
@@ -982,7 +982,7 @@ struct batadv_tt_orig_list_entry {
  * @change: holds the actual translation table diff data
  */
 struct batadv_tt_change_node {
-	struct list_head list;
+	struct list_node list;
 	struct batadv_tvlv_tt_change change;
 };
 
@@ -997,7 +997,7 @@ struct batadv_tt_req_node {
 	uint8_t addr[ETH_ALEN];
 	unsigned long issued_at;
 	struct kref refcount;
-	struct list_head list;
+	struct hlist_node list;
 };
 
 /**

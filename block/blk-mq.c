@@ -572,6 +572,9 @@ static void blk_mq_rq_timer(unsigned long priv)
 	struct blk_mq_hw_ctx *hctx;
 	int i;
 
+	if (blk_queue_enter(q, GFP_NOWAIT))
+		return;
+
 	queue_for_each_hw_ctx(q, hctx, i) {
 		/*
 		 * If not software queues are currently mapped to this
@@ -590,6 +593,7 @@ static void blk_mq_rq_timer(unsigned long priv)
 		queue_for_each_hw_ctx(q, hctx, i)
 			blk_mq_tag_idle(hctx);
 	}
+	blk_queue_exit(q);
 }
 
 /*

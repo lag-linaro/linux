@@ -113,7 +113,6 @@ ip:
 	case htons(ETH_P_IPV6): {
 		const struct ipv6hdr *iph;
 		struct ipv6hdr _iph;
-		__be32 flow_label;
 
 ipv6:
 		iph = __skb_header_pointer(skb, nhoff, sizeof(_iph), data, hlen, &_iph);
@@ -130,6 +129,7 @@ ipv6:
 		flow->src = (__force __be32)ipv6_addr_hash(&iph->saddr);
 		flow->dst = (__force __be32)ipv6_addr_hash(&iph->daddr);
 
+<<<<<<< HEAD
 		flow_label = ip6_flowlabel(iph);
 		if (flow_label) {
 			/* Awesome, IPv6 packet has a flow label so we can
@@ -140,6 +140,24 @@ ipv6:
 			flow->ip_proto = ip_proto;
 			flow->ports = flow_label;
 			flow->thoff = (u16)nhoff;
+=======
+		if ((dissector_uses_key(flow_dissector,
+					FLOW_DISSECTOR_KEY_FLOW_LABEL) ||
+		     (flags & FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL)) &&
+		    ip6_flowlabel(iph)) {
+			__be32 flow_label = ip6_flowlabel(iph);
+
+			if (dissector_uses_key(flow_dissector,
+					       FLOW_DISSECTOR_KEY_FLOW_LABEL)) {
+				key_tags = skb_flow_dissector_target(flow_dissector,
+								     FLOW_DISSECTOR_KEY_FLOW_LABEL,
+								     target_container);
+				key_tags->flow_label = ntohl(flow_label);
+			}
+			if (flags & FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL)
+				goto out_good;
+		}
+>>>>>>> b083b36ce3c91... flow_dissector: Fix unaligned access in __skb_flow_dissector when used by eth_get_headlen
 
 			return true;
 		}

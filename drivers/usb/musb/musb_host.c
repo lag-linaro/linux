@@ -652,7 +652,7 @@ static bool musb_tx_dma_program(struct dma_controller *dma,
 		csr &= ~(MUSB_TXCSR_AUTOSET | MUSB_TXCSR_DMAMODE);
 		csr |= MUSB_TXCSR_DMAENAB; /* against programmer's guide */
 	}
-	channel->desired_mode = mode;
+	channel->desired_mode = *mode;
 	musb_writew(epio, MUSB_TXCSR, csr);
 #else
 	if (!is_cppi_enabled() && !tusb_dma_omap())

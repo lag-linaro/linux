@@ -7557,6 +7557,7 @@ static void btrfs_endio_direct_read(struct bio *bio, int err)
 	/* If we had a csum failure make sure to clear the uptodate flag */
 	if (err)
 		clear_bit(BIO_UPTODATE, &dio_bio->bi_flags);
+	dio_bio->bi_error = bio->bi_error;
 	dio_end_io(dio_bio, err);
 
 	if (io_bio->end_io)
@@ -7607,6 +7608,7 @@ out_done:
 	/* If we had an error make sure to clear the uptodate flag */
 	if (err)
 		clear_bit(BIO_UPTODATE, &dio_bio->bi_flags);
+	dio_bio->bi_error = bio->bi_error;
 	dio_end_io(dio_bio, err);
 	bio_put(bio);
 }

@@ -121,6 +121,9 @@
 #define PCI_CFG_HFS_1         0x40
 #define PCI_CFG_HFS_2         0x48
 
+#define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
+#define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
+
 /*
  * MEI HW Section
  */

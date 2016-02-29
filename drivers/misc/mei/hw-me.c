@@ -918,6 +918,11 @@ const struct mei_cfg mei_me_pch_cpt_pbg_cfg = {
 	MEI_CFG_FW_NM,
 };
 
+/* PCH8 Lynx Point and newer devices */
+const struct mei_cfg mei_me_pch8_cfg = {
+	MEI_CFG_PCH8_HFS,
+};
+
 /* PCH Lynx Point with quirk for SPS Firmware exclusion */
 const struct mei_cfg mei_me_lpt_cfg = {
 	MEI_CFG_PCH_HFS,

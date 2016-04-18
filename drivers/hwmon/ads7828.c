@@ -137,6 +137,7 @@ static int ads7828_probe(struct i2c_client *client,
 	struct ads7828_platform_data *pdata = dev_get_platdata(dev);
 	struct ads7828_data *data;
 	struct device *hwmon_dev;
+	unsigned int regval;
 
 	data = devm_kzalloc(dev, sizeof(struct ads7828_data), GFP_KERNEL);
 	if (!data)
@@ -172,6 +173,15 @@ static int ads7828_probe(struct i2c_client *client,
 
 	data->client = client;
 	mutex_init(&data->update_lock);
+
+	/*
+	 * Datasheet specifies internal reference voltage is disabled by
+	 * default. The internal reference voltage needs to be enabled and
+	 * voltage needs to settle before getting valid ADC data. So perform a
+	 * dummy read to enable the internal reference voltage.
+	 */
+	if (!ext_vref)
+		regmap_read(data->regmap, data->cmd_byte, &regval);
 
 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
 							   data,

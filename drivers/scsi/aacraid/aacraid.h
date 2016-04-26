@@ -11,6 +11,8 @@
  *              D E F I N E S
  *----------------------------------------------------------------------------*/
 
+#define AAC_INT_MODE_MSIX		(1<<16)
+
 #ifndef AAC_DRIVER_BUILD
 # define AAC_DRIVER_BUILD 30300
 # define AAC_DRIVER_BRANCH "-ms"

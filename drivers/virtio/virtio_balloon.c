@@ -67,7 +67,7 @@ struct virtio_balloon
 
 	/* The array of pfns we tell the Host about. */
 	unsigned int num_pfns;
-	u32 pfns[VIRTIO_BALLOON_ARRAY_PFNS_MAX];
+	__virtio32 pfns[VIRTIO_BALLOON_ARRAY_PFNS_MAX];
 
 	/* Memory statistics */
 	int need_stats_update;
@@ -116,14 +116,16 @@ static void tell_host(struct virtio_balloon *vb, struct virtqueue *vq)
 	wait_event(vb->acked, virtqueue_get_buf(vq, &len));
 }
 
-static void set_page_pfns(u32 pfns[], struct page *page)
+static void set_page_pfns(struct virtio_balloon *vb,
+			  __virtio32 pfns[], struct page *page)
 {
 	unsigned int i;
 
 	/* Set balloon pfns pointing at this page.
 	 * Note that the first pfn points at start of the page. */
 	for (i = 0; i < VIRTIO_BALLOON_PAGES_PER_PAGE; i++)
-		pfns[i] = page_to_balloon_pfn(page) + i;
+		pfns[i] = cpu_to_virtio32(vb->vdev,
+					  page_to_balloon_pfn(page) + i);
 }
 
 static void fill_balloon(struct virtio_balloon *vb, size_t num)
@@ -146,7 +148,7 @@ static void fill_balloon(struct virtio_balloon *vb, size_t num)
 			msleep(200);
 			break;
 		}
-		set_page_pfns(vb->pfns + vb->num_pfns, page);
+		set_page_pfns(vb, vb->pfns + vb->num_pfns, page);
 		vb->num_pages += VIRTIO_BALLOON_PAGES_PER_PAGE;
 		adjust_managed_page_count(page, -1);
 	}
@@ -160,10 +162,12 @@ static void fill_balloon(struct virtio_balloon *vb, size_t num)
 static void release_pages_by_pfn(const u32 pfns[], unsigned int num)
 {
 	unsigned int i;
+	struct page *page;
 
 	/* Find pfns pointing at start of each page, get pages and free them. */
 	for (i = 0; i < num; i += VIRTIO_BALLOON_PAGES_PER_PAGE) {
-		struct page *page = balloon_pfn_to_page(pfns[i]);
+		page = balloon_pfn_to_page(virtio32_to_cpu(vb->vdev,
+							   pfns[i]);
 		adjust_managed_page_count(page, 1);
 		put_page(page); /* balloon reference */
 	}
@@ -185,7 +189,7 @@ static void leak_balloon(struct virtio_balloon *vb, size_t num)
 		page = balloon_page_dequeue(vb_dev_info);
 		if (!page)
 			break;
-		set_page_pfns(vb->pfns + vb->num_pfns, page);
+		set_page_pfns(vb, vb->pfns + vb->num_pfns, page);
 		vb->num_pages -= VIRTIO_BALLOON_PAGES_PER_PAGE;
 	}
 
@@ -412,7 +416,7 @@ static int virtballoon_migratepage(struct balloon_dev_info *vb_dev_info,
 	__count_vm_event(BALLOON_MIGRATE);
 	spin_unlock_irqrestore(&vb_dev_info->pages_lock, flags);
 	vb->num_pfns = VIRTIO_BALLOON_PAGES_PER_PAGE;
-	set_page_pfns(vb->pfns, newpage);
+	set_page_pfns(vb, vb->pfns, newpage);
 	tell_host(vb, vb->inflate_vq);
 
 	/* balloon's page migration 2nd step -- deflate "page" */
@@ -420,7 +424,7 @@ static int virtballoon_migratepage(struct balloon_dev_info *vb_dev_info,
 	balloon_page_delete(page);
 	spin_unlock_irqrestore(&vb_dev_info->pages_lock, flags);
 	vb->num_pfns = VIRTIO_BALLOON_PAGES_PER_PAGE;
-	set_page_pfns(vb->pfns, page);
+	set_page_pfns(vb, vb->pfns, page);
 	tell_host(vb, vb->deflate_vq);
 
 	mutex_unlock(&vb->balloon_lock);

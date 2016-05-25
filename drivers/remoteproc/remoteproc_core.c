@@ -1198,8 +1198,16 @@ int rproc_add(struct rproc *rproc)
 
 	/* create debugfs entries */
 	rproc_create_debug_dir(rproc);
+	ret = rproc_add_virtio_devices(rproc);
+	if (ret < 0)
+		return ret;
 
-	return rproc_add_virtio_devices(rproc);
+	/* expose to rproc_get_by_phandle users */
+	mutex_lock(&rproc_list_mutex);
+	list_add(&rproc->node, &rproc_list);
+	mutex_unlock(&rproc_list_mutex);
+
+	return 0;
 }
 EXPORT_SYMBOL(rproc_add);
 

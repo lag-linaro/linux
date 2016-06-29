@@ -401,6 +401,7 @@ struct vmw_private {
 	bool has_mob;
 	spinlock_t hw_lock;
 	spinlock_t cap_lock;
+	bool assume_16bpp;
 
 	/*
 	 * VGA registers.

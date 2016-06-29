@@ -1957,6 +1957,9 @@ int vmw_du_connector_fill_modes(struct drm_connector *connector,
 	if (dev_priv->sou_priv)
 		assumed_bpp = 4;
 
+	if (dev_priv->assume_16bpp)
+		assumed_bpp = 2;
+
 	/* Add preferred mode */
 	{
 		mode = drm_mode_duplicate(dev, &prefmode);

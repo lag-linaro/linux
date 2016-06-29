@@ -54,6 +54,7 @@ int vmw_dmabuf_to_placement(struct vmw_private *dev_priv,
 {
 	struct ttm_buffer_object *bo = &buf->base;
 	int ret;
+	uint32_t new_flags;
 
 	ret = ttm_write_lock(&dev_priv->reservation_sem, interruptible);
 	if (unlikely(ret != 0))
@@ -65,7 +66,11 @@ int vmw_dmabuf_to_placement(struct vmw_private *dev_priv,
 	if (unlikely(ret != 0))
 		goto err;
 
-	ret = ttm_bo_validate(bo, placement, interruptible, false);
+	if (buf->pin_count > 0)
+		ret = ttm_bo_mem_compat(placement, &bo->mem,
+					&new_flags) == true ? 0 : -EINVAL;
+	else
+		ret = ttm_bo_validate(bo, placement, interruptible, false);
 
 	ttm_bo_unreserve(bo);
 
@@ -97,6 +102,7 @@ int vmw_dmabuf_to_vram_or_gmr(struct vmw_private *dev_priv,
 	struct ttm_buffer_object *bo = &buf->base;
 	struct ttm_placement *placement;
 	int ret;
+	uint32_t new_flags;
 
 	ret = ttm_write_lock(&dev_priv->reservation_sem, interruptible);
 	if (unlikely(ret != 0))
@@ -108,6 +114,12 @@ int vmw_dmabuf_to_vram_or_gmr(struct vmw_private *dev_priv,
 	ret = ttm_bo_reserve(bo, interruptible, false, false, NULL);
 	if (unlikely(ret != 0))
 		goto err;
+
+	if (buf->pin_count > 0) {
+		ret = ttm_bo_mem_compat(&vmw_vram_gmr_placement, &bo->mem,
+					&new_flags) == true ? 0 : -EINVAL;
+		goto out_unreserve;
+	}
 
 	/**
 	 * Put BO in VRAM if there is space, otherwise as a GMR.
@@ -122,6 +134,7 @@ int vmw_dmabuf_to_vram_or_gmr(struct vmw_private *dev_priv,
 		placement = &vmw_vram_gmr_placement;
 
 	ret = ttm_bo_validate(bo, placement, interruptible, false);
+
 	if (likely(ret == 0) || ret == -ERESTARTSYS)
 		goto err_unreserve;
 
@@ -200,6 +213,7 @@ int vmw_dmabuf_to_start_of_vram(struct vmw_private *dev_priv,
 	struct ttm_placement placement;
 	struct ttm_place place;
 	int ret = 0;
+	uint32_t new_flags;
 
 	if (pin)
 		place = vmw_vram_ne_placement.placement[0];
@@ -225,10 +239,15 @@ int vmw_dmabuf_to_start_of_vram(struct vmw_private *dev_priv,
 	/* Is this buffer already in vram but not at the start of it? */
 	if (bo->mem.mem_type == TTM_PL_VRAM &&
 	    bo->mem.start < bo->num_pages &&
-	    bo->mem.start > 0)
+	    bo->mem.start > 0 &&
+	    buf->pin_count == 0)
 		(void) ttm_bo_validate(bo, &vmw_sys_placement, false, false);
 
-	ret = ttm_bo_validate(bo, &placement, interruptible, false);
+	if (buf->pin_count > 0)
+		ret = ttm_bo_mem_compat(&placement, &bo->mem,
+					&new_flags) == true ? 0 : -EINVAL;
+	else
+		ret = ttm_bo_validate(bo, &placement, interruptible, false);
 
 	/* For some reason we didn't up at the start of vram */
 	WARN_ON(ret == 0 && bo->offset != 0);

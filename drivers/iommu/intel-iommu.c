@@ -1893,7 +1893,7 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
 
 	domain_attach_iommu(domain, iommu);
 
-	return 0;
+	return ret;
 }
 
 struct domain_context_mapping_data {

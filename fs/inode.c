@@ -1638,8 +1638,8 @@ static int __remove_suid(struct vfsmount *mnt, struct dentry *dentry, int kill)
 
 int file_remove_suid(struct file *file)
 {
-	struct dentry *dentry = file->f_path.dentry;
-	struct inode *inode = dentry->d_inode;
+	struct dentry *dentry = file_dentry(file);
+	struct inode *inode = file_inode(file);
 	int killsuid;
 	int killpriv;
 	int error = 0;

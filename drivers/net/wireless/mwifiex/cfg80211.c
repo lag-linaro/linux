@@ -812,6 +812,12 @@ mwifiex_cfg80211_change_virtual_intf(struct wiphy *wiphy,
 			if (mwifiex_cfg80211_deinit_p2p(priv))
 				return -EFAULT;
 			dev->ieee80211_ptr->iftype = type;
+			if (mwifiex_deinit_priv_params(priv))
+				return -1;
+			if (mwifiex_init_new_priv_params(priv, dev, type))
+				return -1;
+			if (mwifiex_sta_init_cmd(priv, false, false))
+				return -1;
 			return 0;
 		default:
 			return -EOPNOTSUPP;

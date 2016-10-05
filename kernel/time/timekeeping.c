@@ -325,8 +325,11 @@ u64 notrace ktime_get_mono_fast_ns(void)
 		tkr = tk_fast_mono.base + (seq & 0x01);
 		now = ktime_to_ns(tkr->base);
 
-		now += clocksource_delta(tkr->read(tkr->clock),
-					 tkr->cycle_last, tkr->mask);
+		now += timekeeping_delta_to_ns(tkr,
+				clocksource_delta(
+					tkr->read(tkr->clock),
+					tkr->cycle_last,
+					tkr->mask));
 	} while (read_seqcount_retry(&tk_fast_mono.seq, seq));
 	return now;
 }

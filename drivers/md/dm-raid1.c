@@ -1253,6 +1253,7 @@ static int mirror_end_io(struct dm_target *ti, struct bio *bio, int error)
 
 			dm_bio_restore(bd, bio);
 			bio_record->details.bi_bdev = NULL;
+			bio->bi_error = 0;
 
 			atomic_inc(&bio->bi_remaining);
 

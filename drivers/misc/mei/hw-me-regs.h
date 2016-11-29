@@ -126,6 +126,8 @@
 #define PCI_CFG_HFS_4         0x64
 #define PCI_CFG_HFS_5         0x68
 
+#define MEI_DEV_ID_LBG        0xA1BA  /* Lewisburg (SPT) */
+
 #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
 #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
 

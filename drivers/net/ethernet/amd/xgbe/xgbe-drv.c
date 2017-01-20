@@ -715,7 +715,9 @@ static int xgbe_start(struct xgbe_prv_data *pdata)
 
 	xgbe_set_rx_mode(netdev);
 
-	hw_if->init(pdata);
+	ret = hw_if->init(pdata);
+	if (ret)
+		return ret;
 
 	phy_start(pdata->phydev);
 

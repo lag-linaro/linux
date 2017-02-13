@@ -1435,7 +1435,7 @@ ntb_transport_create_queue(void *data, struct pci_dev *pdev,
 	if (!nt)
 		goto err;
 
-	free_queue = ffs(nt->qp_bitmap);
+	free_queue = ffs(nt->qp_bitmap_free);
 	if (!free_queue)
 		goto err;
 

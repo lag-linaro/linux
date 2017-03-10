@@ -2272,6 +2272,9 @@ err_fini_dma:
 err_clk_disable:
 	if (!IS_ERR(priv->clk))
 		clk_disable_unprepare(priv->clk);
+
+	if (priv->internal_phy)
+		bcmgenet_power_down(priv, GENET_POWER_PASSIVE);
 	return ret;
 }
 
@@ -2852,6 +2855,8 @@ static int bcmgenet_resume(struct device *d)
 	return 0;
 
 out_clk_disable:
+	if (priv->internal_phy)
+		bcmgenet_power_down(priv, GENET_POWER_PASSIVE);
 	clk_disable_unprepare(priv->clk);
 	return ret;
 }

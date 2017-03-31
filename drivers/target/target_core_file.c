@@ -336,12 +336,11 @@ static int fd_do_rw(struct se_cmd *cmd, struct scatterlist *sgl,
 	for_each_sg(sgl, sg, sgl_nents, i)
 		kunmap(sg_page(sg));
 
-	kfree(iov);
-
 	if (is_write) {
 		if (ret < 0 || ret != cmd->data_length) {
 			pr_err("%s() write returned %d\n", __func__, ret);
-			return (ret < 0 ? ret : -EINVAL);
+			if (ret >= 0)
+				ret = -EINVAL;
 		}
 	} else {
 		/*
@@ -354,17 +353,29 @@ static int fd_do_rw(struct se_cmd *cmd, struct scatterlist *sgl,
 				pr_err("%s() returned %d, expecting %u for "
 						"S_ISBLK\n", __func__, ret,
 						cmd->data_length);
-				return (ret < 0 ? ret : -EINVAL);
+				if (ret >= 0)
+					ret = -EINVAL;
 			}
 		} else {
 			if (ret < 0) {
 				pr_err("%s() returned %d for non S_ISBLK\n",
 						__func__, ret);
-				return ret;
+			} else if (ret != data_length) {
+				/*
+				 * Short read case:
+				 * Probably some one truncate file under us.
+				 * We must explicitly zero sg-pages to prevent
+				 * expose uninizialized pages to userspace.
+				 */
+				if (ret < data_length)
+					ret += iov_iter_zero(data_length - ret, &iter);
+				else
+					ret = -EINVAL;
 			}
 		}
 	}
-	return 1;
+	kfree(bvec);
+	return ret;
 }
 
 static sense_reason_t

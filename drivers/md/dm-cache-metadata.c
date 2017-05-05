@@ -1264,17 +1264,19 @@ void dm_cache_metadata_set_stats(struct dm_cache_metadata *cmd,
 
 int dm_cache_commit(struct dm_cache_metadata *cmd, bool clean_shutdown)
 {
-	int r;
+	int r = -EINVAL;
 	flags_mutator mutator = (clean_shutdown ? set_clean_shutdown :
 				 clear_clean_shutdown);
 
 	down_write(&cmd->root_lock);
+	if (cmd->fail_io)
+		goto out;
+
 	r = __commit_transaction(cmd, mutator);
 	if (r)
 		goto out;
 
 	r = __begin_transaction(cmd);
-
 out:
 	up_write(&cmd->root_lock);
 	return r;
@@ -1286,7 +1288,8 @@ int dm_cache_get_free_metadata_block_count(struct dm_cache_metadata *cmd,
 	int r = -EINVAL;
 
 	down_read(&cmd->root_lock);
-	r = dm_sm_get_nr_free(cmd->metadata_sm, result);
+	if (!cmd->fail_io)
+		r = dm_sm_get_nr_free(cmd->metadata_sm, result);
 	up_read(&cmd->root_lock);
 
 	return r;
@@ -1298,7 +1301,8 @@ int dm_cache_get_metadata_dev_size(struct dm_cache_metadata *cmd,
 	int r = -EINVAL;
 
 	down_read(&cmd->root_lock);
-	r = dm_sm_get_nr_blocks(cmd->metadata_sm, result);
+	if (!cmd->fail_io)
+		r = dm_sm_get_nr_blocks(cmd->metadata_sm, result);
 	up_read(&cmd->root_lock);
 
 	return r;

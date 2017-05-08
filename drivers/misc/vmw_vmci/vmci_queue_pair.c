@@ -294,12 +294,16 @@ static void *qp_alloc_queue(u64 size, u32 flags)
 {
 	u64 i;
 	struct vmci_queue *queue;
-	const size_t num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
 	const size_t pas_size = num_pages * sizeof(*queue->kernel_if->u.g.pas);
 	const size_t vas_size = num_pages * sizeof(*queue->kernel_if->u.g.vas);
 	const size_t queue_size =
 		sizeof(*queue) + sizeof(*queue->kernel_if) +
 		pas_size + vas_size;
+	u64 num_pages;
+
+	if (size > SIZE_MAX - PAGE_SIZE)
+		return NULL;
+	num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
 
 	queue = vmalloc(queue_size);
 	if (!queue)
@@ -614,10 +618,14 @@ static int qp_memcpy_from_queue_iov(void *dest,
 static struct vmci_queue *qp_host_alloc_queue(u64 size)
 {
 	struct vmci_queue *queue;
-	const size_t num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
 	const size_t queue_size = sizeof(*queue) + sizeof(*(queue->kernel_if));
 	const size_t queue_page_size =
 	    num_pages * sizeof(*queue->kernel_if->u.h.page);
+	u64 num_pages;
+
+	if (size > SIZE_MAX - PAGE_SIZE)
+		return NULL;
+	num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
 
 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
 	if (queue) {

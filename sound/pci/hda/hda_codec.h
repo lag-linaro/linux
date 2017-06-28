@@ -413,6 +413,8 @@ struct hda_codec {
 enum {
 	HDA_INPUT, HDA_OUTPUT
 };
+#define list_for_each_codec_safe(c, n, bus)				\
+	list_for_each_entry_safe(c, n, &(bus).codec_list, list)
 
 /* snd_hda_codec_read/write optional flags */
 #define HDA_RW_NO_RESPONSE_FALLBACK	(1 << 0)

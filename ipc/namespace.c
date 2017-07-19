@@ -34,9 +34,17 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
 	ns->ns.ops = &ipcns_operations;
 
 	atomic_set(&ns->count, 1);
+
+	err = init_peripc_ns(ns);
+	if (err) {
+		kfree(ns);
+		return ERR_PTR(err);
+	}
+
 	err = mq_init_ns(ns);
 	if (err) {
 		ns_free_inum(&ns->ns);
+		exit_peripc_ns(ns);
 		kfree(ns);
 		return ERR_PTR(err);
 	}
@@ -95,6 +103,7 @@ static void free_ipc_ns(struct ipc_namespace *ns)
 	sem_exit_ns(ns);
 	msg_exit_ns(ns);
 	shm_exit_ns(ns);
+	exit_peripc_ns(ns);
 	atomic_dec(&nr_ipc_ns);
 
 	put_user_ns(ns->user_ns);

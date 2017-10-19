@@ -51,63 +51,9 @@ static const char *handler[]= {
 
 int show_unhandled_signals = 0;
 
-/*
- * Dump out the contents of some memory nicely...
- */
-static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
-		     unsigned long top, bool compat)
-{
-	unsigned long first;
-	mm_segment_t fs;
-	int i;
-	unsigned int width = compat ? 4 : 8;
-
-	/*
-	 * We need to switch to kernel mode so that we can use __get_user
-	 * to safely read from kernel space.
-	 */
-	fs = get_fs();
-	set_fs(KERNEL_DS);
-
-	printk("%s%s(0x%016lx to 0x%016lx)\n", lvl, str, bottom, top);
-
-	for (first = bottom & ~31; first < top; first += 32) {
-		unsigned long p;
-		char str[sizeof(" 12345678") * 8 + 1];
-
-		memset(str, ' ', sizeof(str));
-		str[sizeof(str) - 1] = '\0';
-
-		for (p = first, i = 0; i < (32 / width)
-					&& p < top; i++, p += width) {
-			if (p >= bottom && p < top) {
-				unsigned long val;
-
-				if (width == 8) {
-					if (__get_user(val, (unsigned long *)p) == 0)
-						sprintf(str + i * 17, " %016lx", val);
-					else
-						sprintf(str + i * 17, " ????????????????");
-				} else {
-					if (__get_user(val, (unsigned int *)p) == 0)
-						sprintf(str + i * 9, " %08lx", val);
-					else
-						sprintf(str + i * 9, " ????????");
-				}
-			}
-		}
-		printk("%s%04lx:%s\n", lvl, first & 0xffff, str);
-	}
-
-	set_fs(fs);
-}
-
 static void dump_backtrace_entry(unsigned long where)
 {
-	/*
-	 * Note that 'where' can have a physical address, but it's not handled.
-	 */
-	print_ip_sym(where);
+	printk(" %pS\n", (void *)where);
 }
 
 static void __dump_instr(const char *lvl, struct pt_regs *regs)
@@ -170,20 +116,11 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 	}
 
 	pr_emerg("Call trace:\n");
-	while (1) {
+	do {
 		unsigned long where = frame.pc;
-		unsigned long stack;
-		int ret;
 
 		dump_backtrace_entry(where);
-		ret = unwind_frame(&frame);
-		if (ret < 0)
-			break;
-		stack = frame.sp;
-		if (in_exception_text(where))
-			dump_mem("", "Exception stack", stack,
-				 stack + sizeof(struct pt_regs), false);
-	}
+	} while (!unwind_frame(tsk, &frame));
 }
 
 void show_stack(struct task_struct *tsk, unsigned long *sp)

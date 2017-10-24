@@ -109,6 +109,7 @@
 #define CMD_RESET_ERROR_COUNTER		49
 #define CMD_TX_ACKNOWLEDGE		50
 #define CMD_CAN_ERROR_EVENT		51
+#define CMD_FLUSH_QUEUE_REPLY		68
 #define CMD_USB_THROTTLE		77
 #define CMD_LOG_MESSAGE			106
 
@@ -960,6 +961,11 @@ static void kvaser_usb_handle_message(const struct kvaser_usb *dev,
 
 	case CMD_TX_ACKNOWLEDGE:
 		kvaser_usb_tx_acknowledge(dev, msg);
+		break;
+
+	case CMD_FLUSH_QUEUE_REPLY:
+		if (dev->family != KVASER_LEAF)
+			goto warn;
 		break;
 
 	default:

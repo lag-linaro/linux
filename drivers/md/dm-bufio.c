@@ -1556,6 +1556,7 @@ dm_bufio_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
 {
 	struct dm_bufio_client *c;
 	unsigned long count;
+	unsigned long retain_target;
 
 	c = container_of(shrink, struct dm_bufio_client, shrinker);
 	if (sc->gfp_mask & __GFP_FS)
@@ -1564,8 +1565,9 @@ dm_bufio_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
 		return 0;
 
 	count = c->n_buffers[LIST_CLEAN] + c->n_buffers[LIST_DIRTY];
+	retain_target = get_retain_buffers(c);
 	dm_bufio_unlock(c);
-	return count;
+	return (count < retain_target) ? 0 : (count - retain_target);
 }
 
 /*

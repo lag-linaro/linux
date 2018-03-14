@@ -1832,6 +1832,9 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 	clk_change_rate(top);
 
 out:
+	/* Always try to update cached phase if possible */
+	if (core->ops->get_phase)
+		core->phase = core->ops->get_phase(core->hw);
 	clk_prepare_unlock();
 
 	return ret;

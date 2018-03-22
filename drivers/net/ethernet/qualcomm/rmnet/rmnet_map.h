@@ -23,8 +23,8 @@ struct rmnet_map_control_command {
 		struct {
 			u16 ip_family:2;
 			u16 reserved:14;
-			u16 flow_control_seq_num;
-			u32 qos_id;
+			__be16 flow_control_seq_num;
+			__be32 qos_id;
 		} flow_control;
 		u8 data[0];
 	};
@@ -53,7 +53,7 @@ struct rmnet_map_header {
 	u8  reserved_bit:1;
 	u8  cd_bit:1;
 	u8  mux_id;
-	u16 pkt_len;
+	__be16 pkt_len;
 }  __aligned(1);
 
 #define RMNET_MAP_GET_MUX_ID(Y) (((struct rmnet_map_header *) \

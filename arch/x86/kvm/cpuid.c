@@ -398,6 +398,11 @@ static inline int __do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 			cpuid_mask(&entry->ebx, 9);
 			// TSC_ADJUST is emulated
 			entry->ebx |= F(TSC_ADJUST);
+			/*
+			 * We emulate ARCH_CAPABILITIES in software even
+			 * if the host doesn't support it.
+			 */
+			entry->edx |= F(ARCH_CAPABILITIES);
 		} else
 			entry->ebx = 0;
 		entry->eax = 0;

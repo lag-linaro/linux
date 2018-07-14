@@ -427,7 +427,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
 #define cpu_has_eager_fpu	boot_cpu_has(X86_FEATURE_EAGER_FPU)
 #define cpu_has_topoext		boot_cpu_has(X86_FEATURE_TOPOEXT)
 
-#if __GNUC__ >= 4
+#if __GNUC__ >= 4 && defined(CONFIG_X86_FAST_FEATURE_TESTS)
 extern void warn_pre_alternatives(void);
 extern bool __static_cpu_has_safe(u16 bit);
 

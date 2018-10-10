@@ -154,17 +154,6 @@ static inline void init_frag_mem_limit(struct netns_frags *nf)
 	percpu_counter_init(&nf->mem, 0, GFP_KERNEL);
 }
 
-static inline unsigned int sum_frag_mem_limit(struct netns_frags *nf)
-{
-	unsigned int res;
-
-	local_bh_disable();
-	res = percpu_counter_sum_positive(&nf->mem);
-	local_bh_enable();
-
-	return res;
-}
-
 /* RFC 3168 support :
  * We want to check ECN values of all fragments, do detect invalid combinations.
  * In ipq->ecn, we store the OR value of each ip4_frag_ecn() fragment value.

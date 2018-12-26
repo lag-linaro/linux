@@ -252,6 +252,7 @@ static int hda_tegra_suspend(struct device *dev)
 	struct azx *chip = card->private_data;
 	struct azx_pcm *p;
 	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+	struct hdac_bus *bus = azx_bus(chip);
 
 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
 	list_for_each_entry(p, &chip->pcm_list, list)
@@ -260,6 +261,7 @@ static int hda_tegra_suspend(struct device *dev)
 		snd_hda_suspend(chip->bus);
 
 	azx_stop_chip(chip);
+	synchronize_irq(bus->irq);
 	azx_enter_link_reset(chip);
 	hda_tegra_disable_clocks(hda);
 

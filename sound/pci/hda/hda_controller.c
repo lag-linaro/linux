@@ -1209,10 +1209,13 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
 	bus->rirb_error = 1;
 	if (bus->allow_bus_reset && !bus->response_reset && !bus->in_reset) {
 		bus->response_reset = 1;
+		dev_err(chip->card->dev,
+			"No response from codec, resetting bus: last cmd=0x%08x\n",
+			bus->last_cmd[addr]);
 		return -1; /* give a chance to retry */
 	}
 
-	dev_err(chip->card->dev,
+	dev_WARN(chip->card->dev,
 		"azx_get_response timeout, switching to single_cmd mode: last cmd=0x%08x\n",
 		chip->last_cmd[addr]);
 	chip->single_cmd = 1;

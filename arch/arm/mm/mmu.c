@@ -1084,6 +1084,9 @@ void __init sanity_check_meminfo(void)
 		phys_addr_t block_end = reg->base + reg->size;
 		phys_addr_t size_limit = reg->size;
 
+		if (memblock_is_nomap(reg))
+			continue;
+
 		if (reg->base >= vmalloc_limit)
 			highmem = 1;
 		else

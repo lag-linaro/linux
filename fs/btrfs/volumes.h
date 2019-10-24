@@ -304,7 +304,6 @@ struct btrfs_bio {
 	struct btrfs_fs_info *fs_info;
 	bio_end_io_t *end_io;
 	struct bio *orig_bio;
-	unsigned long flags;
 	void *private;
 	atomic_t error;
 	int max_errors;

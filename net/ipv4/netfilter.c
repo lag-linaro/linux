@@ -5,6 +5,7 @@
  * Patrick McHardy (C) 2006-2012
  */
 #include <linux/kernel.h>
+#include <linux/module.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>

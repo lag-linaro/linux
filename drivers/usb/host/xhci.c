@@ -1008,7 +1008,7 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
 		 * Some controllers might lose power during suspend, so wait
 		 * for controller not ready bit to clear, just as in xHC init.
 		 */
-		retval = xhci_handshake(&xhci->op_regs->status,
+		retval = xhci_handshake(xhci, &xhci->op_regs->status,
 					STS_CNR, 0, 10 * 1000 * 1000);
 		if (retval) {
 			xhci_warn(xhci, "Controller not ready at resume %d\n",

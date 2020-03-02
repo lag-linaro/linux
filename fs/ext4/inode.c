@@ -4237,18 +4237,6 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 		ei->i_file_acl |=
 			((__u64)le16_to_cpu(raw_inode->i_file_acl_high)) << 32;
 	inode->i_size = ext4_isize(raw_inode);
-	/*
-	 * If dir_index is not enabled but there's dir with INDEX flag set,
-	 * we'd normally treat htree data as empty space. But with metadata
-	 * checksumming that corrupts checksums so forbid that.
-	 */
-	if (!ext4_has_feature_dir_index(sb) && ext4_has_metadata_csum(sb) &&
-	    ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) {
-		EXT4_ERROR_INODE(inode,
-				 "iget: Dir with htree data on filesystem without dir_index feature.");
-		ret = -EFSCORRUPTED;
-		goto bad_inode;
-	}
 	ei->i_disksize = inode->i_size;
 #ifdef CONFIG_QUOTA
 	ei->i_reserved_quota = 0;

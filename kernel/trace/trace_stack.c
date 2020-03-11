@@ -124,13 +124,6 @@ check_stack(unsigned long ip, unsigned long *stack)
 	max_stack_trace.nr_entries++;
 
 	/*
-	 * Some archs may not have the passed in ip in the dump.
-	 * If that happens, we need to show everything.
-	 */
-	if (i == stack_trace_max.nr_entries)
-		i = 0;
-
-	/*
 	 * Now find where in the stack these are.
 	 */
 	i = 0;

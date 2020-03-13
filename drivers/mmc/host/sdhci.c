@@ -542,8 +542,7 @@ static int sdhci_adma_table_pre(struct sdhci_host *host,
 
 		if (len) {
 			/* tran, valid */
-			sdhci_adma_write_desc(host, desc, addr, len,
-					      ADMA2_TRAN_VALID);
+			sdhci_set_adma_desc(desc, addr, len, 0x21);
 			desc += 8;
 		}
 

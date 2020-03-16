@@ -273,7 +273,7 @@ static int tiadc_iio_buffered_hardware_setup(struct iio_dev *indio_dev,
 		goto error_kfifo_free;
 
 	indio_dev->setup_ops = setup_ops;
-	indio_dev->modes |= INDIO_BUFFER_SOFTWARE;
+	indio_dev->modes |= INDIO_BUFFER_HARDWARE;
 
 	ret = iio_buffer_register(indio_dev,
 				  indio_dev->channels,

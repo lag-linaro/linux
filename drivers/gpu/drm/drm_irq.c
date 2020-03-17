@@ -1134,13 +1134,7 @@ void drm_vblank_off(struct drm_device *dev, int crtc)
 	spin_lock_irqsave(&dev->event_lock, irqflags);
 
 	spin_lock(&dev->vbl_lock);
-	DRM_DEBUG_VBL("crtc %d, vblank enabled %d, inmodeset %d\n",
-		      crtc, vblank->enabled, vblank->inmodeset);
-
-	/* Avoid redundant vblank disables without previous drm_vblank_on(). */
-	if (drm_core_check_feature(dev, DRIVER_ATOMIC) || !vblank->inmodeset)
-		vblank_disable_and_save(dev, crtc);
-
+	vblank_disable_and_save(dev, crtc);
 	wake_up(&vblank->queue);
 
 	/*
@@ -1210,9 +1204,6 @@ void drm_vblank_on(struct drm_device *dev, int crtc)
 		return;
 
 	spin_lock_irqsave(&dev->vbl_lock, irqflags);
-	DRM_DEBUG_VBL("crtc %d, vblank enabled %d, inmodeset %d\n",
-		      crtc, vblank->enabled, vblank->inmodeset);
-
 	/* Drop our private "prevent drm_vblank_get" refcount */
 	if (vblank->inmodeset) {
 		atomic_dec(&vblank->refcount);

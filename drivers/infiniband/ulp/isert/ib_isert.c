@@ -941,7 +941,7 @@ isert_cma_handler(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
 	pr_debug("isert_cma_handler: event %d status %d conn %p id %p\n",
 		 event->event, event->status, cma_id->context, cma_id);
 
-	if (isert_np->cm_id == cma_id)
+	if (isert_np->np_cm_id == cma_id)
 		return isert_np_cma_handler(cma_id->context, event->event);
 
 	switch (event->event) {

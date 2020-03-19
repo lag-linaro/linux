@@ -1545,15 +1545,13 @@ static int usbvision_probe(struct usb_interface *intf,
 	else {
 		dev_err(&intf->dev, "interface %d is invalid, max is %d\n",
 		    ifnum, dev->actconfig->desc.bNumInterfaces - 1);
-		ret = -ENODEV;
-		goto err_usb;
+		return -ENODEV;
 	}
 
 	if (interface->desc.bNumEndpoints < 2) {
 		dev_err(&intf->dev, "interface %d has %d endpoints, but must"
 		    " have minimum 2\n", ifnum, interface->desc.bNumEndpoints);
-		ret = -ENODEV;
-		goto err_usb;
+		return -ENODEV;
 	}
 	endpoint = &interface->endpoint[1].desc;
 

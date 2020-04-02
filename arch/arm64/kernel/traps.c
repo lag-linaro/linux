@@ -120,7 +120,7 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		unsigned long where = frame.pc;
 
 		dump_backtrace_entry(where);
-	} while (!unwind_frame(tsk, &frame));
+	} while (!unwind_frame(&frame));
 }
 
 void show_stack(struct task_struct *tsk, unsigned long *sp)

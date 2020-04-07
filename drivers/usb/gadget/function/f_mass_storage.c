@@ -3106,19 +3106,19 @@ static int fsg_bind(struct usb_configuration *c, struct usb_function *f)
 		fsg_common_set_inquiry_string(fsg->common, NULL, NULL);
 	}
 
-	if (!common->thread_task) {
-		common->state = FSG_STATE_IDLE;
-		common->thread_task =
-			kthread_create(fsg_main_thread, common, "file-storage");
-		if (IS_ERR(common->thread_task)) {
-			int ret = PTR_ERR(common->thread_task);
-			common->thread_task = NULL;
-			common->state = FSG_STATE_TERMINATED;
+	if (!fsg->common->thread_task) {
+		fsg->common->state = FSG_STATE_IDLE;
+		fsg->common->thread_task =
+			kthread_create(fsg_main_thread, fsg->common, "file-storage");
+		if (IS_ERR(fsg->common->thread_task)) {
+			int ret = PTR_ERR(fsg->common->thread_task);
+			fsg->common->thread_task = NULL;
+			fsg->common->state = FSG_STATE_TERMINATED;
 			return ret;
 		}
-		DBG(common, "I/O thread pid: %d\n",
-		    task_pid_nr(common->thread_task));
-		wake_up_process(common->thread_task);
+		DBG(fsg->common, "I/O thread pid: %d\n",
+		    task_pid_nr(fsg->common->thread_task));
+		wake_up_process(fsg->common->thread_task);
 	}
 
 	fsg->gadget = gadget;

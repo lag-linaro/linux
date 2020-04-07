@@ -57,6 +57,8 @@ static DEFINE_MUTEX(udc_lock);
 int usb_gadget_map_request(struct usb_gadget *gadget,
 		struct usb_request *req, int is_in)
 {
+	struct device *dev = gadget->dev.parent;
+
 	if (req->length == 0)
 		return 0;
 

@@ -99,7 +99,6 @@ struct ti_qspi {
 #define QSPI_INVAL			(4 << 16)
 #define QSPI_WC_CMD_INT_EN			(1 << 14)
 #define QSPI_FLEN(n)			((n - 1) << 0)
-#define QSPI_WLEN_MASK			QSPI_WLEN(QSPI_WLEN_MAX_BITS)
 
 /* STATUS REGISTER */
 #define WC				0x02
@@ -323,7 +322,7 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
 	struct spi_device *spi = m->spi;
 	struct spi_transfer *t;
 	int status = 0, ret;
-	unsigned int frame_len_words;
+	int frame_length;
 
 	/* setup device control reg */
 	qspi->dc = 0;
@@ -335,15 +334,14 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
 	if (spi->mode & SPI_CS_HIGH)
 		qspi->dc |= QSPI_CSPOL(spi->chip_select);
 
-	frame_len_words = 0;
-	list_for_each_entry(t, &m->transfers, transfer_list)
-		frame_len_words += t->len / (t->bits_per_word >> 3);
-	frame_len_words = min_t(unsigned int, frame_len_words, QSPI_FRAME);
+	frame_length = (m->frame_length << 3) / spi->bits_per_word;
+
+	frame_length = clamp(frame_length, 0, QSPI_FRAME);
 
 	/* setup command reg */
 	qspi->cmd = 0;
 	qspi->cmd |= QSPI_EN_CS(spi->chip_select);
-	qspi->cmd |= QSPI_FLEN(frame_len_words);
+	qspi->cmd |= QSPI_FLEN(frame_length);
 	qspi->cmd |= QSPI_WC_CMD_INT_EN;
 
 	ti_qspi_write(qspi, QSPI_WC_INT_EN, QSPI_INTR_ENABLE_SET_REG);
@@ -352,8 +350,7 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
 	mutex_lock(&qspi->list_lock);
 
 	list_for_each_entry(t, &m->transfers, transfer_list) {
-		qspi->cmd = ((qspi->cmd & ~QSPI_WLEN_MASK) |
-			     QSPI_WLEN(t->bits_per_word));
+		qspi->cmd |= QSPI_WLEN(t->bits_per_word);
 
 		ret = qspi_transfer_msg(qspi, t);
 		if (ret) {

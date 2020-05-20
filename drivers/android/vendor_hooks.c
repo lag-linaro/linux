@@ -9,6 +9,7 @@
 #define CREATE_TRACE_POINTS
 #include <trace/hooks/vendor_hooks.h>
 #include <linux/tracepoint.h>
+
 #include <trace/hooks/mpam.h>
 #include <trace/hooks/debug.h>
 #include <trace/hooks/iommu.h>
@@ -20,5 +21,7 @@
  */
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_mpam_set);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_ipi_stop);
+EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_cpu_cgroup_attach);
+EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_cpu_cgroup_online);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_iommu_setup_dma_ops);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_is_fpsimd_save);

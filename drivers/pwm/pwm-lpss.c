@@ -20,7 +20,6 @@
 
 #include "pwm-lpss.h"
 
-#define PWM				0x00000000
 #define PWM_ENABLE			BIT(31)
 #define PWM_SW_UPDATE			BIT(30)
 #define PWM_BASE_UNIT_SHIFT		8
@@ -29,7 +28,7 @@
 /* Size of each PWM register space if multiple */
 #define PWM_SIZE			0x400
 
-static inline struct pwm_lpss_chip *to_lpwm(struct pwm_chip *chip)
+static inline struct pwm_lpss_chip *to_lpwm(struct pwm_chip *chip, int test)
 {
 	return container_of(chip, struct pwm_lpss_chip, chip);
 }

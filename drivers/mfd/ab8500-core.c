@@ -156,7 +156,7 @@ static const int ab8540_irq_regoffset[AB8540_NUM_IRQ_REGS] = {
 	23, 25, 26, 27, 28, 29, 30, 31,
 };
 
-static const char ab8500_version_str[][7] = {
+char ab8500_version_str[][7] = {
 	[AB8500_VERSION_AB8500] = "AB8500",
 	[AB8500_VERSION_AB8505] = "AB8505",
 	[AB8500_VERSION_AB9540] = "AB9540",

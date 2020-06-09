@@ -186,6 +186,11 @@ config ARCH_QCOM
 	help
 	  This enables support for the ARMv8 based Qualcomm chipsets.
 
+config ARCH_QEMU
+	bool "Virtual Platform for creating images to boot with QEMU"
+	help
+	  This enables support for booting using QEMU.
+
 config ARCH_REALTEK
 	bool "Realtek Platforms"
 	select RESET_CONTROLLER

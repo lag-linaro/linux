@@ -6,6 +6,33 @@
 	#address-cells = <0x02>;
 	compatible = "linux,dummy-virt";
 
+	mfd_of_test {
+		compatible = "mfd,of-test-parent";
+		#address-cells = <0x02>;
+		#size-cells = <0x02>;
+
+		child@aaaaaaaaaaaaaaaa {
+			compatible = "mfd,of-test-child";
+			reg = <0xaaaaaaaa 0xaaaaaaaa 0 0x11>,
+			      <0xbbbbbbbb 0xbbbbbbbb 0 0x22>;
+		};
+
+		child@cccccccc {
+			compatible = "mfd,of-test-child";
+			reg = <0x00000000 0xcccccccc 0 0x33>;
+		};
+
+		child@dddddddd00000000 {
+			compatible = "mfd,of-test-child";
+			reg = <0xdddddddd 0x00000000 0 0x44>;
+		};
+
+		child@0 {
+			compatible = "mfd,of-test-child";
+			reg = <0x0 0x0 0 0x55>;
+		};
+	};
+
 	psci {
 		migrate = <0xc4000005>;
 		cpu_on = <0xc4000003>;

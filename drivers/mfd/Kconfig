@@ -1296,7 +1296,6 @@ config MFD_SUN6I_PRCM
 config MFD_SYSCON
 	bool "System Controller Register R/W Based on Regmap"
 	select REGMAP_MMIO
-	select REGMAP_I2C
 	help
 	  Select this option to enable accessing system control registers
 	  via regmap.

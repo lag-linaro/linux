@@ -225,7 +225,7 @@
 					#size-cells = <0>;
 
 					rtc@32 {  // 50
-						compatible = "dallas,ds1338";
+						compatible = "dallas,ds1338", "syscon-i2c";
 						reg = <0x32>;
 					};
 

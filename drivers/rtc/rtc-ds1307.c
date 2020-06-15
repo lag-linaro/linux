@@ -24,6 +24,8 @@
 #include <linux/regmap.h>
 #include <linux/watchdog.h>
 
+#include <linux/mfd/syscon-i2c.h>
+
 /*
  * We can't determine type by probing, but if we expect pre-Linux code
  * to have set the chip up as a clock (turning on the oscillator and
@@ -1720,7 +1722,8 @@ static int ds1307_probe(struct i2c_client *client,
 	ds1307->dev = &client->dev;
 	ds1307->name = client->name;
 
-	ds1307->regmap = devm_regmap_init_i2c(client, &regmap_config);
+	ds1307->regmap = i2c_device_node_to_regmap(client);
+//	ds1307->regmap = devm_regmap_init_i2c(client, &regmap_config);
 	if (IS_ERR(ds1307->regmap)) {
 		dev_err(ds1307->dev, "regmap allocation failed\n");
 		return PTR_ERR(ds1307->regmap);

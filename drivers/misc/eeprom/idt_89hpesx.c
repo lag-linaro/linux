@@ -1398,6 +1398,8 @@ static int idt_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	struct idt_89hpesx_dev *pdev;
 	int ret;
 
+	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
+
 	/* Create driver data */
 	pdev = idt_create_pdev(client);
 	if (IS_ERR(pdev))

@@ -67,6 +67,8 @@ static int i2c_versatile_probe(struct platform_device *dev)
 	struct resource *r;
 	int ret;
 
+	printk("LEE: %s %s()[%d]: \n", __FILE__, __func__, __LINE__);
+
 	i2c = devm_kzalloc(&dev->dev, sizeof(struct i2c_versatile), GFP_KERNEL);
 	if (!i2c)
 		return -ENOMEM;

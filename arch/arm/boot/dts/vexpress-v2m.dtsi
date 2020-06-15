@@ -224,6 +224,11 @@
 					#address-cells = <1>;
 					#size-cells = <0>;
 
+					rtc@32 {  // 50
+						compatible = "dallas,ds1338";
+						reg = <0x32>;
+					};
+
 					dvi-transmitter@39 {
 						compatible = "sil,sii9022-tpi", "sil,sii9022";
 						reg = <0x39>;

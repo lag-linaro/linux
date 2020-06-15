@@ -962,6 +962,8 @@ static int sii902x_probe(struct i2c_client *client,
 	u8 chipid[4];
 	int ret;
 
+	printk("LEE: %s %s()[%d]: \n", __FILE__, __func__, __LINE__);
+
 	ret = i2c_check_functionality(client->adapter,
 				      I2C_FUNC_SMBUS_BYTE_DATA);
 	if (!ret) {

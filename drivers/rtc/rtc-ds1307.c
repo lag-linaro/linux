@@ -1710,6 +1710,8 @@ static int ds1307_probe(struct i2c_client *client,
 	struct ds1307_platform_data *pdata = dev_get_platdata(&client->dev);
 	u8			trickle_charger_setup = 0;
 
+	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
+
 	ds1307 = devm_kzalloc(&client->dev, sizeof(struct ds1307), GFP_KERNEL);
 	if (!ds1307)
 		return -ENOMEM;

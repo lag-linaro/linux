@@ -46,8 +46,8 @@ static int atmel_smc_cs_encode_ncycles(unsigned int ncycles,
 				       unsigned int msbfactor,
 				       unsigned int *encodedval)
 {
-	unsigned int lsbmask = GENMASK(msbpos - 1, 0);
-	unsigned int msbmask = GENMASK(msbwidth - 1, 0);
+	unsigned int lsbmask = GENMASK((int)msbpos - 1, 0);
+	unsigned int msbmask = GENMASK((int)msbwidth - 1, 0);
 	unsigned int msb, lsb;
 	int ret = 0;
 

@@ -17,7 +17,7 @@
 #define LM3533_MAX_CURRENT_MAX		29800
 #define LM3533_MAX_CURRENT_STEP		800
 
-#define LM3533_BRIGHTNESS_MAX		255
+#define LM3533_BRIGHTNESS_MAX		127  /* Capped by API - could be up to 255 */
 #define LM3533_PWM_MAX			0x3f
 
 #define LM3533_REG_PWM_BASE		0x14

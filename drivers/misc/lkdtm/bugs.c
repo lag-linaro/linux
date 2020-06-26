@@ -334,7 +334,7 @@ void lkdtm_STACK_GUARD_PAGE_LEADING(void)
 
 	byte = *ptr;
 
-	pr_err("FAIL: accessed page before stack!\n");
+	pr_err("FAIL: accessed page before stack! (byte: %x)\n", byte);
 }
 
 /* Test that VMAP_STACK is actually allocating with a trailing guard page */
@@ -348,7 +348,7 @@ void lkdtm_STACK_GUARD_PAGE_TRAILING(void)
 
 	byte = *ptr;
 
-	pr_err("FAIL: accessed page after stack!\n");
+	pr_err("FAIL: accessed page after stack! (byte: %x)\n", byte);
 }
 
 void lkdtm_UNSET_SMEP(void)

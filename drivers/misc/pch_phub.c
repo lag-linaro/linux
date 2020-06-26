@@ -135,6 +135,7 @@ static DEFINE_MUTEX(pch_phub_mutex);
 
 /**
  * pch_phub_read_modify_write_reg() - Reading modifying and writing register
+ * @chip:		Pointer to the PHUB register structure
  * @reg_addr_offset:	Register offset address value.
  * @data:		Writing value.
  * @mask:		Mask value.
@@ -274,6 +275,7 @@ static void pch_phub_restore_reg_conf(struct pci_dev *pdev)
 
 /**
  * pch_phub_read_serial_rom() - Reading Serial ROM
+ * @chip:		Pointer to the PHUB register structure
  * @offset_address:	Serial ROM offset address to read.
  * @data:		Read buffer for specified Serial ROM value.
  */
@@ -288,6 +290,7 @@ static void pch_phub_read_serial_rom(struct pch_phub_reg *chip,
 
 /**
  * pch_phub_write_serial_rom() - Writing Serial ROM
+ * @chip:		Pointer to the PHUB register structure
  * @offset_address:	Serial ROM offset address.
  * @data:		Serial ROM value to write.
  */
@@ -326,6 +329,7 @@ static int pch_phub_write_serial_rom(struct pch_phub_reg *chip,
 
 /**
  * pch_phub_read_serial_rom_val() - Read Serial ROM value
+ * @chip:		Pointer to the PHUB register structure
  * @offset_address:	Serial ROM address offset value.
  * @data:		Serial ROM value to read.
  */
@@ -342,6 +346,7 @@ static void pch_phub_read_serial_rom_val(struct pch_phub_reg *chip,
 
 /**
  * pch_phub_write_serial_rom_val() - writing Serial ROM value
+ * @chip:		Pointer to the PHUB register structure
  * @offset_address:	Serial ROM address offset value.
  * @data:		Serial ROM value.
  */
@@ -444,6 +449,7 @@ static int pch_phub_gbe_serial_rom_conf_mp(struct pch_phub_reg *chip)
 /**
  * pch_phub_read_gbe_mac_addr() - Read Gigabit Ethernet MAC address
  * @offset_address:	Gigabit Ethernet MAC address offset value.
+ * @chip:		Pointer to the PHUB register structure
  * @data:		Buffer of the Gigabit Ethernet MAC address value.
  */
 static void pch_phub_read_gbe_mac_addr(struct pch_phub_reg *chip, u8 *data)
@@ -456,6 +462,7 @@ static void pch_phub_read_gbe_mac_addr(struct pch_phub_reg *chip, u8 *data)
 /**
  * pch_phub_write_gbe_mac_addr() - Write MAC address
  * @offset_address:	Gigabit Ethernet MAC address offset value.
+ * @chip:		Pointer to the PHUB register structure
  * @data:		Gigabit Ethernet MAC address value.
  */
 static int pch_phub_write_gbe_mac_addr(struct pch_phub_reg *chip, u8 *data)

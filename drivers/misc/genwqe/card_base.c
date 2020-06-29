@@ -569,29 +569,17 @@ static int genwqe_stop(struct genwqe_dev *cd)
 
 /**
  * genwqe_recover_card() - Try to recover the card if it is possible
- *
- * If fatal_err is set no register access is possible anymore. It is
- * likely that genwqe_start fails in that situation. Proper error
- * handling is required in this case.
+ * @cd: GenWQE device information
  *
  * genwqe_bus_reset() will cause the pci code to call genwqe_remove()
  * and later genwqe_probe() for all virtual functions.
  */
-static int genwqe_recover_card(struct genwqe_dev *cd, int fatal_err)
+static int genwqe_recover_card(struct genwqe_dev *cd)
 {
 	int rc;
 	struct pci_dev *pci_dev = cd->pci_dev;
 
 	genwqe_stop(cd);
-
-	/*
-	 * Make sure chip is not reloaded to maintain FFDC. Write SLU
-	 * Reset Register, CPLDReset field to 0.
-	 */
-	if (!fatal_err) {
-		cd->softreset = 0x70ull;
-		__genwqe_writeq(cd, IO_SLC_CFGREG_SOFTRESET, cd->softreset);
-	}
 
 	rc = genwqe_bus_reset(cd);
 	if (rc != 0) {
@@ -958,7 +946,7 @@ static int genwqe_health_thread(void *data)
 
 			cd->card_state = GENWQE_CARD_FATAL_ERROR;
 
-			rc = genwqe_recover_card(cd, 0);
+			rc = genwqe_recover_card(cd);
 			if (rc < 0) {
 				/* FIXME Card is unusable and needs unbind! */
 				goto fatal_error;

@@ -697,6 +697,7 @@ static int cdns3_gadget_ep0_set_halt(struct usb_ep *ep, int value)
  * @ep: pointer to endpoint zero object
  * @request: pointer to request object
  * @gfp_flags: gfp flags
+ * @zlp: add zero length packet
  *
  * Returns 0 on success, error code elsewhere
  */

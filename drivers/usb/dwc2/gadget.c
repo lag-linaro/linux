@@ -256,10 +256,8 @@ int dwc2_hsotg_tx_fifo_total_depth(struct dwc2_hsotg *hsotg)
 static void dwc2_gadget_wkup_alert_handler(struct dwc2_hsotg *hsotg)
 {
 	u32 gintsts2;
-	u32 gintmsk2;
 
 	gintsts2 = dwc2_readl(hsotg, GINTSTS2);
-	gintmsk2 = dwc2_readl(hsotg, GINTMSK2);
 
 	if (gintsts2 & GINTSTS2_WKUP_ALERT_INT) {
 		dev_dbg(hsotg->dev, "%s: Wkup_Alert_Int\n", __func__);

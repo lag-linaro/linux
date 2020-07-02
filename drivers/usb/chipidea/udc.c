@@ -627,6 +627,7 @@ done:
 
 /**
  * free_pending_td: remove a pending request for the endpoint
+ * @ci: the controller
  * @hwep: endpoint
  */
 static void free_pending_td(struct ci_hw_ep *hwep)

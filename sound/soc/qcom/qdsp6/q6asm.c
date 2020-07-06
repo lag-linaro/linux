@@ -1476,6 +1476,7 @@ static int __q6asm_open_read(struct audio_client *ac,
  *
  * @ac: audio client pointer
  * @format: audio sample format
+ * @codec_profile: profile to use when WMA
  * @bits_per_sample: bits per sample
  *
  * Return: Will be an negative value on error or zero on success

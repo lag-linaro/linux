@@ -2683,8 +2683,31 @@ void megasas_return_cmd_fusion(struct megasas_instance *instance,
 	struct megasas_cmd_fusion *cmd);
 int megasas_issue_blocked_cmd(struct megasas_instance *instance,
 	struct megasas_cmd *cmd, int timeout);
-void __megasas_return_cmd(struct megasas_instance *instance,
+void megasas_return_cmd(struct megasas_instance *instance,
 	struct megasas_cmd *cmd);
+u32 megasas_readl(struct megasas_instance *instance,
+		  const volatile void __iomem *addr);
+void megasas_free_cmds(struct megasas_instance *instance);
+struct megasas_cmd *megasas_get_cmd(struct megasas_instance *instance);
+void megaraid_sas_kill_hba(struct megasas_instance *instance);
+void megasas_complete_cmd(struct megasas_instance *instance,
+		     struct megasas_cmd *cmd, u8 alt_status);
+int wait_and_poll(struct megasas_instance *instance, struct megasas_cmd *cmd,
+		  int seconds);
+
+int megasas_alloc_cmds(struct megasas_instance *instance);
+int megasas_clear_intr_fusion(struct megasas_instance *instance);
+int megasas_issue_polled(struct megasas_instance *instance,
+			 struct megasas_cmd *cmd);
+void megasas_check_and_restore_queue_depth(struct megasas_instance *instance);
+
+int megasas_transition_to_ready(struct megasas_instance *instance, int ocr);
+void megaraid_sas_kill_hba(struct megasas_instance *instance);
+
+extern u32 megasas_dbg_lvl;
+int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
+				  int initial);
+void megasas_start_timer(struct megasas_instance *instance);
 
 void megasas_return_mfi_mpt_pthr(struct megasas_instance *instance,
 	struct megasas_cmd *cmd_mfi, struct megasas_cmd_fusion *cmd_fusion);

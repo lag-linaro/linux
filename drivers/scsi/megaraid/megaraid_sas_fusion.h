@@ -1388,4 +1388,10 @@ int megasas_check_mpio_paths(struct megasas_instance *instance,
 			      struct scsi_cmnd *scmd);
 void megasas_fusion_ocr_wq(struct work_struct *work);
 
+/* DebugFS Prototypes */
+void megasas_init_debugfs(void);
+void megasas_exit_debugfs(void);
+void megasas_setup_debugfs(struct megasas_instance *instance);
+void megasas_destroy_debugfs(struct megasas_instance *instance);
+
 #endif /* _MEGARAID_SAS_FUSION_H_ */

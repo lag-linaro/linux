@@ -237,8 +237,8 @@ megasas_free_ctrl_dma_buffers(struct megasas_instance *instance);
 static inline void
 megasas_init_ctrl_params(struct megasas_instance *instance);
 
-static u32 megasas_readl(struct megasas_instance *instance,
-			 const volatile void __iomem *addr)
+u32 megasas_readl(struct megasas_instance *instance,
+		  const volatile void __iomem *addr)
 {
 	u32 i = 0, ret_val;
 	/*
@@ -298,8 +298,8 @@ megasas_issue_dcmd(struct megasas_instance *instance, struct megasas_cmd *cmd)
  *
  * Returns a free command from the pool
  */
-static struct
-megasas_cmd *megasas_get_cmd(struct megasas_instance *instance)
+struct megasas_cmd *megasas_get_cmd(struct megasas_instance
+						  *instance)
 {
 	unsigned long flags;
 	struct megasas_cmd *cmd = NULL;
@@ -323,7 +323,7 @@ megasas_cmd *megasas_get_cmd(struct megasas_instance *instance)
  * @instance:		Adapter soft state
  * @cmd:		Command packet to be returned to free command pool
  */
-static void
+void
 megasas_return_cmd(struct megasas_instance *instance, struct megasas_cmd *cmd)
 {
 	unsigned long flags;
@@ -1084,7 +1084,7 @@ extern struct megasas_instance_template megasas_instance_template_fusion;
  *
  * For polling, MFI requires the cmd_status to be set to MFI_STAT_INVALID_STATUS before posting.
  */
-static int
+int
 megasas_issue_polled(struct megasas_instance *instance, struct megasas_cmd *cmd)
 {
 	struct megasas_header *frame_hdr = &cmd->frame->hdr;
@@ -2146,7 +2146,7 @@ static void megasas_complete_outstanding_ioctls(struct megasas_instance *instanc
 }
 
 
-static void megaraid_sas_kill_hba(struct megasas_instance *instance)
+void megaraid_sas_kill_hba(struct megasas_instance *instance)
 {
 	if (atomic_read(&instance->adprecovery) == MEGASAS_HW_CRITICAL_ERROR) {
 		dev_warn(&instance->pdev->dev,
@@ -2182,7 +2182,7 @@ static void megaraid_sas_kill_hba(struct megasas_instance *instance)
   * @instance:			Adapter soft state
   *
   */
-static void
+void
 megasas_check_and_restore_queue_depth(struct megasas_instance *instance)
 {
 	unsigned long flags;
@@ -2260,7 +2260,7 @@ static void megasas_sriov_heartbeat_handler(struct timer_list *t);
  * @instance:		Adapter soft state
  *
  */
-static void megasas_start_timer(struct megasas_instance *instance)
+void megasas_start_timer(struct megasas_instance *instance)
 {
 	struct timer_list *timer = &instance->sriov_heartbeat_timer;
 
@@ -2576,7 +2576,7 @@ static int megasas_get_ld_vf_affiliation(struct megasas_instance *instance,
 }
 
 /* This function will tell FW to start the SR-IOV heartbeat */
-static int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
+int megasas_sriov_start_heartbeat(struct megasas_instance *instance,
 					 int initial)
 {
 	struct megasas_cmd *cmd;
@@ -4289,7 +4289,7 @@ static int megasas_create_frame_pool(struct megasas_instance *instance)
  * megasas_free_cmds -	Free all the cmds in the free cmd pool
  * @instance:		Adapter soft state
  */
-static void megasas_free_cmds(struct megasas_instance *instance)
+void megasas_free_cmds(struct megasas_instance *instance)
 {
 	int i;
 
@@ -4326,7 +4326,7 @@ static void megasas_free_cmds(struct megasas_instance *instance)
  * This array is used only to look up the megasas_cmd given the context. The
  * free commands themselves are maintained in a linked list called cmd_pool.
  */
-static int megasas_alloc_cmds(struct megasas_instance *instance)
+int megasas_alloc_cmds(struct megasas_instance *instance)
 {
 	int i;
 	int j;

@@ -22,6 +22,7 @@
 #include <linux/pinctrl/pinmux.h>
 /* Since we request GPIOs from ourself */
 #include <linux/pinctrl/consumer.h>
+#include <linux/platform_data/atmel.h>
 
 #include "pinctrl-at91.h"
 #include "core.h"

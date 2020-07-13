@@ -28,4 +28,9 @@ static inline int at91_suspend_entering_slow_clock(void)
 }
 #endif
 
+#ifdef CONFIG_PINCTRL_AT91
+void at91_pinctrl_gpio_suspend(void);
+void at91_pinctrl_gpio_resume(void);
+#endif
+
 #endif /* __ATMEL_H__ */

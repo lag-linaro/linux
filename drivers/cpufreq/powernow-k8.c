@@ -89,6 +89,7 @@ static int pending_bit_stuck(void)
 	u32 lo, hi;
 
 	rdmsr(MSR_FIDVID_STATUS, lo, hi);
+	hi &= hi; /* Silence set but not used warning */
 	return lo & MSR_S_LO_CHANGE_PENDING ? 1 : 0;
 }
 
@@ -292,6 +293,7 @@ static int core_voltage_pre_transition(struct powernow_k8_data *data,
 		rvomult = 2;
 	rvosteps *= rvomult;
 	rdmsr(MSR_FIDVID_STATUS, lo, maxvid);
+	lo &= lo; /* Silence set but not used warning */
 	maxvid = 0x1f & (maxvid >> 16);
 	pr_debug("ph1 maxvid=0x%x\n", maxvid);
 	if (reqvid < maxvid) /* lower numbers are higher voltages */

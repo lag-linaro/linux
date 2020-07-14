@@ -5,6 +5,8 @@
  * Maintained by: Olof Johansson <olof@lixom.net>
  */
 
+#include <linux/platform_data/pasemi.h>
+
 #include <asm/processor.h>
 #include <asm/page.h>
 #include <asm/ppc_asm.h>

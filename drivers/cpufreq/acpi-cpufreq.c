@@ -247,6 +247,7 @@ static u32 cpu_freq_read_intel(struct acpi_pct_register *not_used)
 	u32 val, dummy;
 
 	rdmsr(MSR_IA32_PERF_CTL, val, dummy);
+	dummy &= dummy; /* Silence set but not used warning */
 	return val;
 }
 
@@ -264,6 +265,7 @@ static u32 cpu_freq_read_amd(struct acpi_pct_register *not_used)
 	u32 val, dummy;
 
 	rdmsr(MSR_AMD_PERF_CTL, val, dummy);
+	dummy &= dummy; /* Silence set but not used warning */
 	return val;
 }
 

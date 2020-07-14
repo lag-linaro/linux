@@ -144,12 +144,6 @@ static void __exit amd_freq_sensitivity_exit(void)
 }
 module_exit(amd_freq_sensitivity_exit);
 
-static const struct x86_cpu_id amd_freq_sensitivity_ids[] = {
-	X86_MATCH_FEATURE(X86_FEATURE_PROC_FEEDBACK, NULL),
-	{}
-};
-MODULE_DEVICE_TABLE(x86cpu, amd_freq_sensitivity_ids);
-
 MODULE_AUTHOR("Jacob Shin <jacob.shin@amd.com>");
 MODULE_DESCRIPTION("AMD frequency sensitivity feedback powersave bias for "
 		"the ondemand governor.");

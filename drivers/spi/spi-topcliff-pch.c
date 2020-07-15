@@ -140,7 +140,7 @@ struct pch_spi_dma_ctrl {
  * @rx_index:			Receive data count; for bookkeeping during
  *				transfer
  * @pkt_tx_buff:		Buffer for data to be transmitted
- * @pkt_rx_index:		Buffer for received data
+ * @pkt_rx_buff:		Buffer for received data
  * @n_curnt_chip:		The chip number that this SPI driver currently
  *				operates on
  * @current_chip:		Reference to the current chip that this SPI

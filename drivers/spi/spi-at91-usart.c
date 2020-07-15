@@ -692,6 +692,7 @@ static struct platform_driver at91_usart_spi_driver = {
 	.driver = {
 		.name = "at91_usart_spi",
 		.pm = &at91_usart_spi_pm_ops,
+		.of_match_table = at91_usart_spi_dt_ids;
 	},
 	.probe = at91_usart_spi_probe,
 	.remove = at91_usart_spi_remove,

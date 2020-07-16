@@ -39,7 +39,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
  * struct ad7949_adc_chip - AD ADC chip
  * @lock: protects write sequences
  * @vref: regulator generating Vref
- * @iio_dev: reference to iio structure
+ * @indio_dev: reference to iio structure
  * @spi: reference to spi structure
  * @resolution: resolution of the chip
  * @cfg: copy of the configuration register
@@ -54,7 +54,7 @@ struct ad7949_adc_chip {
 	u8 resolution;
 	u16 cfg;
 	unsigned int current_channel;
-	u16 buffer ____cacheline_aligned;
+	u16 ____cacheline_aligned buffer;
 };
 
 static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u16 val,

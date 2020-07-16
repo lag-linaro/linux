@@ -29,6 +29,9 @@
  * @spi:		the device for this driver instance
  * @config:		cached config register value
  * @dac_cache:		current DAC raw value (chip does not support readback)
+ * @vdd_reg:		reference to VDD regulator
+ * @vref_reg:		reference to VREF regulator
+ * @lock:		protect writes and cache updates
  * @data:		spi transfer buffer
  */
 
@@ -45,7 +48,7 @@ struct ad7303_state {
 	 * DMA (thus cache coherency maintenance) requires the
 	 * transfer buffers to live in their own cache lines.
 	 */
-	__be16 data ____cacheline_aligned;
+	__be16 ____cacheline_aligned data;
 };
 
 static int ad7303_write(struct ad7303_state *st, unsigned int chan,

@@ -92,7 +92,7 @@ struct mcp320x {
 	struct mutex lock;
 	const struct mcp320x_chip_info *chip_info;
 
-	u8 tx_buf ____cacheline_aligned;
+	u8 ____cacheline_aligned tx_buf;
 	u8 rx_buf[4];
 };
 

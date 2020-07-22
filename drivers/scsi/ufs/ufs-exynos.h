@@ -299,22 +299,22 @@ void exynos_ufs_cmd_log_end(struct ufs_exynos_handle *handle,
 int exynos_ufs_init_dbg(struct ufs_exynos_handle *handle, struct device *dev);
 void exynos_ufs_dump_info(struct ufs_exynos_handle *handle, struct device *dev);
 #else
-void exynos_ufs_cmd_log_start(struct ufs_exynos_handle *handle,
-			      struct ufs_hba *hba, int tag)
+static inline void exynos_ufs_cmd_log_start(struct ufs_exynos_handle *handle,
+					    struct ufs_hba *hba, int tag)
 {
 }
 
-void exynos_ufs_cmd_log_end(struct ufs_exynos_handle *handle,
-			    struct ufs_hba *hba, int tag)
+static inline void exynos_ufs_cmd_log_end(struct ufs_exynos_handle *handle,
+					  struct ufs_hba *hba, int tag)
 {
 }
 
-int exynos_ufs_init_dbg(struct ufs_exynos_handle *handle, struct device *dev)
+static inline int exynos_ufs_init_dbg(struct ufs_exynos_handle *handle, struct device *dev)
 {
 	return 0;
 }
 
-void exynos_ufs_dump_info(struct ufs_exynos_handle *handle, struct device *dev)
+static inline void exynos_ufs_dump_info(struct ufs_exynos_handle *handle, struct device *dev)
 {
 }
 

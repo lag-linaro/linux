@@ -182,7 +182,6 @@ static irqreturn_t mvs_interrupt(int irq, void *opaque)
 	struct sas_ha_struct *sha = opaque;
 #ifndef CONFIG_SCSI_MVSAS_TASKLET
 	u32 i;
-#else
 	u32 core_nr;
 
 	core_nr = ((struct mvs_prv_info *)sha->lldd_ha)->n_host;

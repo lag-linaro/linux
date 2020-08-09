@@ -659,7 +659,6 @@ retry:
 		r->initialized = 1;
 		r->entropy_total = 0;
 		if (r == &nonblocking_pool) {
-			prandom_reseed_late();
 			wake_up_interruptible(&urandom_init_wait);
 			pr_notice("random: %s pool is initialized\n", r->name);
 		}
@@ -903,7 +902,6 @@ void add_interrupt_randomness(int irq, int irq_flags)
 
 	fast_mix(fast_pool);
 	add_interrupt_bench(cycles);
-	this_cpu_add(net_rand_state.s1, fast_pool->pool[cycles & 3]);
 
 	if ((fast_pool->count < 64) &&
 	    !time_after(now, fast_pool->last + HZ))

@@ -27,6 +27,7 @@
 #include "wmm.h"
 #include "11n.h"
 #include "sdio.h"
+#include "sdio-tables.h"
 
 
 #define SDIO_VERSION	"1.0"

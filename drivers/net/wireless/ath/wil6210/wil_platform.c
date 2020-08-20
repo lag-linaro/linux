@@ -15,7 +15,7 @@ void wil_platform_modexit(void)
 {
 }
 
-/**
+/*
  * wil_platform_init() - wil6210 platform module init
  *
  * The function must be called before all other functions in this module.

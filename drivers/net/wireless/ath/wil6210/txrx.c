@@ -249,7 +249,7 @@ static void wil_vring_free(struct wil6210_priv *wil, struct wil_ring *vring)
 	vring->ctx = NULL;
 }
 
-/**
+/*
  * Allocate one skb for Rx VRING
  *
  * Safe to call from IRQ
@@ -295,7 +295,7 @@ static int wil_vring_alloc_skb(struct wil6210_priv *wil, struct wil_ring *vring,
 	return 0;
 }
 
-/**
+/*
  * Adds radiotap header
  *
  * Any error indicated as "Bad FCS"
@@ -432,7 +432,7 @@ static int wil_rx_get_cid_by_skb(struct wil6210_priv *wil, struct sk_buff *skb)
 	return cid;
 }
 
-/**
+/*
  * reap 1 frame from @swhead
  *
  * Rx descriptor copied to skb->cb
@@ -597,7 +597,7 @@ again:
 	return skb;
 }
 
-/**
+/*
  * allocate and fill up to @count buffers in rx ring
  * buffers posted at @swtail
  * Note: we have a single RX queue for servicing all VIFs, but we
@@ -1002,7 +1002,7 @@ void wil_netif_rx_any(struct sk_buff *skb, struct net_device *ndev)
 	wil_netif_rx(skb, ndev, cid, stats, true);
 }
 
-/**
+/*
  * Proceed all completed skb's from Rx VRING
  *
  * Safe to call from NAPI poll, i.e. softirq with interrupts enabled
@@ -1629,7 +1629,7 @@ void wil_tx_desc_set_nr_frags(struct vring_tx_desc *d, int nr_frags)
 	d->mac.d[2] |= (nr_frags << MAC_CFG_DESC_TX_2_NUM_OF_DESCRIPTORS_POS);
 }
 
-/**
+/*
  * Sets the descriptor @d up for csum and/or TSO offloading. The corresponding
  * @skb is used to obtain the protocol and headers length.
  * @tso_desc_type is a descriptor type for TSO: 0 - a header, 1 - first data,
@@ -1660,7 +1660,7 @@ static void wil_tx_desc_offload_setup_tso(struct vring_tx_desc *d,
 	d->dma.d0 |= BIT(DMA_CFG_DESC_TX_0_PSEUDO_HEADER_CALC_EN_POS);
 }
 
-/**
+/*
  * Sets the descriptor @d up for csum. The corresponding
  * @skb is used to obtain the protocol and headers length.
  * Returns the protocol: 0 - not TCP, 1 - TCPv4, 2 - TCPv6.
@@ -2216,7 +2216,7 @@ static int wil_tx_ring(struct wil6210_priv *wil, struct wil6210_vif *vif,
 	return rc;
 }
 
-/**
+/*
  * Check status of tx vrings and stop/wake net queues if needed
  * It will start/stop net queues of a specific VIF net_device.
  *
@@ -2419,7 +2419,7 @@ void wil_tx_latency_calc(struct wil6210_priv *wil, struct sk_buff *skb,
 		sta->stats.tx_latency_max_us = skb_time_us;
 }
 
-/**
+/*
  * Clean up transmitted skb's from the Tx VRING
  *
  * Return number of descriptors cleared
@@ -2460,7 +2460,7 @@ int wil_tx_complete(struct wil6210_vif *vif, int ringid)
 	while (!wil_ring_is_empty(vring)) {
 		int new_swtail;
 		struct wil_ctx *ctx = &vring->ctx[vring->swtail];
-		/**
+		/*
 		 * For the fragmented skb, HW will set DU bit only for the
 		 * last fragment. look for it.
 		 * In TSO the first DU will include hdr desc

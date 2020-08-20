@@ -31,7 +31,7 @@ MODULE_PARM_DESC(led_id,
 #define WIL_WAIT_FOR_SUSPEND_RESUME_COMP 200
 #define WIL_WMI_PCP_STOP_TO_MS 5000
 
-/**
+/*
  * WMI event receiving - theory of operations
  *
  * When firmware about to report WMI event, it fills memory area
@@ -48,7 +48,7 @@ MODULE_PARM_DESC(led_id,
  * won't be completed because of blocked IRQ thread.
  */
 
-/**
+/*
  * Addressing - theory of operations
  *
  * There are several buses present on the WIL6210 card.
@@ -66,7 +66,7 @@ MODULE_PARM_DESC(led_id,
  * AHB address must be used.
  */
 
-/**
+/*
  * @sparrow_fw_mapping provides memory remapping table for sparrow
  *
  * array size should be in sync with the declaration in the wil6210.h
@@ -103,7 +103,7 @@ const struct fw_map sparrow_fw_mapping[] = {
 	{0x800000, 0x804000, 0x940000, "uc_data", false, false},
 };
 
-/**
+/*
  * @sparrow_d0_mac_rgf_ext - mac_rgf_ext section for Sparrow D0
  * it is a bit larger to support extra features
  */
@@ -111,7 +111,7 @@ const struct fw_map sparrow_d0_mac_rgf_ext = {
 	0x88c000, 0x88c500, 0x88c000, "mac_rgf_ext", true, true
 };
 
-/**
+/*
  * @talyn_fw_mapping provides memory remapping table for Talyn
  *
  * array size should be in sync with the declaration in the wil6210.h
@@ -154,7 +154,7 @@ const struct fw_map talyn_fw_mapping[] = {
 	{0x800000, 0x808000, 0xa78000, "uc_data", false, false},
 };
 
-/**
+/*
  * @talyn_mb_fw_mapping provides memory remapping table for Talyn-MB
  *
  * array size should be in sync with the declaration in the wil6210.h
@@ -229,7 +229,7 @@ u8 led_polarity = LED_POLARITY_LOW_ACTIVE;
 
 /**
  * return AHB address for given firmware internal (linker) address
- * @x - internal address
+ * @x: internal address
  * If address have no valid AHB mapping, return 0
  */
 static u32 wmi_addr_remap(u32 x)
@@ -247,7 +247,7 @@ static u32 wmi_addr_remap(u32 x)
 
 /**
  * find fw_mapping entry by section name
- * @section - section name
+ * @section: section name
  *
  * Return pointer to section or NULL if not found
  */
@@ -265,8 +265,9 @@ struct fw_map *wil_find_fw_mapping(const char *section)
 
 /**
  * Check address validity for WMI buffer; remap if needed
- * @ptr - internal (linker) fw/ucode address
- * @size - if non zero, validate the block does not
+ * @wil: driver data
+ * @ptr: internal (linker) fw/ucode address
+ * @size: if non zero, validate the block does not
  *  exceed the device memory (bar)
  *
  * Valid buffer should be DWORD aligned
@@ -300,7 +301,7 @@ void __iomem *wmi_buffer(struct wil6210_priv *wil, __le32 ptr_)
 	return wmi_buffer_block(wil, ptr_, 0);
 }
 
-/**
+/*
  * Check address validity
  */
 void __iomem *wmi_addr(struct wil6210_priv *wil, u32 ptr)
@@ -1577,7 +1578,7 @@ wmi_evt_link_stats(struct wil6210_vif *vif, int id, void *d, int len)
 			     evt->payload, payload_size);
 }
 
-/**
+/*
  * find cid and ringid for the station vif
  *
  * return error, if other interfaces are used or ring was not found
@@ -1868,7 +1869,7 @@ wmi_evt_link_monitor(struct wil6210_vif *vif, int id, void *d, int len)
 	cfg80211_cqm_rssi_notify(ndev, event_type, evt->rssi_level, GFP_KERNEL);
 }
 
-/**
+/*
  * Some events are ignored for purpose; and need not be interpreted as
  * "unhandled events"
  */
@@ -2578,6 +2579,7 @@ out:
 
 /**
  * wmi_rxon - turn radio on/off
+ * @wil:	driver data
  * @on:		turn on if true, off otherwise
  *
  * Only switch radio. Channel should be set separately.

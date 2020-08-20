@@ -29,7 +29,7 @@ void wil_pmc_init(struct wil6210_priv *wil)
 	mutex_init(&wil->pmc.lock);
 }
 
-/**
+/*
  * Allocate the physical ring (p-ring) and the required
  * number of descriptors of required size.
  * Initialize the descriptors as required by pmc dma.
@@ -221,7 +221,7 @@ no_release_err:
 	mutex_unlock(&pmc->lock);
 }
 
-/**
+/*
  * Traverse the p-ring and release all buffers.
  * At the end release the p-ring memory
  */
@@ -299,7 +299,7 @@ void wil_pmc_free(struct wil6210_priv *wil, int send_pmc_cmd)
 	mutex_unlock(&pmc->lock);
 }
 
-/**
+/*
  * Status of the last operation requested via debugfs: alloc/free/read.
  * 0 - success or negative errno
  */
@@ -311,7 +311,7 @@ int wil_pmc_last_cmd_status(struct wil6210_priv *wil)
 	return wil->pmc.last_cmd_status;
 }
 
-/**
+/*
  * Read from required position up to the end of current descriptor,
  * depends on descriptor size configured during alloc request.
  */

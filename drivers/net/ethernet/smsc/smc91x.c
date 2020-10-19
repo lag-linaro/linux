@@ -703,7 +703,7 @@ static void smc_tx(struct net_device *dev)
 {
 	struct smc_local *lp = netdev_priv(dev);
 	void __iomem *ioaddr = lp->base;
-	unsigned int saved_packet, packet_no, tx_status, pkt_len;
+	unsigned int saved_packet, packet_no, tx_status, __maybe_unused pkt_len;
 
 	DBG(3, dev, "%s\n", __func__);
 

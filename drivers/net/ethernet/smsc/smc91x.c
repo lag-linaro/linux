@@ -2190,7 +2190,7 @@ static const struct of_device_id smc91x_match[] = {
 MODULE_DEVICE_TABLE(of, smc91x_match);
 
 #if defined(CONFIG_GPIOLIB)
-/**
+/*
  * of_try_set_control_gpio - configure a gpio if it exists
  */
 static int try_toggle_control_gpio(struct device *dev,

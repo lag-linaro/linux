@@ -212,6 +212,10 @@ struct rtw_pci {
 	void __iomem *mmap;
 };
 
+int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+void rtw_pci_remove(struct pci_dev *pdev);
+void rtw_pci_shutdown(struct pci_dev *pdev);
+
 static inline u32 max_num_of_tx_queue(u8 queue)
 {
 	u32 max_num;

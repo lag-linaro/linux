@@ -177,7 +177,7 @@
  * @mode: The operating mode of the IC (LRA_NO_CAL, ERM or LRA)
  * @library: The vibration library to be used
  * @rated_voltage: The rated_voltage of the actuator
- * @overdriver_voltage: The over drive voltage of the actuator
+ * @overdrive_voltage: The over drive voltage of the actuator
 **/
 struct drv260x_data {
 	struct input_dev *input_dev;

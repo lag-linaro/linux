@@ -52,7 +52,6 @@
  * @remote_pid:		processor id of receiving end
  * @total_entries:	number of entries - always SMP2P_MAX_ENTRY
  * @valid_entries:	number of allocated entries
- * @flags:
  * @entries:		individual communication entries
  *     @name:		name of the entry
  *     @value:		content of the entry
@@ -65,7 +64,6 @@ struct smp2p_smem_item {
 	u16 remote_pid;
 	u16 total_entries;
 	u16 valid_entries;
-	u32 flags;
 
 	struct {
 		u8 name[SMP2P_MAX_ENTRY_NAME];
@@ -112,6 +110,7 @@ struct smp2p_entry {
  * struct qcom_smp2p - device driver context
  * @dev:	device driver handle
  * @in:		pointer to the inbound smem item
+ * @out:	pointer to the outbound smem item
  * @smem_items:	ids of the two smem items
  * @valid_entries: already scanned inbound entries
  * @local_pid:	processor id of the inbound edge

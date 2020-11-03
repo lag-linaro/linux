@@ -177,7 +177,7 @@
 #define F11_HINGED_CLICKPAD  0x01
 #define F11_UNIFORM_CLICKPAD 0x02
 
-/**
+/*
  * struct f11_2d_sensor_queries - Query registers 1 through 4 are always
  *				  present.
  *
@@ -487,7 +487,7 @@ struct f11_2d_data {
 	s8	*scroll_zones;
 };
 
-/**
+/*
  * struct f11_data - Data pertaining to F11 in general.
  *		     For per-sensor data, see struct f11_2d_sensor.
  *

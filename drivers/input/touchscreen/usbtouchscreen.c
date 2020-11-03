@@ -1049,7 +1049,7 @@ static int nexio_read_data(struct usbtouch_usb *usbtouch, unsigned char *pkt)
 	unsigned int data_len = be16_to_cpu(packet->data_len);
 	unsigned int x_len = be16_to_cpu(packet->x_len);
 	unsigned int y_len = be16_to_cpu(packet->y_len);
-	int x, y, begin_x, begin_y, end_x, end_y, w, h, ret;
+	int x, y, begin_x, begin_y, end_x, end_y, w, h;
 
 	/* got touch data? */
 	if ((pkt[0] & 0xe0) != 0xe0)
@@ -1061,7 +1061,7 @@ static int nexio_read_data(struct usbtouch_usb *usbtouch, unsigned char *pkt)
 		x_len -= 0x80;
 
 	/* send ACK */
-	ret = usb_submit_urb(priv->ack, GFP_ATOMIC);
+	usb_submit_urb(priv->ack, GFP_ATOMIC);
 
 	if (!usbtouch->type->max_xc) {
 		usbtouch->type->max_xc = 2 * x_len;

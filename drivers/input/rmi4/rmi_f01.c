@@ -103,6 +103,7 @@ struct f01_basic_properties {
 #define RMI_F01_CTRL0_CONFIGURED_BIT	BIT(7)
 
 /**
+ * struct f01_device_control
  * @ctrl0 - see the bit definitions above.
  * @doze_interval - controls the interval between checks for finger presence
  * when the touch sensor is in doze mode, in units of 10ms.

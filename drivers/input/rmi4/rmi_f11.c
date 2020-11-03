@@ -62,7 +62,7 @@
 /* maximum ABS_MT_POSITION displacement (in mm) */
 #define DMAX 10
 
-/**
+/*
  * @rezero - writing this to the F11 command register will cause the sensor to
  * calibrate to the current capacitive state.
  */
@@ -178,7 +178,8 @@
 #define F11_UNIFORM_CLICKPAD 0x02
 
 /**
- * Query registers 1 through 4 are always present.
+ * struct f11_2d_sensor_queries - Query registers 1 through 4 are always
+ *				  present.
  *
  * @nr_fingers - describes the maximum number of fingers the 2-D sensor
  * supports.

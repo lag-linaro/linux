@@ -5165,7 +5165,7 @@ static bool init_adapter(SLMP_INFO *info)
 
 	/* Set BIT30 of Local Control Reg 0x50 to reset SCA */
 	volatile u32 *MiscCtrl = (u32 *)(info->lcr_base + 0x50);
-	u32 readval;
+	u32 __always_unused readval;
 
 	info->misc_ctrl_value |= BIT30;
 	*MiscCtrl = info->misc_ctrl_value;

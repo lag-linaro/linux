@@ -5568,7 +5568,7 @@ static void usc_load_txfifo( struct mgsl_struct *info )
 static void usc_reset( struct mgsl_struct *info )
 {
 	int i;
-	u32 readval;
+	u32 __always_unused readval;
 
 	/* Set BIT30 of Misc Control Register */
 	/* (Local Control Register 0x50) to force reset of USC. */
@@ -7264,7 +7264,7 @@ static void mgsl_load_pci_memory( char* TargetPtr, const char* SourcePtr,
 
 	unsigned short Intervalcount = count / PCI_LOAD_INTERVAL;
 	unsigned short Index;
-	unsigned long Dummy;
+	unsigned long __always_unused Dummy;
 
 	for ( Index = 0 ; Index < Intervalcount ; Index++ )
 	{

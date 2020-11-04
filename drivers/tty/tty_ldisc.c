@@ -138,6 +138,7 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
 static int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD);
 /**
  *	tty_ldisc_get		-	take a reference to an ldisc
+ *	@tty: tty device
  *	@disc: ldisc number
  *
  *	Takes a reference to a line discipline. Deals with refcounts and

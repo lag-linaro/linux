@@ -743,7 +743,7 @@ bool ipu_plane_atomic_update_pending(struct drm_plane *plane)
 int ipu_planes_assign_pre(struct drm_device *dev,
 			  struct drm_atomic_state *state)
 {
-	struct drm_crtc_state *old_crtc_state, *crtc_state;
+	struct drm_crtc_state *old_crtc_state, __always_unused *crtc_state;
 	struct drm_plane_state *plane_state;
 	struct ipu_plane_state *ipu_state;
 	struct ipu_plane *ipu_plane;

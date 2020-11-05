@@ -568,50 +568,6 @@ static int analogix_dp_start_aux_transaction(struct analogix_dp_device *dp)
 	return retval;
 }
 
-int analogix_dp_write_byte_to_dpcd(struct analogix_dp_device *dp,
-				   unsigned int reg_addr,
-				   unsigned char data)
-{
-	u32 reg;
-	int i;
-	int retval;
-
-	for (i = 0; i < 3; i++) {
-		/* Clear AUX CH data buffer */
-		reg = BUF_CLR;
-		writel(reg, dp->reg_base + ANALOGIX_DP_BUFFER_DATA_CTL);
-
-		/* Select DPCD device address */
-		reg = AUX_ADDR_7_0(reg_addr);
-		writel(reg, dp->reg_base + ANALOGIX_DP_AUX_ADDR_7_0);
-		reg = AUX_ADDR_15_8(reg_addr);
-		writel(reg, dp->reg_base + ANALOGIX_DP_AUX_ADDR_15_8);
-		reg = AUX_ADDR_19_16(reg_addr);
-		writel(reg, dp->reg_base + ANALOGIX_DP_AUX_ADDR_19_16);
-
-		/* Write data buffer */
-		reg = (unsigned int)data;
-		writel(reg, dp->reg_base + ANALOGIX_DP_BUF_DATA_0);
-
-		/*
-		 * Set DisplayPort transaction and write 1 byte
-		 * If bit 3 is 1, DisplayPort transaction.
-		 * If Bit 3 is 0, I2C transaction.
-		 */
-		reg = AUX_TX_COMM_DP_TRANSACTION | AUX_TX_COMM_WRITE;
-		writel(reg, dp->reg_base + ANALOGIX_DP_AUX_CH_CTL_1);
-
-		/* Start AUX transaction */
-		retval = analogix_dp_start_aux_transaction(dp);
-		if (retval == 0)
-			break;
-
-		dev_dbg(dp->dev, "%s: Aux Transaction fail!\n", __func__);
-	}
-
-	return retval;
-}
-
 void analogix_dp_set_link_bandwidth(struct analogix_dp_device *dp, u32 bwtype)
 {
 	u32 reg;

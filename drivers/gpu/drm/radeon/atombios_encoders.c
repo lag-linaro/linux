@@ -296,10 +296,6 @@ static void radeon_atom_backlight_exit(struct radeon_encoder *encoder)
 
 #endif
 
-/* evil but including atombios.h is much worse */
-bool radeon_atom_get_tv_timings(struct radeon_device *rdev, int index,
-				struct drm_display_mode *mode);
-
 static bool radeon_atom_mode_fixup(struct drm_encoder *encoder,
 				   const struct drm_display_mode *mode,
 				   struct drm_display_mode *adjusted_mode)

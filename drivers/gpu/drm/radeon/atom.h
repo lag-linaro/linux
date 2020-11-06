@@ -154,6 +154,12 @@ bool atom_parse_data_header(struct atom_context *ctx, int index, uint16_t *size,
 bool atom_parse_cmd_header(struct atom_context *ctx, int index,
 			   uint8_t *frev, uint8_t *crev);
 int atom_allocate_fb_scratch(struct atom_context *ctx);
+
+struct drm_display_mode;
+struct radeon_device;
+bool radeon_atom_get_tv_timings(struct radeon_device *rdev, int index,
+				struct drm_display_mode *mode);
+
 #include "atom-types.h"
 #include "atombios.h"
 #include "ObjectID.h"

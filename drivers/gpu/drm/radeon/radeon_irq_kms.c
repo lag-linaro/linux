@@ -43,10 +43,8 @@
 
 #define RADEON_WAIT_IDLE_TIMEOUT 200
 
-/**
+/*
  * radeon_driver_irq_handler_kms - irq handler for KMS
- *
- * @int irq, void *arg: args
  *
  * This is the irq handler for the radeon KMS driver (all asics).
  * radeon_irq_process is a macro that points to the per-asic
@@ -556,7 +554,7 @@ void radeon_irq_kms_disable_hpd(struct radeon_device *rdev, unsigned hpd_mask)
  * @mask: the mask that enables the interrupts
  * @enable: whether to enable or disable the interrupt register
  * @name: the name of the interrupt register to print to the kernel log
- * @num: the number of the interrupt register to print to the kernel log
+ * @n: the number of the interrupt register to print to the kernel log
  *
  * Helper for updating the enable state of interrupt registers. Checks whether
  * or not the interrupt matches the enable state we want. If it doesn't, then

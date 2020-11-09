@@ -280,6 +280,8 @@ struct radeon_clock {
 	uint32_t vco_freq;
 };
 
+void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
+
 /*
  * Power management
  */

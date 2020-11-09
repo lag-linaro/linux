@@ -112,7 +112,6 @@ void r600_fini(struct radeon_device *rdev);
 void r600_irq_disable(struct radeon_device *rdev);
 static void r600_pcie_gen2_enable(struct radeon_device *rdev);
 extern int evergreen_rlc_resume(struct radeon_device *rdev);
-extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
 
 /*
  * Indirect registers accessor

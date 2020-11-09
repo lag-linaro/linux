@@ -451,6 +451,10 @@ struct radeon_surface_reg {
 /*
  * TTM.
  */
+
+int radeon_ttm_init(struct radeon_device *rdev);
+void radeon_ttm_fini(struct radeon_device *rdev);
+
 struct radeon_mman {
 	struct ttm_bo_device		bdev;
 	bool				initialized;

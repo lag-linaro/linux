@@ -40,11 +40,6 @@
 #include <asm/prom.h>
 #endif /* CONFIG_PPC_PMAC */
 
-/* from radeon_legacy_encoder.c */
-extern void
-radeon_add_legacy_encoder(struct drm_device *dev, uint32_t encoder_enum,
-			  uint32_t supported_device);
-
 /* old legacy ATI BIOS routines */
 
 /* COMBIOS table offsets */

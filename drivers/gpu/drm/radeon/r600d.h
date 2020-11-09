@@ -27,6 +27,20 @@
 #ifndef R600D_H
 #define R600D_H
 
+struct radeon_crtc;
+struct radeon_hdmi_acr;
+
+void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset);
+void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
+void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
+	struct radeon_crtc *crtc, unsigned int clock);
+void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
+	unsigned char *buffer, size_t size);
+void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
+	const struct radeon_hdmi_acr *acr);
+void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
+void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
+
 #define CP_PACKET2			0x80000000
 #define		PACKET2_PAD_SHIFT		0
 #define		PACKET2_PAD_MASK		(0x3fffffff << 0)

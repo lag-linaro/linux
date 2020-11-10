@@ -13,6 +13,8 @@
 #include <trace/hooks/mpam.h>
 #include <trace/hooks/debug.h>
 #include <trace/hooks/iommu.h>
+#include <trace/hooks/vmscan.h>
+#include <trace/hooks/syscall_check.h>
 #include <trace/hooks/fpsimd.h>
 
 /*
@@ -24,4 +26,6 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_ipi_stop);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_cpu_cgroup_attach);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_cpu_cgroup_online);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_iommu_setup_dma_ops);
+EXPORT_TRACEPOINT_SYMBOL_GPL(android_rvh_set_balance_anon_file_reclaim);
+EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_check_mmap_file);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_is_fpsimd_save);

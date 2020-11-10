@@ -1412,6 +1412,7 @@ void dce4_wait_for_vblank(struct radeon_device *rdev, int crtc)
  * @rdev: radeon_device pointer
  * @crtc_id: crtc to cleanup pageflip on
  * @crtc_base: new address of the crtc (GPU MC address)
+ * @async: Set retrace
  *
  * Triggers the actual pageflip by updating the primary
  * surface base address (evergreen+).

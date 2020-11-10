@@ -51,6 +51,7 @@
 #include <drm/radeon_drm.h>
 
 #include "radeon_drv.h"
+#include "radeon_ttm.h"
 #include "radeon.h"
 #include "radeon_kms.h"
 #include "radeon_ttm.h"

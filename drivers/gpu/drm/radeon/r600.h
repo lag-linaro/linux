@@ -29,5 +29,7 @@
 #define __R600_H__
 
 u32 r600_gpu_check_soft_reset(struct radeon_device *rdev);
+int r600_ih_ring_alloc(struct radeon_device *rdev);
+void r600_ih_ring_fini(struct radeon_device *rdev);
 
 #endif				/* __R600_H__ */

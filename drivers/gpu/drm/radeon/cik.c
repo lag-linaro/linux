@@ -33,6 +33,7 @@
 #include "cik_blit_shaders.h"
 #include "cikd.h"
 #include "clearstate_ci.h"
+#include "r600.h"
 #include "radeon.h"
 #include "radeon_asic.h"
 #include "radeon_audio.h"
@@ -124,8 +125,6 @@ MODULE_FIRMWARE("radeon/mullins_mec.bin");
 MODULE_FIRMWARE("radeon/mullins_rlc.bin");
 MODULE_FIRMWARE("radeon/mullins_sdma.bin");
 
-extern int r600_ih_ring_alloc(struct radeon_device *rdev);
-extern void r600_ih_ring_fini(struct radeon_device *rdev);
 extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
 extern void evergreen_mc_resume(struct radeon_device *rdev, struct evergreen_mc_save *save);
 extern bool evergreen_is_display_hung(struct radeon_device *rdev);

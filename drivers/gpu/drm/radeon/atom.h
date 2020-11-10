@@ -160,6 +160,12 @@ struct radeon_device;
 bool radeon_atom_get_tv_timings(struct radeon_device *rdev, int index,
 				struct drm_display_mode *mode);
 
+struct i2c_msg;
+struct i2c_adapter;
+int radeon_atom_hw_i2c_xfer(struct i2c_adapter *i2c_adap,
+			    struct i2c_msg *msgs, int num);
+u32 radeon_atom_hw_i2c_func(struct i2c_adapter *adap);
+
 #include "atom-types.h"
 #include "atombios.h"
 #include "ObjectID.h"

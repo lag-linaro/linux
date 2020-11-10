@@ -34,14 +34,7 @@
 #include <drm/radeon_drm.h>
 
 #include "radeon.h"
-
-struct dma_buf *radeon_gem_prime_export(struct drm_gem_object *gobj,
-					int flags);
-struct sg_table *radeon_gem_prime_get_sg_table(struct drm_gem_object *obj);
-int radeon_gem_prime_pin(struct drm_gem_object *obj);
-void radeon_gem_prime_unpin(struct drm_gem_object *obj);
-void *radeon_gem_prime_vmap(struct drm_gem_object *obj);
-void radeon_gem_prime_vunmap(struct drm_gem_object *obj, void *vaddr);
+#include "radeon_prime.h"
 
 static const struct drm_gem_object_funcs radeon_gem_object_funcs;
 

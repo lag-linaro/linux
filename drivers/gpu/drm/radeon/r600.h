@@ -29,7 +29,9 @@
 #define __R600_H__
 
 struct r600_audio_pin;
+struct radeon_bo_list;
 struct radeon_crtc;
+struct radeon_cs_parser;
 struct radeon_device;
 struct radeon_hdmi_acr;
 
@@ -50,4 +52,6 @@ void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
 void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
 void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
 
+int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
+			   struct radeon_bo_list **cs_reloc);
 #endif				/* __R600_H__ */

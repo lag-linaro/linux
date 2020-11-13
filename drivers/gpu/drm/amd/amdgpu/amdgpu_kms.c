@@ -41,6 +41,7 @@
 #include "amdgpu_amdkfd.h"
 #include "amdgpu_gem.h"
 #include "amdgpu_display.h"
+#include "amdgpu_kms.h"
 #include "amdgpu_ras.h"
 
 void amdgpu_unregister_gpu_instance(struct amdgpu_device *adev)

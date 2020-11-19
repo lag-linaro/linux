@@ -100,7 +100,7 @@ msm_gem_shrinker_vmap(struct notifier_block *nb, unsigned long event, void *ptr)
 
 /**
  * msm_gem_shrinker_init - Initialize msm shrinker
- * @dev_priv: msm device
+ * @dev: drm device
  *
  * This function registers and sets up the msm shrinker.
  */
@@ -118,7 +118,7 @@ void msm_gem_shrinker_init(struct drm_device *dev)
 
 /**
  * msm_gem_shrinker_cleanup - Clean up msm shrinker
- * @dev_priv: msm device
+ * @dev: drm device
  *
  * This function unregisters the msm shrinker.
  */

@@ -271,7 +271,7 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgpu_ring *ring)
  * @ring: amdgpu ring pointer
  * @addr: address
  * @seq: sequence number
- * @fence: amdgpu fence object
+ * @flags: fence related flags
  *
  * Add a DMA fence packet to the ring to write
  * the fence seq number and DMA trap packet to generate
@@ -279,7 +279,7 @@ static void cik_sdma_ring_emit_hdp_flush(struct amdgpu_ring *ring)
  */
 static void cik_sdma_ring_emit_fence(struct amdgpu_ring *ring, u64 addr, u64 seq,
 				     unsigned flags)
-{
+  {
 	bool write64bit = flags & AMDGPU_FENCE_FLAG_64BIT;
 	/* write the fence */
 	amdgpu_ring_write(ring, SDMA_PACKET(SDMA_OPCODE_FENCE, 0, 0));

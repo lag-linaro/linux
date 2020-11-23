@@ -400,16 +400,13 @@ static int vangogh_get_current_activity_percent(struct smu_context *smu,
 					       enum amd_pp_sensors sensor,
 					       uint32_t *value)
 {
-	int ret = 0;
-
 	if (!value)
 		return -EINVAL;
 
 	switch (sensor) {
 	case AMDGPU_PP_SENSOR_GPU_LOAD:
-		ret = vangogh_get_smu_metrics_data(smu,
-						  METRICS_AVERAGE_GFXACTIVITY,
-						  value);
+		vangogh_get_smu_metrics_data(smu, METRICS_AVERAGE_GFXACTIVITY,
+					     value);
 		break;
 	default:
 		dev_err(smu->adev->dev, "Invalid sensor for retrieving clock activity\n");

@@ -2523,12 +2523,6 @@ static u32 navi10_i2c_func(struct i2c_adapter *adap)
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
 }
 
-
-static const struct i2c_algorithm navi10_i2c_algo = {
-	.master_xfer = navi10_i2c_xfer,
-	.functionality = navi10_i2c_func,
-};
-
 static ssize_t navi10_get_gpu_metrics(struct smu_context *smu,
 				      void **table)
 {

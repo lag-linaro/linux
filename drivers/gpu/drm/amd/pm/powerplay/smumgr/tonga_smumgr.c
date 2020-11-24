@@ -2466,7 +2466,6 @@ static int tonga_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 	uint32_t t_diff1, t_diff2, pwm_diff1, pwm_diff2;
 	uint16_t fdo_min, slope1, slope2;
 	uint32_t reference_clock;
-	int res;
 	uint64_t tmp64;
 
 	if (!phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
@@ -2539,11 +2538,9 @@ static int tonga_thermal_setup_fan_table(struct pp_hwmgr *hwmgr)
 
 	fan_table.FanControl_GL_Flag = 1;
 
-	res = smu7_copy_bytes_to_smc(hwmgr,
-					smu_data->smu7_data.fan_table_start,
-					(uint8_t *)&fan_table,
-					(uint32_t)sizeof(fan_table),
-					SMC_RAM_END);
+	smu7_copy_bytes_to_smc(hwmgr, smu_data->smu7_data.fan_table_start,
+			       (uint8_t *)&fan_table,
+			       (uint32_t)sizeof(fan_table), SMC_RAM_END);
 
 	return 0;
 }

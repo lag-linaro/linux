@@ -3132,14 +3132,13 @@ static int vega10_get_pp_table_entry_callback_func(struct pp_hwmgr *hwmgr,
 static int vega10_get_pp_table_entry(struct pp_hwmgr *hwmgr,
 		unsigned long entry_index, struct pp_power_state *state)
 {
-	int result;
 	struct vega10_power_state *ps;
 
 	state->hardware.magic = PhwVega10_Magic;
 
 	ps = cast_phw_vega10_power_state(&state->hardware);
 
-	result = vega10_get_powerplay_table_entry(hwmgr, entry_index, state,
+	vega10_get_powerplay_table_entry(hwmgr, entry_index, state,
 			vega10_get_pp_table_entry_callback_func);
 
 	/*

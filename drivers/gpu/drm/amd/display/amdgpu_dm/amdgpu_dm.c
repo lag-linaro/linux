@@ -5077,7 +5077,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
 #if defined(CONFIG_DRM_AMD_DC_DCN)
 	struct dsc_dec_dpcd_caps dsc_caps;
 #endif
-	uint32_t link_bandwidth_kbps;
+	uint32_t __maybe_unused link_bandwidth_kbps;
 
 	struct dc_sink *sink = NULL;
 	if (aconnector == NULL) {

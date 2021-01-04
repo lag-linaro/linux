@@ -207,7 +207,9 @@ struct acc_dev_ref {
 };
 
 static struct acc_dev_ref _acc_dev_ref = {
-	.kref = KREF_INIT(0),
+	.kref = {
+		.refcount = ATOMIC_INIT(0),
+	},
 };
 
 struct acc_instance {

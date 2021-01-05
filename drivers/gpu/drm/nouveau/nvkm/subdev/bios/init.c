@@ -577,7 +577,6 @@ init_tmds_reg(struct nvbios_init *init, u8 tmds)
 
 /*
  * init_reserved - stub for various unknown/unused single-byte opcodes
- *
  */
 static void
 init_reserved(struct nvbios_init *init)
@@ -604,7 +603,6 @@ init_reserved(struct nvbios_init *init)
 
 /*
  * INIT_DONE - opcode 0x71
- *
  */
 static void
 init_done(struct nvbios_init *init)
@@ -615,7 +613,6 @@ init_done(struct nvbios_init *init)
 
 /*
  * INIT_IO_RESTRICT_PROG - opcode 0x32
- *
  */
 static void
 init_io_restrict_prog(struct nvbios_init *init)
@@ -652,7 +649,6 @@ init_io_restrict_prog(struct nvbios_init *init)
 
 /*
  * INIT_REPEAT - opcode 0x33
- *
  */
 static void
 init_repeat(struct nvbios_init *init)
@@ -678,7 +674,6 @@ init_repeat(struct nvbios_init *init)
 
 /*
  * INIT_IO_RESTRICT_PLL - opcode 0x34
- *
  */
 static void
 init_io_restrict_pll(struct nvbios_init *init)
@@ -718,7 +713,6 @@ init_io_restrict_pll(struct nvbios_init *init)
 
 /*
  * INIT_END_REPEAT - opcode 0x36
- *
  */
 static void
 init_end_repeat(struct nvbios_init *init)
@@ -734,7 +728,6 @@ init_end_repeat(struct nvbios_init *init)
 
 /*
  * INIT_COPY - opcode 0x37
- *
  */
 static void
 init_copy(struct nvbios_init *init)
@@ -761,7 +754,6 @@ init_copy(struct nvbios_init *init)
 
 /*
  * INIT_NOT - opcode 0x38
- *
  */
 static void
 init_not(struct nvbios_init *init)
@@ -773,7 +765,6 @@ init_not(struct nvbios_init *init)
 
 /*
  * INIT_IO_FLAG_CONDITION - opcode 0x39
- *
  */
 static void
 init_io_flag_condition(struct nvbios_init *init)
@@ -790,7 +781,6 @@ init_io_flag_condition(struct nvbios_init *init)
 
 /*
  * INIT_GENERIC_CONDITION - opcode 0x3a
- *
  */
 static void
 init_generic_condition(struct nvbios_init *init)
@@ -842,7 +832,6 @@ init_generic_condition(struct nvbios_init *init)
 
 /*
  * INIT_IO_MASK_OR - opcode 0x3b
- *
  */
 static void
 init_io_mask_or(struct nvbios_init *init)
@@ -861,7 +850,6 @@ init_io_mask_or(struct nvbios_init *init)
 
 /*
  * INIT_IO_OR - opcode 0x3c
- *
  */
 static void
 init_io_or(struct nvbios_init *init)
@@ -880,7 +868,6 @@ init_io_or(struct nvbios_init *init)
 
 /*
  * INIT_ANDN_REG - opcode 0x47
- *
  */
 static void
 init_andn_reg(struct nvbios_init *init)
@@ -897,7 +884,6 @@ init_andn_reg(struct nvbios_init *init)
 
 /*
  * INIT_OR_REG - opcode 0x48
- *
  */
 static void
 init_or_reg(struct nvbios_init *init)
@@ -914,7 +900,6 @@ init_or_reg(struct nvbios_init *init)
 
 /*
  * INIT_INDEX_ADDRESS_LATCHED - opcode 0x49
- *
  */
 static void
 init_idx_addr_latched(struct nvbios_init *init)
@@ -944,7 +929,6 @@ init_idx_addr_latched(struct nvbios_init *init)
 
 /*
  * INIT_IO_RESTRICT_PLL2 - opcode 0x4a
- *
  */
 static void
 init_io_restrict_pll2(struct nvbios_init *init)
@@ -979,7 +963,6 @@ init_io_restrict_pll2(struct nvbios_init *init)
 
 /*
  * INIT_PLL2 - opcode 0x4b
- *
  */
 static void
 init_pll2(struct nvbios_init *init)
@@ -996,7 +979,6 @@ init_pll2(struct nvbios_init *init)
 
 /*
  * INIT_I2C_BYTE - opcode 0x4c
- *
  */
 static void
 init_i2c_byte(struct nvbios_init *init)
@@ -1027,7 +1009,6 @@ init_i2c_byte(struct nvbios_init *init)
 
 /*
  * INIT_ZM_I2C_BYTE - opcode 0x4d
- *
  */
 static void
 init_zm_i2c_byte(struct nvbios_init *init)
@@ -1053,7 +1034,6 @@ init_zm_i2c_byte(struct nvbios_init *init)
 
 /*
  * INIT_ZM_I2C - opcode 0x4e
- *
  */
 static void
 init_zm_i2c(struct nvbios_init *init)
@@ -1087,7 +1067,6 @@ init_zm_i2c(struct nvbios_init *init)
 
 /*
  * INIT_TMDS - opcode 0x4f
- *
  */
 static void
 init_tmds(struct nvbios_init *init)
@@ -1113,7 +1092,6 @@ init_tmds(struct nvbios_init *init)
 
 /*
  * INIT_ZM_TMDS_GROUP - opcode 0x50
- *
  */
 static void
 init_zm_tmds_group(struct nvbios_init *init)
@@ -1140,7 +1118,6 @@ init_zm_tmds_group(struct nvbios_init *init)
 
 /*
  * INIT_CR_INDEX_ADDRESS_LATCHED - opcode 0x51
- *
  */
 static void
 init_cr_idx_adr_latch(struct nvbios_init *init)
@@ -1170,7 +1147,6 @@ init_cr_idx_adr_latch(struct nvbios_init *init)
 
 /*
  * INIT_CR - opcode 0x52
- *
  */
 static void
 init_cr(struct nvbios_init *init)
@@ -1190,7 +1166,6 @@ init_cr(struct nvbios_init *init)
 
 /*
  * INIT_ZM_CR - opcode 0x53
- *
  */
 static void
 init_zm_cr(struct nvbios_init *init)
@@ -1207,7 +1182,6 @@ init_zm_cr(struct nvbios_init *init)
 
 /*
  * INIT_ZM_CR_GROUP - opcode 0x54
- *
  */
 static void
 init_zm_cr_group(struct nvbios_init *init)
@@ -1231,7 +1205,6 @@ init_zm_cr_group(struct nvbios_init *init)
 
 /*
  * INIT_CONDITION_TIME - opcode 0x56
- *
  */
 static void
 init_condition_time(struct nvbios_init *init)
@@ -1258,7 +1231,6 @@ init_condition_time(struct nvbios_init *init)
 
 /*
  * INIT_LTIME - opcode 0x57
- *
  */
 static void
 init_ltime(struct nvbios_init *init)
@@ -1275,7 +1247,6 @@ init_ltime(struct nvbios_init *init)
 
 /*
  * INIT_ZM_REG_SEQUENCE - opcode 0x58
- *
  */
 static void
 init_zm_reg_sequence(struct nvbios_init *init)
@@ -1300,7 +1271,6 @@ init_zm_reg_sequence(struct nvbios_init *init)
 
 /*
  * INIT_PLL_INDIRECT - opcode 0x59
- *
  */
 static void
 init_pll_indirect(struct nvbios_init *init)
@@ -1319,7 +1289,6 @@ init_pll_indirect(struct nvbios_init *init)
 
 /*
  * INIT_ZM_REG_INDIRECT - opcode 0x5a
- *
  */
 static void
 init_zm_reg_indirect(struct nvbios_init *init)
@@ -1338,7 +1307,6 @@ init_zm_reg_indirect(struct nvbios_init *init)
 
 /*
  * INIT_SUB_DIRECT - opcode 0x5b
- *
  */
 static void
 init_sub_direct(struct nvbios_init *init)
@@ -1364,7 +1332,6 @@ init_sub_direct(struct nvbios_init *init)
 
 /*
  * INIT_JUMP - opcode 0x5c
- *
  */
 static void
 init_jump(struct nvbios_init *init)
@@ -1382,7 +1349,6 @@ init_jump(struct nvbios_init *init)
 
 /*
  * INIT_I2C_IF - opcode 0x5e
- *
  */
 static void
 init_i2c_if(struct nvbios_init *init)
@@ -1409,7 +1375,6 @@ init_i2c_if(struct nvbios_init *init)
 
 /*
  * INIT_COPY_NV_REG - opcode 0x5f
- *
  */
 static void
 init_copy_nv_reg(struct nvbios_init *init)
@@ -1435,7 +1400,6 @@ init_copy_nv_reg(struct nvbios_init *init)
 
 /*
  * INIT_ZM_INDEX_IO - opcode 0x62
- *
  */
 static void
 init_zm_index_io(struct nvbios_init *init)
@@ -1453,7 +1417,6 @@ init_zm_index_io(struct nvbios_init *init)
 
 /*
  * INIT_COMPUTE_MEM - opcode 0x63
- *
  */
 static void
 init_compute_mem(struct nvbios_init *init)
@@ -1471,7 +1434,6 @@ init_compute_mem(struct nvbios_init *init)
 
 /*
  * INIT_RESET - opcode 0x65
- *
  */
 static void
 init_reset(struct nvbios_init *init)
@@ -1498,7 +1460,6 @@ init_reset(struct nvbios_init *init)
 
 /*
  * INIT_CONFIGURE_MEM - opcode 0x66
- *
  */
 static u16
 init_configure_mem_clk(struct nvbios_init *init)
@@ -1557,7 +1518,6 @@ init_configure_mem(struct nvbios_init *init)
 
 /*
  * INIT_CONFIGURE_CLK - opcode 0x67
- *
  */
 static void
 init_configure_clk(struct nvbios_init *init)
@@ -1591,7 +1551,6 @@ init_configure_clk(struct nvbios_init *init)
 
 /*
  * INIT_CONFIGURE_PREINIT - opcode 0x68
- *
  */
 static void
 init_configure_preinit(struct nvbios_init *init)
@@ -1617,7 +1576,6 @@ init_configure_preinit(struct nvbios_init *init)
 
 /*
  * INIT_IO - opcode 0x69
- *
  */
 static void
 init_io(struct nvbios_init *init)
@@ -1657,7 +1615,6 @@ init_io(struct nvbios_init *init)
 
 /*
  * INIT_SUB - opcode 0x6b
- *
  */
 static void
 init_sub(struct nvbios_init *init)
@@ -1684,7 +1641,6 @@ init_sub(struct nvbios_init *init)
 
 /*
  * INIT_RAM_CONDITION - opcode 0x6d
- *
  */
 static void
 init_ram_condition(struct nvbios_init *init)
@@ -1703,7 +1659,6 @@ init_ram_condition(struct nvbios_init *init)
 
 /*
  * INIT_NV_REG - opcode 0x6e
- *
  */
 static void
 init_nv_reg(struct nvbios_init *init)
@@ -1721,7 +1676,6 @@ init_nv_reg(struct nvbios_init *init)
 
 /*
  * INIT_MACRO - opcode 0x6f
- *
  */
 static void
 init_macro(struct nvbios_init *init)
@@ -1745,7 +1699,6 @@ init_macro(struct nvbios_init *init)
 
 /*
  * INIT_RESUME - opcode 0x72
- *
  */
 static void
 init_resume(struct nvbios_init *init)
@@ -1757,7 +1710,6 @@ init_resume(struct nvbios_init *init)
 
 /*
  * INIT_STRAP_CONDITION - opcode 0x73
- *
  */
 static void
 init_strap_condition(struct nvbios_init *init)
@@ -1775,7 +1727,6 @@ init_strap_condition(struct nvbios_init *init)
 
 /*
  * INIT_TIME - opcode 0x74
- *
  */
 static void
 init_time(struct nvbios_init *init)
@@ -1796,7 +1747,6 @@ init_time(struct nvbios_init *init)
 
 /*
  * INIT_CONDITION - opcode 0x75
- *
  */
 static void
 init_condition(struct nvbios_init *init)
@@ -1813,7 +1763,6 @@ init_condition(struct nvbios_init *init)
 
 /*
  * INIT_IO_CONDITION - opcode 0x76
- *
  */
 static void
 init_io_condition(struct nvbios_init *init)
@@ -1830,7 +1779,6 @@ init_io_condition(struct nvbios_init *init)
 
 /*
  * INIT_ZM_REG16 - opcode 0x77
- *
  */
 static void
 init_zm_reg16(struct nvbios_init *init)
@@ -1847,7 +1795,6 @@ init_zm_reg16(struct nvbios_init *init)
 
 /*
  * INIT_INDEX_IO - opcode 0x78
- *
  */
 static void
 init_index_io(struct nvbios_init *init)
@@ -1869,7 +1816,6 @@ init_index_io(struct nvbios_init *init)
 
 /*
  * INIT_PLL - opcode 0x79
- *
  */
 static void
 init_pll(struct nvbios_init *init)
@@ -1886,7 +1832,6 @@ init_pll(struct nvbios_init *init)
 
 /*
  * INIT_ZM_REG - opcode 0x7a
- *
  */
 static void
 init_zm_reg(struct nvbios_init *init)
@@ -1906,7 +1851,6 @@ init_zm_reg(struct nvbios_init *init)
 
 /*
  * INIT_RAM_RESTRICT_PLL - opcde 0x87
- *
  */
 static void
 init_ram_restrict_pll(struct nvbios_init *init)
@@ -1936,7 +1880,6 @@ init_ram_restrict_pll(struct nvbios_init *init)
 
 /*
  * INIT_RESET_BEGUN - opcode 0x8c
- *
  */
 static void
 init_reset_begun(struct nvbios_init *init)
@@ -1947,7 +1890,6 @@ init_reset_begun(struct nvbios_init *init)
 
 /*
  * INIT_RESET_END - opcode 0x8d
- *
  */
 static void
 init_reset_end(struct nvbios_init *init)
@@ -1958,7 +1900,6 @@ init_reset_end(struct nvbios_init *init)
 
 /*
  * INIT_GPIO - opcode 0x8e
- *
  */
 static void
 init_gpio(struct nvbios_init *init)
@@ -1974,7 +1915,6 @@ init_gpio(struct nvbios_init *init)
 
 /*
  * INIT_RAM_RESTRICT_ZM_GROUP - opcode 0x8f
- *
  */
 static void
 init_ram_restrict_zm_reg_group(struct nvbios_init *init)
@@ -2012,7 +1952,6 @@ init_ram_restrict_zm_reg_group(struct nvbios_init *init)
 
 /*
  * INIT_COPY_ZM_REG - opcode 0x90
- *
  */
 static void
 init_copy_zm_reg(struct nvbios_init *init)
@@ -2029,7 +1968,6 @@ init_copy_zm_reg(struct nvbios_init *init)
 
 /*
  * INIT_ZM_REG_GROUP - opcode 0x91
- *
  */
 static void
 init_zm_reg_group(struct nvbios_init *init)
@@ -2051,7 +1989,6 @@ init_zm_reg_group(struct nvbios_init *init)
 
 /*
  * INIT_XLAT - opcode 0x96
- *
  */
 static void
 init_xlat(struct nvbios_init *init)
@@ -2079,7 +2016,6 @@ init_xlat(struct nvbios_init *init)
 
 /*
  * INIT_ZM_MASK_ADD - opcode 0x97
- *
  */
 static void
 init_zm_mask_add(struct nvbios_init *init)
@@ -2100,7 +2036,6 @@ init_zm_mask_add(struct nvbios_init *init)
 
 /*
  * INIT_AUXCH - opcode 0x98
- *
  */
 static void
 init_auxch(struct nvbios_init *init)
@@ -2124,7 +2059,6 @@ init_auxch(struct nvbios_init *init)
 
 /*
  * INIT_AUXCH - opcode 0x99
- *
  */
 static void
 init_zm_auxch(struct nvbios_init *init)
@@ -2146,7 +2080,6 @@ init_zm_auxch(struct nvbios_init *init)
 
 /*
  * INIT_I2C_LONG_IF - opcode 0x9a
- *
  */
 static void
 init_i2c_long_if(struct nvbios_init *init)
@@ -2185,7 +2118,6 @@ init_i2c_long_if(struct nvbios_init *init)
 
 /*
  * INIT_GPIO_NE - opcode 0xa9
- *
  */
 static void
 init_gpio_ne(struct nvbios_init *init)

@@ -178,7 +178,7 @@ static bool calculate_fb_and_fractional_fb_divider(
  *                                      Fractional Feedback divider values
  *		                        for passed Reference and Post divider,
  *                                      checking for tolerance.
- * @calc_pll_cs,:	Pointer to clock source information
+ * @calc_pll_cs:	Pointer to clock source information
  * @pll_settings:	Pointer to PLL settings
  * @ref_divider:	Reference divider (already known)
  * @post_divider:	Post Divider (already known)

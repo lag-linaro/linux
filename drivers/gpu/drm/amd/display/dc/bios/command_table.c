@@ -1518,10 +1518,6 @@ static enum bp_result adjust_display_pll_v2(
 {
 	enum bp_result result = BP_RESULT_FAILURE;
 
-	/* We need to convert from KHz units into 10KHz units and then convert
-	 * output pixel clock back 10KHz-->KHz */
-	uint32_t pixel_clock_10KHz_in = bp_params->pixel_clock / 10;
-
 	bp->cmd_helper->encoder_id_to_atom(
 		dal_graphics_object_id_get_encoder_id(bp_params->encoder_object_id));
 	bp->cmd_helper->encoder_mode_bp_to_atom(bp_params->signal_type, false);

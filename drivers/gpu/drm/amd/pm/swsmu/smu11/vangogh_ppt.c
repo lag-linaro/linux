@@ -610,8 +610,8 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
 	return 0;
 }
 
-bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
-				enum smu_clk_type clk_type)
+static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+				       enum smu_clk_type clk_type)
 {
 	enum smu_feature_mask feature_id = 0;
 

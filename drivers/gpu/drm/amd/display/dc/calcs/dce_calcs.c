@@ -2756,7 +2756,7 @@ void bw_calcs_init(struct bw_calcs_dceip *bw_dceip,
 	kfree(vbios);
 }
 
-/**
+/*
  * Compare calculated (required) clocks against the clocks available at
  * maximum voltage (max Performance Level).
  */
@@ -3027,13 +3027,12 @@ static bool all_displays_in_sync(const struct pipe_ctx pipe[],
 	return true;
 }
 
-/**
+/*
  * Return:
  *	true -	Display(s) configuration supported.
  *		In this case 'calcs_output' contains data for HW programming
  *	false - Display(s) configuration not supported (not enough bandwidth).
  */
-
 bool bw_calcs(struct dc_context *ctx,
 	const struct bw_calcs_dceip *dceip,
 	const struct bw_calcs_vbios *vbios,

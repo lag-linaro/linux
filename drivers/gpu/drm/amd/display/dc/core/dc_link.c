@@ -206,6 +206,7 @@ static bool program_hpd_filter(const struct dc_link *link)
 /**
  * dc_link_detect_sink() - Determine if there is a sink connected
  *
+ * @link: pointer to the dc link
  * @type: Returned connection type
  * Does not detect downstream devices, such as MST sinks
  * or display connected through active dongles
@@ -342,7 +343,7 @@ static enum signal_type get_basic_signal_type(struct graphics_object_id encoder,
 	return SIGNAL_TYPE_NONE;
 }
 
-/**
+/*
  * dc_link_is_dp_sink_present() - Check if there is a native DP
  * or passive DP-HDMI dongle connected
  */
@@ -828,7 +829,7 @@ static bool wait_for_entering_dp_alt_mode(struct dc_link *link)
 	return false;
 }
 
-/**
+/*
  * dc_link_detect() - Detect if a sink is attached to a given link
  *
  * link->local_sink is created or destroyed as needed.
@@ -3400,10 +3401,7 @@ void core_link_set_avmute(struct pipe_ctx *pipe_ctx, bool enable)
 }
 
 /**
- *****************************************************************************
- *  Function: dc_link_enable_hpd_filter
- *
- *  @brief
+ *  dc_link_enable_hpd_filter:
  *     If enable is true, programs HPD filter on associated HPD line using
  *     delay_on_disconnect/delay_on_connect values dependent on
  *     link->connector_signal
@@ -3411,9 +3409,8 @@ void core_link_set_avmute(struct pipe_ctx *pipe_ctx, bool enable)
  *     If enable is false, programs HPD filter on associated HPD line with no
  *     delays on connect or disconnect
  *
- *  @param [in] link: pointer to the dc link
- *  @param [in] enable: boolean specifying whether to enable hbd
- *****************************************************************************
+ *  @link:   pointer to the dc link
+ *  @enable: boolean specifying whether to enable hbd
  */
 void dc_link_enable_hpd_filter(struct dc_link *link, bool enable)
 {

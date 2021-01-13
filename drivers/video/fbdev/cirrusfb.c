@@ -2800,7 +2800,8 @@ static void bestclock(long freq, int *nom, int *den, int *div)
 
 /**
  * cirrusfb_dbg_print_regs
- * @base: If using newmmio, the newmmio base address, otherwise %NULL
+ * @info: frame buffer info structure
+ * @regbase: If using newmmio, the newmmio base address, otherwise %NULL
  * @reg_class: type of registers to read: %CRT, or %SEQ
  *
  * DESCRIPTION:
@@ -2847,7 +2848,8 @@ static void cirrusfb_dbg_print_regs(struct fb_info *info,
 
 /**
  * cirrusfb_dbg_reg_dump
- * @base: If using newmmio, the newmmio base address, otherwise %NULL
+ * @info: frame buffer info structure
+ * @regbase: If using newmmio, the newmmio base address, otherwise %NULL
  *
  * DESCRIPTION:
  * Dumps a list of interesting VGA and CIRRUSFB registers.  If @base is %NULL,

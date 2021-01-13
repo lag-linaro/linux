@@ -1504,7 +1504,7 @@ static const struct fb_ops pm2fb_ops = {
 
 
 /**
- * Device initialisation
+ * pm2fb_probe - Device initialisation
  *
  * Initialise and allocate resource for PCI device.
  *
@@ -1711,7 +1711,7 @@ static int pm2fb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 }
 
 /**
- * Device removal.
+ * pm2fb_remove - Device removal.
  *
  * Release all device resources.
  *

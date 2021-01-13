@@ -931,7 +931,7 @@ static int sst_detect_ics(struct fb_info *info)
 {
 	struct sstfb_par *par = info->par;
 	int m_clk0_1, m_clk0_7, m_clk1_b;
-	int n_clk0_1, n_clk0_7, n_clk1_b;
+	int __maybe_unused n_clk0_1, __maybe_unused n_clk0_7, __maybe_unused n_clk1_b;
 	int i;
 
 	for (i = 0; i<5; i++ ) {

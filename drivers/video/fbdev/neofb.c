@@ -1910,7 +1910,6 @@ static int neo_init_hw(struct fb_info *info)
 		break;
 	}
 /*
-	info->sprite.size = CursorMem;
 	info->sprite.scan_align = 1;
 	info->sprite.buf_align = 1;
 	info->sprite.flags = FB_PIXMAP_IO;

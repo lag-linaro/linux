@@ -639,8 +639,8 @@ static void s1d13xxxfb_fetch_hw_state(struct fb_info *info)
 	u16 offset;
 	u32 xres, yres;
 	u32 xres_virtual, yres_virtual;
-	int bpp, lcd_bpp;
-	int is_color, is_dual, is_tft;
+	int bpp, __maybe_unused lcd_bpp;
+	int is_color, __maybe_unused is_dual, is_tft;
 	int lcd_enabled, crt_enabled;
 
 	fix->type = FB_TYPE_PACKED_PIXELS;

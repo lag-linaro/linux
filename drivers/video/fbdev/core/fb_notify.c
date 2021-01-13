@@ -36,9 +36,8 @@ int fb_unregister_client(struct notifier_block *nb)
 }
 EXPORT_SYMBOL(fb_unregister_client);
 
-/**
+/*
  * fb_notifier_call_chain - notify clients of fb_events
- *
  */
 int fb_notifier_call_chain(unsigned long val, void *v)
 {

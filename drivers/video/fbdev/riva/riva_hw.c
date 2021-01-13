@@ -842,7 +842,7 @@ static void nv10CalcArbitration
     int found, mclk_extra, mclk_loop, cbs, m1;
     int mclk_freq, pclk_freq, nvclk_freq, mp_enable;
     int us_m, us_m_min, us_n, us_p, crtc_drain_rate;
-    int vus_m, vus_n, vus_p;
+    int vus_m;
     int vpm_us, us_video, cpm_us, us_crt,clwm;
     int clwm_rnd_down;
     int m2us, us_pipe_min, p1clk, p2;
@@ -924,8 +924,6 @@ static void nv10CalcArbitration
       us_pipe_min = us_m_min + us_n + us_p;
 
       vus_m = mclk_loop *1000*1000 / mclk_freq; /* Mclk latency in us */
-      vus_n = (4)*1000*1000 / nvclk_freq;/* nvclk latency in us */
-      vus_p = 0*1000*1000 / pclk_freq;/* pclk latency in us */
 
       if(video_enable) {
         crtc_drain_rate = pclk_freq * bpp/8; /* MB/s */

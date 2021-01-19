@@ -1282,9 +1282,9 @@ static int clk_cpu_div_set_rate(struct clk_hw *hw, unsigned long rate,
 		return -EINVAL;
 
 	mask = (BIT(pll->cdiv.width) - 1) << pll->cdiv.shift;
-	egmap_update_bits(pll->cdiv.clkr.regmap,
-			  pll->cdiv.reg, mask,
-			  f->pre_div << pll->cdiv.shift);
+	regmap_update_bits(pll->cdiv.clkr.regmap,
+			   pll->cdiv.reg, mask,
+			   f->pre_div << pll->cdiv.shift);
 	/*
 	 * There is no status bit which can be checked for successful CPU
 	 * divider update operation so using delay for the same.

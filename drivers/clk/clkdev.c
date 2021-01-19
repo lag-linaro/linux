@@ -153,6 +153,11 @@ struct clk_lookup_alloc {
 	char	con_id[MAX_CON_ID];
 };
 
+#pragma GCC diagnostic push
+#ifndef __clang__
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=format"
+#endif
+
 static struct clk_lookup * __ref
 vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
 	va_list ap)
@@ -176,6 +181,8 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
 
 	return &cla->cl;
 }
+
+#pragma GCC diagnostic pop
 
 static struct clk_lookup *
 vclkdev_create(struct clk_hw *hw, const char *con_id, const char *dev_fmt,

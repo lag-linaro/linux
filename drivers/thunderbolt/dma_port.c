@@ -328,13 +328,12 @@ static int dma_port_flash_write_block(struct tb_dma_port *dma, u32 address,
 {
 	struct tb_switch *sw = dma->sw;
 	u32 in, dwaddress, dwords;
-	int ret;
 
 	dwords = size / 4;
 
 	/* Write the block to MAIL_DATA registers */
-	ret = dma_port_write(sw->tb->ctl, buf, tb_route(sw), dma->port,
-			    dma->base + MAIL_DATA, dwords, DMA_PORT_TIMEOUT);
+	dma_port_write(sw->tb->ctl, buf, tb_route(sw), dma->port,
+		       dma->base + MAIL_DATA, dwords, DMA_PORT_TIMEOUT);
 
 	in = MAIL_IN_CMD_FLASH_WRITE << MAIL_IN_CMD_SHIFT;
 

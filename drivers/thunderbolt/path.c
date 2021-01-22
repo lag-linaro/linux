@@ -464,7 +464,7 @@ void tb_path_deactivate(struct tb_path *path)
 	path->activated = false;
 }
 
-/**
+/*
  * tb_path_activate() - activate a path
  *
  * Activate a path starting with the last hop and iterating backwards. The
@@ -559,7 +559,7 @@ err:
 	return res;
 }
 
-/**
+/*
  * tb_path_is_invalid() - check whether any ports on the path are invalid
  *
  * Return: Returns true if the path is invalid, false otherwise.

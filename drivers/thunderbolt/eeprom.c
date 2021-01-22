@@ -278,7 +278,7 @@ struct tb_drom_entry_port {
 } __packed;
 
 
-/**
+/*
  * tb_drom_read_uid_only - read uid directly from drom
  *
  * Does not use the cached copy in sw->drom. Used during resume to check switch
@@ -519,7 +519,7 @@ static int tb_drom_read_n(struct tb_switch *sw, u16 offset, u8 *val,
 	return tb_eeprom_read_n(sw, offset, val, count);
 }
 
-/**
+/*
  * tb_drom_read - copy drom to sw->drom and parse it
  */
 int tb_drom_read(struct tb_switch *sw)

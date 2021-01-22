@@ -19,7 +19,7 @@
 #define TB_CTL_RX_PKG_COUNT	10
 #define TB_CTL_RETRIES		4
 
-/**
+/*
  * struct tb_cfg - thunderbolt control channel
  */
 struct tb_ctl {
@@ -600,7 +600,7 @@ struct tb_cfg_result tb_cfg_request_sync(struct tb_ctl *ctl,
 
 /* public interface, alloc/start/stop/free */
 
-/**
+/*
  * tb_ctl_alloc() - allocate a control channel
  *
  * cb will be invoked once for every hot plug event.
@@ -647,7 +647,7 @@ err:
 	return NULL;
 }
 
-/**
+/*
  * tb_ctl_free() - free a control channel
  *
  * Must be called after tb_ctl_stop.
@@ -675,7 +675,7 @@ void tb_ctl_free(struct tb_ctl *ctl)
 	kfree(ctl);
 }
 
-/**
+/*
  * tb_cfg_start() - start/resume the control channel
  */
 void tb_ctl_start(struct tb_ctl *ctl)
@@ -690,7 +690,7 @@ void tb_ctl_start(struct tb_ctl *ctl)
 	ctl->running = true;
 }
 
-/**
+/*
  * control() - pause the control channel
  *
  * All invocations of ctl->callback will have finished after this method
@@ -782,7 +782,7 @@ static bool tb_cfg_copy(struct tb_cfg_request *req, const struct ctl_pkg *pkg)
 	return true;
 }
 
-/**
+/*
  * tb_cfg_reset() - send a reset packet and wait for a response
  *
  * If the switch at route is incorrectly configured then we will not receive a
@@ -819,7 +819,7 @@ struct tb_cfg_result tb_cfg_reset(struct tb_ctl *ctl, u64 route,
 	return res;
 }
 
-/**
+/*
  * tb_cfg_read() - read from config space into buffer
  *
  * Offset and length are in dwords.
@@ -882,7 +882,7 @@ struct tb_cfg_result tb_cfg_read_raw(struct tb_ctl *ctl, void *buffer,
 	return res;
 }
 
-/**
+/*
  * tb_cfg_write() - write from buffer into config space
  *
  * Offset and length are in dwords.
@@ -1020,7 +1020,7 @@ int tb_cfg_write(struct tb_ctl *ctl, const void *buffer, u64 route, u32 port,
 	return res.err;
 }
 
-/**
+/*
  * tb_cfg_get_upstream_port() - get upstream port number of switch at route
  *
  * Reads the first dword from the switches TB_CFG_SWITCH config area and

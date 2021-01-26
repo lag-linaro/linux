@@ -523,7 +523,7 @@ int tb_port_state(struct tb_port *port)
 	return phy.state;
 }
 
-/**
+/*
  * tb_wait_for_port() - wait for a port to become ready
  *
  * Wait up to 1 second for a port to reach state TB_PORT_UP. If
@@ -587,7 +587,7 @@ int tb_wait_for_port(struct tb_port *port, bool wait_if_unplugged)
 	return 0;
 }
 
-/**
+/*
  * tb_port_add_nfc_credits() - add/remove non flow controlled credits to port
  *
  * Change the number of NFC credits allocated to @port by @credits. To remove
@@ -644,7 +644,7 @@ int tb_port_set_initial_credits(struct tb_port *port, u32 credits)
 	return tb_port_write(port, &data, TB_CFG_PORT, ADP_CS_5, 1);
 }
 
-/**
+/*
  * tb_port_clear_counter() - clear a counter in TB_CFG_COUNTER
  *
  * Return: Returns 0 on success or an error code on failure.
@@ -2647,7 +2647,7 @@ void tb_switch_remove(struct tb_switch *sw)
 	device_unregister(&sw->dev);
 }
 
-/**
+/*
  * tb_sw_set_unplugged() - set is_unplugged on switch and downstream switches
  */
 void tb_sw_set_unplugged(struct tb_switch *sw)

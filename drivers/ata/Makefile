@@ -14,6 +14,7 @@ CFLAGS_ahci_st.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_sunxi.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_tegra.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_xgene.o		= $(call cc-disable-warning, override-init)
+CFLAGS_sata_mv.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_highbank.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_sil24.o		= $(call cc-disable-warning, override-init)
 

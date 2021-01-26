@@ -20,6 +20,7 @@ CFLAGS_pata_sc1200.o		= $(call cc-disable-warning, override-init)
 CFLAGS_pata_serverworks.o	= $(call cc-disable-warning, override-init)
 CFLAGS_sata_highbank.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_mv.o		= $(call cc-disable-warning, override-init)
+CFLAGS_sata_nv.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_sil24.o		= $(call cc-disable-warning, override-init)
 
 obj-$(CONFIG_ATA)		+= libata.o

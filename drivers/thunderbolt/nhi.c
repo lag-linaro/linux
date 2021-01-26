@@ -590,7 +590,7 @@ struct tb_ring *tb_ring_alloc_rx(struct tb_nhi *nhi, int hop, int size,
 }
 EXPORT_SYMBOL_GPL(tb_ring_alloc_rx);
 
-/**
+/*
  * tb_ring_start() - enable a ring
  *
  * Must not be invoked in parallel with tb_ring_stop().
@@ -665,7 +665,7 @@ err:
 }
 EXPORT_SYMBOL_GPL(tb_ring_start);
 
-/**
+/*
  * tb_ring_stop() - shutdown a ring
  *
  * Must not be invoked from a callback.

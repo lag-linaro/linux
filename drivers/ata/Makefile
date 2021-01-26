@@ -8,6 +8,7 @@ CFLAGS_ahci_dm816.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_mtk.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_mvebu.o		= $(call cc-disable-warning, override-init)
 CFLAGS_ahci_platform.o		= $(call cc-disable-warning, override-init)
+CFLAGS_ahci_sunxi.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_highbank.o		= $(call cc-disable-warning, override-init)
 CFLAGS_sata_sil24.o		= $(call cc-disable-warning, override-init)
 

@@ -107,7 +107,7 @@ struct ocs_hcu_dma_entry {
 };
 
 /**
- * struct ocs_dma_list - OCS-specific DMA linked list.
+ * struct ocs_hcu_dma_list - OCS-specific DMA linked list.
  * @head:	The head of the list (points to the array backing the list).
  * @tail:	The current tail of the list; NULL if the list is empty.
  * @dma_addr:	The DMA address of @head (i.e., the DMA address of the backing

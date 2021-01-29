@@ -71,6 +71,8 @@ struct caam_skcipher_alg {
  * @adata: authentication algorithm details
  * @cdata: encryption algorithm details
  * @authsize: authentication tag (a.k.a. ICV / MAC) size
+ * @xts_key_fallback: whether to set the fallback key
+ * @fallback: the fallback key
  */
 struct caam_ctx {
 	struct caam_flc flc[NUM_OP];

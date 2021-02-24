@@ -16,6 +16,7 @@
 #include <asm/sigframe.h>
 #include <asm/bootparam.h>
 #include <asm/suspend.h>
+#include <asm/alternative.h>
 
 #ifdef CONFIG_XEN
 #include <xen/interface/xen.h>

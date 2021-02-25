@@ -329,7 +329,7 @@ lpfc_defer_pt2pt_acc(struct lpfc_hba *phba, LPFC_MBOXQ_t *link_mbox)
 }
 
 /**
- * lpfc_defer_tgt_acc - Progress SLI4 target rcv PLOGI handler
+ * lpfc_defer_acc_rsp - Progress SLI4 target rcv PLOGI handler
  * @phba: Pointer to HBA context object.
  * @pmb: Pointer to mailbox object.
  *

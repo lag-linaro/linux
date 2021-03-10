@@ -141,14 +141,12 @@ static struct irqaction mxs_timer_irq = {
 	.handler	= mxs_timer_interrupt,
 };
 
-#ifdef DEBUG
 static const char *clock_event_mode_label[] const = {
 	[CLOCK_EVT_MODE_PERIODIC] = "CLOCK_EVT_MODE_PERIODIC",
 	[CLOCK_EVT_MODE_ONESHOT]  = "CLOCK_EVT_MODE_ONESHOT",
 	[CLOCK_EVT_MODE_SHUTDOWN] = "CLOCK_EVT_MODE_SHUTDOWN",
 	[CLOCK_EVT_MODE_UNUSED]   = "CLOCK_EVT_MODE_UNUSED"
 };
-#endif /* DEBUG */
 
 static void mxs_set_mode(enum clock_event_mode mode,
 				struct clock_event_device *evt)

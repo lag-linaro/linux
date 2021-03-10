@@ -1963,9 +1963,8 @@ int drbd_adm_attach(struct sk_buff *skb, struct genl_info *info)
 	/* and for any other previously queued work */
 	drbd_flush_workqueue(&connection->sender_work);
 
-	rv = (enum drbd_state_rv)_drbd_request_state(device,
-					NS(disk, D_ATTACHING), CS_VERBOSE);
-	retcode = rv;  /* FIXME: Type mismatch. */
+	rv = _drbd_request_state(device, NS(disk, D_ATTACHING), CS_VERBOSE);
+	retcode = (enum drbd_ret_code)rv;
 	drbd_resume_io(device);
 	if (rv < SS_SUCCESS)
 		goto fail;

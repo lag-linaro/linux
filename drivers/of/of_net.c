@@ -78,7 +78,7 @@ static const void *of_get_mac_addr_nvmem(struct device_node *np)
 	return mac;
 }
 
-/**
+/*
  * Search the device tree for the best MAC address to use.  'mac-address' is
  * checked first, because that is supposed to contain to "most recent" MAC
  * address. If that isn't set, then 'local-mac-address' is checked next,

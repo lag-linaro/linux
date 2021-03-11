@@ -53,7 +53,7 @@ int of_device_add(struct platform_device *ofdev)
 }
 
 /**
- * of_dma_configure - Setup DMA configuration
+ * of_dma_configure_id - Setup DMA configuration
  * @dev:	Device to apply DMA configuration
  * @np:		Pointer to OF node having DMA configuration
  * @force_dma:  Whether device is to be set up by of_dma_configure() even if
@@ -256,7 +256,7 @@ int of_device_request_module(struct device *dev)
 }
 EXPORT_SYMBOL_GPL(of_device_request_module);
 
-/**
+/*
  * of_device_modalias - Fill buffer with newline terminated modalias string
  */
 ssize_t of_device_modalias(struct device *dev, char *str, ssize_t len)
@@ -273,7 +273,7 @@ ssize_t of_device_modalias(struct device *dev, char *str, ssize_t len)
 }
 EXPORT_SYMBOL_GPL(of_device_modalias);
 
-/**
+/*
  * of_device_uevent - Display OF related uevent information
  */
 void of_device_uevent(struct device *dev, struct kobj_uevent_env *env)

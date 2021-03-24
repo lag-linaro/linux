@@ -403,8 +403,8 @@ static ssize_t store_value(struct device *dev, struct device_attribute *attr,
 
 		report_id = sensor_inst->fields[field_index].attribute.
 								report_id;
-		rsensor_hub_set_feature(sensor_inst->hsdev, report_id,
-					index, sizeof(value), &value);
+		sensor_hub_set_feature(sensor_inst->hsdev, report_id,
+				       index, sizeof(value), &value);
 	} else
 		return -EINVAL;
 

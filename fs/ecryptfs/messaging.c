@@ -181,7 +181,7 @@ out:
 }
 
 /**
- * ecryptfs_process_reponse
+ * ecryptfs_process_response
  * @daemon: eCryptfs daemon object
  * @msg: The ecryptfs message received; the caller should sanity check
  *       msg->data_len and free the memory

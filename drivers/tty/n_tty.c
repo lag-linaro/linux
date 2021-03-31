@@ -596,7 +596,7 @@ break_out:
 }
 
 /**
- *	process_echoes	-	write pending echo characters
+ *	__process_echoes	-	write pending echo characters
  *	@tty: terminal device
  *
  *	Write previously buffered echo (and other ldisc-generated)
@@ -1092,7 +1092,7 @@ static void eraser(unsigned char c, struct tty_struct *tty)
 }
 
 /**
- *	isig		-	handle the ISIG optio
+ *	__isig		-	handle the ISIG optio
  *	@sig: signal
  *	@tty: terminal
  *
@@ -1247,19 +1247,6 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
 		process_echoes(tty);
 }
 
-/**
- *	n_tty_receive_char	-	perform processing
- *	@tty: terminal device
- *	@c: character
- *
- *	Process an individual character of input received from the driver.
- *	This is serialized with respect to itself by the rules for the
- *	driver above.
- *
- *	n_tty_receive_buf()/producer path:
- *		caller holds non-exclusive termios_rwsem
- *		publishes canon_head if canonical mode is active
- */
 static void n_tty_receive_char_special(struct tty_struct *tty, unsigned char c)
 {
 	struct n_tty_data *ldata = tty->disc_data;
@@ -1394,6 +1381,19 @@ handle_newline:
 	put_tty_queue(c, ldata);
 }
 
+/**
+ *	n_tty_receive_char	-	perform processing
+ *	@tty: terminal device
+ *	@c: character
+ *
+ *	Process an individual character of input received from the driver.
+ *	This is serialized with respect to itself by the rules for the
+ *	driver above.
+ *
+ *	n_tty_receive_buf()/producer path:
+ *		caller holds non-exclusive termios_rwsem
+ *		publishes canon_head if canonical mode is active
+ */
 static void n_tty_receive_char(struct tty_struct *tty, unsigned char c)
 {
 	struct n_tty_data *ldata = tty->disc_data;
@@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
 }
 
 
-/**
+/*
  *	n_tty_read		-	read function for tty
  *	@tty: tty device
  *	@file: file object
- *	@buf: userspace buffer pointer
+ *	@kbuf: userspace buffer pointer
  *	@nr: size of I/O
  *
  *	Perform reads for the line discipline. We are guaranteed that the

@@ -92,7 +92,7 @@ static inline int range_is_allowed(unsigned long pfn, unsigned long size)
 
 #ifndef unxlate_dev_mem_ptr
 #define unxlate_dev_mem_ptr unxlate_dev_mem_ptr
-void __weak unxlate_dev_mem_ptr(phys_addr_t phys, void *addr)
+static inline void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr)
 {
 }
 #endif

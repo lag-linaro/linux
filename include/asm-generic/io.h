@@ -1132,13 +1132,6 @@ static inline void *xlate_dev_mem_ptr(phys_addr_t addr)
 }
 #endif
 
-#ifndef unxlate_dev_mem_ptr
-#define unxlate_dev_mem_ptr unxlate_dev_mem_ptr
-static inline void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr)
-{
-}
-#endif
-
 #ifdef CONFIG_VIRT_TO_BUS
 #ifndef virt_to_bus
 static inline unsigned long virt_to_bus(void *address)

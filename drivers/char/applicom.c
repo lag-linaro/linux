@@ -128,8 +128,6 @@ static int dummy;	/* dev_id for request_irq() */
 static int ac_register_board(unsigned long physloc, void __iomem *loc, 
 		      unsigned char boardno)
 {
-	volatile unsigned char byte_reset_it;
-
 	if((readb(loc + CONF_END_TEST)     != 0x00) ||
 	   (readb(loc + CONF_END_TEST + 1) != 0x55) ||
 	   (readb(loc + CONF_END_TEST + 2) != 0xAA) ||
@@ -157,7 +155,7 @@ static int ac_register_board(unsigned long physloc, void __iomem *loc,
 	apbs[boardno].RamIO = loc;
 	init_waitqueue_head(&apbs[boardno].FlagSleepSend);
 	spin_lock_init(&apbs[boardno].mutex);
-	byte_reset_it = readb(loc + RAM_IT_TO_PC);
+	readb(loc + RAM_IT_TO_PC);
 
 	numboards++;
 	return boardno + 1;
@@ -577,7 +575,7 @@ static ssize_t ac_read (struct file *filp, char __user *buf, size_t count, loff_
 					return -EFAULT;
 				if (copy_to_user(buf + sizeof(st_loc), &mailbox, sizeof(mailbox)))
 					return -EFAULT;
-				return tmp;
+				return ret;
 			}
 			
 			if (tmp > 2) {
@@ -700,7 +698,6 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	void __iomem *pmem;
 	int ret = 0;
 	static int warncount = 10;
-	volatile unsigned char byte_reset_it;
 	struct st_ram_io *adgl;
 	void __user *argp = (void __user *)arg;
 
@@ -762,7 +759,7 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		
 		for (i = 0; i < MAX_BOARD; i++) {
 			if (apbs[i].RamIO) {
-				byte_reset_it = readb(apbs[i].RamIO + RAM_IT_TO_PC);
+				readb(apbs[i].RamIO + RAM_IT_TO_PC);
 			}
 		}
 		break;

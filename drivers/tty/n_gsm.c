@@ -511,7 +511,7 @@ static void gsm_print_packet(const char *hdr, int addr, int cr,
  */
 
 /**
- *	gsm_stuff_packet	-	bytestuff a packet
+ *	gsm_stuff_frame	-	bytestuff a packet
  *	@input: input buffer
  *	@output: output buffer
  *	@len: length of input
@@ -1593,7 +1593,7 @@ static void gsm_dlci_data(struct gsm_dlci *dlci, const u8 *data, int clen)
 }
 
 /**
- *	gsm_dlci_control	-	data arrived on control channel
+ *	gsm_dlci_command	-	data arrived on control channel
  *	@dlci: channel
  *	@data: block of bytes received
  *	@len: length of received block
@@ -2546,6 +2546,8 @@ static void gsmld_write_wakeup(struct tty_struct *tty)
  *	@file: file object
  *	@buf: userspace buffer pointer
  *	@nr: size of I/O
+ *	@cookie: unused
+ *	@offset: unused
  *
  *	Perform reads for the line discipline. We are guaranteed that the
  *	line discipline will not be closed under us but we may get multiple

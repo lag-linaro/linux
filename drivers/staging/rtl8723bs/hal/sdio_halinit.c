@@ -1167,7 +1167,7 @@ static void _InitOtherVariable(struct adapter *Adapter)
 static s32 _ReadAdapterInfo8723BS(struct adapter *padapter)
 {
 	u8 val8;
-	unsigned long start;
+	unsigned long __maybe_unused start;
 
 	/*  before access eFuse, make sure card enable has been called */
 	if (!padapter->hw_init_completed)

@@ -6001,7 +6001,7 @@ exit:
 
 u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
 {
-	u8 evt_seq;
+	u8 __maybe_unused evt_seq;
 	u8 evt_code;
 	u16 evt_sz;
 	uint	*peventbuf;

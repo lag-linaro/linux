@@ -2438,12 +2438,10 @@ static int rtw_dbg_port(struct net_device *dev,
 	u8 major_cmd, minor_cmd;
 	u16 arg;
 	u32 extra_arg, *pdata, val32;
-	struct sta_info *psta;
 	struct adapter *padapter = rtw_netdev_priv(dev);
 	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
 	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
-	struct wlan_network *cur_network = &(pmlmepriv->cur_network);
 	struct sta_priv *pstapriv = &padapter->stapriv;
 
 
@@ -2540,15 +2538,6 @@ static int rtw_dbg_port(struct net_device *dev,
 
 					break;
 				case 0x05:
-					psta = rtw_get_stainfo(pstapriv, cur_network->network.MacAddress);
-					if (psta) {
-						int i;
-						struct recv_reorder_ctrl *preorder_ctrl;
-
-						for (i = 0; i < 16; i++)
-							preorder_ctrl = &psta->recvreorder_ctrl[i];
-
-					}
 					break;
 				case 0x06:
 					{
@@ -2566,9 +2555,8 @@ static int rtw_dbg_port(struct net_device *dev,
 					break;
 				case 0x09:
 					{
-						int i, j;
+						int i;
 						struct list_head	*plist, *phead;
-						struct recv_reorder_ctrl *preorder_ctrl;
 
 						spin_lock_bh(&pstapriv->sta_hash_lock);
 
@@ -2577,13 +2565,7 @@ static int rtw_dbg_port(struct net_device *dev,
 							plist = get_next(phead);
 
 							while (phead != plist) {
-								psta = container_of(plist, struct sta_info, hash_list);
-
 								plist = get_next(plist);
-
-								if (extra_arg == psta->aid)
-									for (j = 0; j < 16; j++)
-										preorder_ctrl = &psta->recvreorder_ctrl[j];
 							}
 						}
 

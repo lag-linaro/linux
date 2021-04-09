@@ -3504,7 +3504,8 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
 	case HW_VAR_BASIC_RATE:
 	{
 		struct mlme_ext_info *mlmext_info = &padapter->mlmeextpriv.mlmext_info;
-		u16 input_b = 0, masked = 0, ioted = 0, BrateCfg = 0;
+		u16 __maybe_unused input_b = 0, __maybe_unused masked = 0;
+		u16 __maybe_unused ioted = 0, BrateCfg = 0;
 		u16 rrsr_2g_force_mask = (RRSR_11M|RRSR_5_5M|RRSR_1M);
 		u16 rrsr_2g_allow_mask = (RRSR_24M|RRSR_12M|RRSR_6M|RRSR_CCK_RATES);
 
@@ -4068,8 +4069,9 @@ u8 GetHalDefVar8723B(struct adapter *padapter, enum hal_def_variable variable, v
 			u8 mac_id = *(u8 *)pval;
 			u32 cmd;
 			u32 ra_info1, ra_info2;
-			u32 rate_mask1, rate_mask2;
-			u8 curr_tx_rate, curr_tx_sgi, hight_rate, lowest_rate;
+			u32 __maybe_unused rate_mask1, __maybe_unused rate_mask2;
+			u8 __maybe_unused curr_tx_rate, __maybe_unused curr_tx_sgi;
+			u8 __maybe_unused hight_rate, __maybe_unused lowest_rate;
 
 			DBG_8192C("============ RA status check  Mac_id:%d ===================\n", mac_id);
 

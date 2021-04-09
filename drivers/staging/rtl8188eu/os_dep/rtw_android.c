@@ -52,7 +52,7 @@ struct android_wifi_priv_cmd {
 	int total_len;
 };
 
-/**
+/*
  * Local (static) functions and variables
  */
 

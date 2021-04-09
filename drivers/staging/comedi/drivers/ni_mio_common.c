@@ -160,7 +160,7 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
 	}
 };
 
-static const struct comedi_lrange range_ni_E_ao_ext = {
+const struct comedi_lrange range_ni_E_ao_ext = {
 	4, {
 		BIP_RANGE(10),
 		UNI_RANGE(10),

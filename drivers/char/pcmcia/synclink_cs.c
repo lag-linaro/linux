@@ -483,7 +483,7 @@ static void* mgslpc_get_text_ptr(void)
 	return mgslpc_get_text_ptr;
 }
 
-/**
+/*
  * line discipline callback wrappers
  *
  * The wrappers maintain line discipline references
@@ -3855,12 +3855,13 @@ static void tx_timeout(struct timer_list *t)
 #if SYNCLINK_GENERIC_HDLC
 
 /**
- * called by generic HDLC layer when protocol selected (PPP, frame relay, etc.)
- * set encoding and frame check sequence (FCS) options
+ * hdlcdev_attach() - called by generic HDLC layer when protocol selected
+ *                    (PPP, frame relay, etc.) set encoding and frame check
+ *                    sequence (FCS) options
  *
- * dev       pointer to network device structure
- * encoding  serial encoding setting
- * parity    FCS setting
+ * @dev:       pointer to network device structure
+ * @encoding:  serial encoding setting
+ * @parity:    FCS setting
  *
  * returns 0 if success, otherwise error code
  */
@@ -3908,10 +3909,10 @@ static int hdlcdev_attach(struct net_device *dev, unsigned short encoding,
 }
 
 /**
- * called by generic HDLC layer to send frame
+ * hdlcdev_xmit() - called by generic HDLC layer to send frame
  *
- * skb  socket buffer containing HDLC frame
- * dev  pointer to network device structure
+ * @skb:  socket buffer containing HDLC frame
+ * @dev:  pointer to network device structure
  */
 static netdev_tx_t hdlcdev_xmit(struct sk_buff *skb,
 				      struct net_device *dev)
@@ -3953,10 +3954,10 @@ static netdev_tx_t hdlcdev_xmit(struct sk_buff *skb,
 }
 
 /**
- * called by network layer when interface enabled
- * claim resources and initialize hardware
+ * hdlcdev_open() - called by network layer when interface enabled
+ *                  claim resources and initialize hardware
  *
- * dev  pointer to network device structure
+ * @dev:  pointer to network device structure
  *
  * returns 0 if success, otherwise error code
  */
@@ -4016,10 +4017,10 @@ static int hdlcdev_open(struct net_device *dev)
 }
 
 /**
- * called by network layer when interface is disabled
- * shutdown hardware and release resources
+ * hdlcdev_close() - called by network layer when interface is
+ *                   disabled shutdown hardware and release resources
  *
- * dev  pointer to network device structure
+ * @dev:  pointer to network device structure
  *
  * returns 0 if success, otherwise error code
  */
@@ -4155,9 +4156,10 @@ static int hdlcdev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 }
 
 /**
- * called by network layer when transmit timeout is detected
+ * hdlcdev_tx_timeout() - called by network layer when transmit timeout
+ *                        is detected
  *
- * dev  pointer to network device structure
+ * @dev:  pointer to network device structure
  */
 static void hdlcdev_tx_timeout(struct net_device *dev, unsigned int txqueue)
 {
@@ -4178,10 +4180,10 @@ static void hdlcdev_tx_timeout(struct net_device *dev, unsigned int txqueue)
 }
 
 /**
- * called by device driver when transmit completes
- * reenable network layer transmit if stopped
+ * hdlcdev_tx_done() - called by device driver when transmit completes
+ *                     reenable network layer transmit if stopped
  *
- * info  pointer to device instance information
+ * @info:  pointer to device instance information
  */
 static void hdlcdev_tx_done(MGSLPC_INFO *info)
 {
@@ -4190,12 +4192,12 @@ static void hdlcdev_tx_done(MGSLPC_INFO *info)
 }
 
 /**
- * called by device driver when frame received
- * pass frame to network layer
+ * hdlcdev_rx() - called by device driver when frame received
+ *                pass frame to network layer
  *
- * info  pointer to device instance information
- * buf   pointer to buffer contianing frame data
- * size  count of data bytes in buf
+ * @info:  pointer to device instance information
+ * @buf:   pointer to buffer contianing frame data
+ * @size:  count of data bytes in buf
  */
 static void hdlcdev_rx(MGSLPC_INFO *info, char *buf, int size)
 {
@@ -4230,10 +4232,10 @@ static const struct net_device_ops hdlcdev_ops = {
 };
 
 /**
- * called by device driver when adding device instance
- * do generic HDLC initialization
+ * hdlcdev_init() - called by device driver when adding device instance
+ *                  do generic HDLC initialization
  *
- * info  pointer to device instance information
+ * @info:  pointer to device instance information
  *
  * returns 0 if success, otherwise error code
  */
@@ -4278,10 +4280,10 @@ static int hdlcdev_init(MGSLPC_INFO *info)
 }
 
 /**
- * called by device driver when removing device instance
- * do generic HDLC cleanup
+ * hdlcdev_exit() - called by device driver when removing device instance
+ *                  do generic HDLC cleanup
  *
- * info  pointer to device instance information
+ * @info:  pointer to device instance information
  */
 static void hdlcdev_exit(MGSLPC_INFO *info)
 {

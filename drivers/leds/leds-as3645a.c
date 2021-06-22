@@ -184,16 +184,6 @@ static int as3645a_read(struct as3645a *flash, u8 addr)
  * Hardware configuration and trigger
  */
 
-/**
- * as3645a_set_current - Set flash configuration registers
- * @flash: The flash
- *
- * Configure the hardware with flash, assist and indicator currents, as well as
- * flash timeout.
- *
- * Return 0 on success, or a negative error code if an I2C communication error
- * occurred.
- */
 static int as3645a_set_current(struct as3645a *flash)
 {
 	u8 val;

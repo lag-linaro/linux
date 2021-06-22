@@ -797,12 +797,12 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
 }
 
 /**
- * zynqmp_dp_train - Train the link
+ * zynqmp_dp_link_train - Train the link
  * @dp: DisplayPort IP core structure
  *
  * Return: 0 if all trains are done successfully, or corresponding error code.
  */
-static int zynqmp_dp_train(struct zynqmp_dp *dp)
+static int zynqmp_dp_link_train(struct zynqmp_dp *dp)
 {
 	u32 reg;
 	u8 bw_code = dp->mode.bw_code;
@@ -890,12 +890,12 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
 }
 
 /**
- * zynqmp_dp_train_loop - Downshift the link rate during training
+ * zynqmp_dp_link_train_loop - Downshift the link rate during training
  * @dp: DisplayPort IP core structure
  *
  * Train the link by downshifting the link rate if training is not successful.
  */
-static void zynqmp_dp_train_loop(struct zynqmp_dp *dp)
+static void zynqmp_dp_link_train_loop(struct zynqmp_dp *dp)
 {
 	struct zynqmp_dp_mode *mode = &dp->mode;
 	u8 bw = mode->bw_code;
@@ -906,7 +906,7 @@ static void zynqmp_dp_train_loop(struct zynqmp_dp *dp)
 		    !dp->enabled)
 			return;
 
-		ret = zynqmp_dp_train(dp);
+		ret = zynqmp_dp_link_train(dp);
 		if (!ret)
 			return;
 
@@ -1431,7 +1431,7 @@ static void zynqmp_dp_encoder_enable(struct drm_encoder *encoder)
 	if (ret != 1)
 		dev_dbg(dp->dev, "DP aux failed\n");
 	else
-		zynqmp_dp_train_loop(dp);
+		zynqmp_dp_link_train_loop(dp);
 	zynqmp_dp_write(dp, ZYNQMP_DP_SOFTWARE_RESET,
 			ZYNQMP_DP_SOFTWARE_RESET_ALL);
 	zynqmp_dp_write(dp, ZYNQMP_DP_MAIN_STREAM_ENABLE, 1);
@@ -1592,7 +1592,7 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
 		if (status[4] & DP_LINK_STATUS_UPDATED ||
 		    !drm_dp_clock_recovery_ok(&status[2], dp->mode.lane_cnt) ||
 		    !drm_dp_channel_eq_ok(&status[2], dp->mode.lane_cnt)) {
-			zynqmp_dp_train_loop(dp);
+			zynqmp_dp_link_train_loop(dp);
 		}
 	}
 

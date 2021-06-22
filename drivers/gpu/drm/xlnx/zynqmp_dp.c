@@ -797,12 +797,12 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
 }
 
 /**
- * zynqmp_dp_train - Train the link
+ * zynqmp_dp_link_train - Train the link
  * @dp: DisplayPort IP core structure
  *
  * Return: 0 if all trains are done successfully, or corresponding error code.
  */
-static int zynqmp_dp_train(struct zynqmp_dp *dp)
+static int zynqmp_dp_link_train(struct zynqmp_dp *dp)
 {
 	u32 reg;
 	u8 bw_code = dp->mode.bw_code;
@@ -890,12 +890,12 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
 }
 
 /**
- * zynqmp_dp_train_loop - Downshift the link rate during training
+ * zynqmp_dp_link_train_loop - Downshift the link rate during training
  * @dp: DisplayPort IP core structure
  *
  * Train the link by downshifting the link rate if training is not successful.
  */
-static void zynqmp_dp_train_loop(struct zynqmp_dp *dp)
+static void zynqmp_dp_link_train_loop(struct zynqmp_dp *dp)
 {
 	struct zynqmp_dp_mode *mode = &dp->mode;
 	u8 bw = mode->bw_code;

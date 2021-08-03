@@ -159,6 +159,7 @@ void machine_restart(char *cmd)
 
 	machine_hang();
 }
+EXPORT_SYMBOL(machine_restart);
 
 void machine_power_off(void)
 {

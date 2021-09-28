@@ -3803,6 +3803,7 @@ int _printk_deferred(const char *fmt, ...)
 
 	return r;
 }
+EXPORT_SYMBOL_GPL(_printk_deferred);
 
 /*
  * printk rate limiting, lifted from the networking subsystem.

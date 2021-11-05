@@ -10973,6 +10973,9 @@ EXPORT_SYMBOL(synchronize_net);
 
 void unregister_netdevice_queue(struct net_device *dev, struct list_head *head)
 {
+	if (dev->reg_state != NETREG_REGISTERED)
+		return;
+
 	ASSERT_RTNL();
 
 	if (head) {
@@ -10997,6 +11000,9 @@ void unregister_netdevice_many(struct list_head *head)
 {
 	struct net_device *dev, *tmp;
 	LIST_HEAD(close_head);
+
+	if (dev->reg_state != NETREG_REGISTERED)
+		return;
 
 	BUG_ON(dev_boot_phase);
 	ASSERT_RTNL();

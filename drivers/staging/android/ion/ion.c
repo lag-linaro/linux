@@ -29,6 +29,7 @@
 #include <linux/export.h>
 #include <linux/mm.h>
 #include <linux/mm_types.h>
+#include <linux/overflow.h>
 #include <linux/rbtree.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>

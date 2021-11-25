@@ -29,6 +29,7 @@
 #include <linux/export.h>
 #include <linux/mm.h>
 #include <linux/mm_types.h>
+#include <linux/overflow.h>
 #include <linux/rbtree.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>
@@ -509,6 +510,10 @@ static void *ion_handle_kmap_get(struct ion_handle *handle)
 	void *vaddr;
 
 	if (handle->kmap_cnt) {
+		if (check_add_overflow(handle->kmap_cnt,
+				       (unsigned int) 1, &handle->kmap_cnt))
+			return ERR_PTR(-EOVERFLOW);
+
 		handle->kmap_cnt++;
 		return buffer->vaddr;
 	}

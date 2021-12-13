@@ -32,8 +32,6 @@
 #include <net/sctp/sctp.h>
 #include <net/sctp/sm.h>
 
-#include <linux/sched/debug.h>
-
 /* Forward declarations for internal helpers. */
 static void sctp_endpoint_bh_rcv(struct work_struct *work);
 
@@ -192,8 +190,6 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 
 	if (unlikely(!ep->base.dead)) {
 		WARN(1, "Attempt to destroy undead endpoint %p!\n", ep);
-		dump_stack();
-		printk(".....\n");
 		return;
 	}
 
@@ -229,8 +225,6 @@ static void sctp_endpoint_destroy(struct sctp_endpoint *ep)
 void sctp_endpoint_hold(struct sctp_endpoint *ep)
 {
 	refcount_inc(&ep->base.refcnt);
-	printk("get: %px: %d\n", ep, atomic_read(&ep->base.refcnt.refs));
-	show_stack(NULL, NULL, KERN_DEFAULT);
 }
 
 /* Release a reference to an endpoint and clean up if there are
@@ -238,9 +232,6 @@ void sctp_endpoint_hold(struct sctp_endpoint *ep)
  */
 void sctp_endpoint_put(struct sctp_endpoint *ep)
 {
-	printk("put: %px: %d\n", ep, atomic_read(&ep->base.refcnt.refs)-1);
-	show_stack(NULL, NULL, KERN_DEFAULT);
-
 	if (refcount_dec_and_test(&ep->base.refcnt))
 		sctp_endpoint_destroy(ep);
 }

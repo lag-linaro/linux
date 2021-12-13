@@ -44,8 +44,6 @@
 #include <linux/rhashtable.h>
 #include <net/sock_reuseport.h>
 
-static int ref = 0;
-
 /* Forward declarations for internal helpers. */
 static int sctp_rcv_ootb(struct sk_buff *);
 static struct sctp_association *__sctp_rcv_lookup(struct net *net,
@@ -952,7 +950,6 @@ int sctp_transport_hashtable_init(void)
 
 void sctp_transport_hashtable_destroy(void)
 {
-	printk("DESTROY\n");
 	rhltable_destroy(&sctp_transport_hashtable);
 }
 

@@ -1075,6 +1075,7 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 {
 	struct sctp_sock *newsp = sctp_sk(newsk);
 	struct sock *oldsk = assoc->base.sk;
+	struct list_head *pos, *temp;
 
 	/* Delete the association from the old endpoint's list of
 	 * associations.
@@ -1088,6 +1089,17 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 	/* Release references to the old endpoint and the sock.  */
 	sctp_endpoint_put(assoc->ep);
 	sock_put(assoc->base.sk);
+
+	/* Migrate endpoint references for each hashed transport */
+	list_for_each_safe(pos, temp, &assoc->peer.transport_addr_list) {
+		struct sctp_transport *t;
+
+		t = list_entry(pos, struct sctp_transport, transports);
+		if (t->asoc->ep == assoc->ep) {
+			sctp_endpoint_put(assoc->ep);
+			sctp_endpoint_hold(newsp->ep);
+		}
+	}
 
 	/* Get a reference to the new endpoint.  */
 	assoc->ep = newsp->ep;

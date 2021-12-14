@@ -1075,7 +1075,11 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 {
 	struct sctp_sock *newsp = sctp_sk(newsk);
 	struct sock *oldsk = assoc->base.sk;
+	struct sctp_endpoint *oldep = assoc->ep;
 	struct list_head *pos, *temp;
+
+//	printk("LEE: %s %s()[%d]: assoc:%px oldep:%px newep:%px oldsock:%px newsock:%px assoc:%px\n",
+//	       __FILE__, __func__, __LINE__, assoc, oldep, newsp->ep, oldsk, newsk, assoc);
 
 	/* Delete the association from the old endpoint's list of
 	 * associations.
@@ -1085,21 +1089,6 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 	/* Decrement the backlog value for a TCP-style socket. */
 	if (sctp_style(oldsk, TCP))
 		sk_acceptq_removed(oldsk);
-
-	/* Release references to the old endpoint and the sock.  */
-	sctp_endpoint_put(assoc->ep);
-	sock_put(assoc->base.sk);
-
-	/* Migrate endpoint references for each hashed transport */
-	list_for_each_safe(pos, temp, &assoc->peer.transport_addr_list) {
-		struct sctp_transport *t;
-
-		t = list_entry(pos, struct sctp_transport, transports);
-		if (t->asoc->ep == assoc->ep) {
-			sctp_endpoint_put(assoc->ep);
-			sctp_endpoint_hold(newsp->ep);
-		}
-	}
 
 	/* Get a reference to the new endpoint.  */
 	assoc->ep = newsp->ep;
@@ -1111,6 +1100,24 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 
 	/* Add the association to the new endpoint's list of associations.  */
 	sctp_endpoint_add_asoc(newsp->ep, assoc);
+
+	/* Migrate endpoint references for each hashed transport */
+	list_for_each_safe(pos, temp, &assoc->peer.transport_addr_list) {
+		struct sctp_transport *t;
+
+		t = list_entry(pos, struct sctp_transport, transports);
+//		if (t->asoc == assoc)
+//			printk("LEE: %s %s()[%d]: t:%px\n", __FILE__, __func__, __LINE__, t);
+		if (t->asoc->ep == assoc->ep) {
+			sctp_endpoint_put(oldep);
+			sctp_endpoint_hold(newsp->ep);
+			//
+		}
+	}
+
+	/* Release references to the old endpoint and the sock.  */
+	sctp_endpoint_put(oldep);
+	sock_put(oldsk);
 }
 
 /* Update an association (possibly from unexpected COOKIE-ECHO processing).  */

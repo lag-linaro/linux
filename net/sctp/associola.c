@@ -1074,23 +1074,8 @@ normal:
 void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 {
 	struct sctp_sock *newsp = sctp_sk(newsk);
-	struct sctp_endpoint *oldep = assoc->ep;
 	struct sock *oldsk = assoc->base.sk;
 	struct list_head *pos, *temp;
-//	lock_sock(oldsk);
-//	lock_sock(newsk);
-
-	printk("LEE: %s %s()[%d]: E oldsk: %px newsk: %px\n", __FILE__, __func__, __LINE__, oldsk, newsk);
-	printk("LEE: %s %s()[%d]: E oldep: %px newep: %px\n", __FILE__, __func__, __LINE__, oldep, newsp->ep);
-
-	/* Get a reference to the new endpoint.  */
-	sctp_endpoint_hold(newsp->ep);
-
-	/* Get a reference to the new sock.  */
-	sock_hold(newsk);
-
-	/* Add the association to the new endpoint's list of associations.  */
-	sctp_endpoint_add_asoc(newsp->ep, assoc);
 
 	/* Delete the association from the old endpoint's list of
 	 * associations.
@@ -1101,27 +1086,31 @@ void sctp_assoc_migrate(struct sctp_association *assoc, struct sock *newsk)
 	if (sctp_style(oldsk, TCP))
 		sk_acceptq_removed(oldsk);
 
+	/* Release references to the old endpoint and the sock.  */
+	sctp_endpoint_put(assoc->ep);
+	sock_put(assoc->base.sk);
+
 	/* Migrate endpoint references for each hashed transport */
 	list_for_each_safe(pos, temp, &assoc->peer.transport_addr_list) {
 		struct sctp_transport *t;
 
 		t = list_entry(pos, struct sctp_transport, transports);
-		if (t->asoc->ep == oldep) {
+		if (t->asoc->ep == assoc->ep) {
+			sctp_endpoint_put(assoc->ep);
 			sctp_endpoint_hold(newsp->ep);
-			sctp_endpoint_put(oldep);
 		}
 	}
 
-	/* Release references to the old endpoint and the sock.  */
-	sctp_endpoint_put(oldep);
-	sock_put(oldsk);
-
+	/* Get a reference to the new endpoint.  */
 	assoc->ep = newsp->ep;
-	assoc->base.sk = newsk;
+	sctp_endpoint_hold(assoc->ep);
 
-	printk("LEE: %s %s()[%d]: L\n", __FILE__, __func__, __LINE__);
-//	release_sock(newsk);
-//	release_sock(oldsk);
+	/* Get a reference to the new sock.  */
+	assoc->base.sk = newsk;
+	sock_hold(assoc->base.sk);
+
+	/* Add the association to the new endpoint's list of associations.  */
+	sctp_endpoint_add_asoc(newsp->ep, assoc);
 }
 
 /* Update an association (possibly from unexpected COOKIE-ECHO processing).  */

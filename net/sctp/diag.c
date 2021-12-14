@@ -301,8 +301,6 @@ static int sctp_sock_dump(struct sctp_transport *tsp, void *p)
 	struct sctp_association *assoc;
 	int err = 0;
 
-	printk("LEE: %s %s()[%d]: sk: %px\n", __FILE__, __func__, __LINE__, sk);
-
 	lock_sock(sk);
 	list_for_each_entry(assoc, &ep->asocs, asocs) {
 		if (cb->args[4] < cb->args[1])

@@ -982,23 +982,17 @@ int sctp_hash_transport(struct sctp_transport *t)
 				  &t->node, sctp_hash_params);
 	if (err)
 		pr_err_once("insert transport fail, errno %d\n", err);
-	else
-		sctp_endpoint_hold(t->asoc->ep);
 
 	return err;
 }
 
 void sctp_unhash_transport(struct sctp_transport *t)
 {
-	int err;
-
 	if (t->asoc->temp)
 		return;
 
-	err = rhltable_remove(&sctp_transport_hashtable, &t->node,
-			      sctp_hash_params);
-	if (err == 0)
-		sctp_endpoint_put(t->asoc->ep);
+	rhltable_remove(&sctp_transport_hashtable, &t->node,
+			sctp_hash_params);
 }
 
 /* return a transport with holding it */

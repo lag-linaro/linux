@@ -143,11 +143,8 @@ static int kfd_smi_ev_release(struct inode *inode, struct file *filep)
 	spin_unlock(&dev->smi_lock);
 
 	synchronize_rcu();
-
-	spin_lock(&client->lock);
 	kfifo_free(&client->fifo);
 	kfree(client);
-	spin_unlock(&client->lock);
 
 	return 0;
 }
@@ -271,13 +268,11 @@ int kfd_smi_event_open(struct kfd_dev *dev, uint32_t *fd)
 		return ret;
 	}
 
-	spin_lock(&client->lock);
 	ret = anon_inode_getfd(kfd_smi_name, &kfd_smi_ev_fops, (void *)client,
 			       O_RDWR);
 	if (ret < 0) {
 		kfifo_free(&client->fifo);
 		kfree(client);
-		spin_unlock(&client->lock);
 		return ret;
 	}
 	*fd = ret;
@@ -290,7 +285,6 @@ int kfd_smi_event_open(struct kfd_dev *dev, uint32_t *fd)
 	spin_lock(&dev->smi_lock);
 	list_add_rcu(&client->list, &dev->smi_clients);
 	spin_unlock(&dev->smi_lock);
-	spin_unlock(&client->lock);
 
 	return 0;
 }

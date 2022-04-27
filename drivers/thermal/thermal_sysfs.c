@@ -607,6 +607,7 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
 {
 	struct thermal_cooling_device *cdev = to_cooling_device(dev);
+	struct cooling_dev_stats *stats = cdev->stats;
 	unsigned long state;
 	int result;
 
@@ -617,6 +618,9 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
 		return -EINVAL;
 
 	if ((long)state < 0)
+		return -EINVAL;
+
+	if (state > stats->max_states)
 		return -EINVAL;
 
 	mutex_lock(&cdev->lock);

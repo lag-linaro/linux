@@ -680,6 +680,9 @@ void thermal_cooling_device_stats_update(struct thermal_cooling_device *cdev,
 	if (!stats)
 		return;
 
+	if (new_state > stats->max_states)
+		return;
+
 	spin_lock(&stats->lock);
 
 	if (stats->state == new_state)

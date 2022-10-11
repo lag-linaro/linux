@@ -9,6 +9,7 @@
 #include <linux/module.h>
 #include <linux/hid.h>
 #include <linux/idr.h>
+#include <linux/kref.h>
 #include <linux/cdev.h>
 #include <linux/mutex.h>
 #include <linux/poll.h>
@@ -77,6 +78,8 @@ struct f_hidg {
 
 	struct usb_ep			*in_ep;
 	struct usb_ep			*out_ep;
+
+	struct kref			refcount;
 };
 
 static inline struct f_hidg *func_to_hidg(struct usb_function *f)
@@ -272,6 +275,19 @@ static struct usb_gadget_strings *ct_func_strings[] = {
 	&ct_func_string_table,
 	NULL,
 };
+
+static void hidg_free_resources(struct kref *ref)
+{
+	struct f_hidg *hidg = container_of(ref, struct f_hidg, refcount);
+	struct f_hid_opts *opts = container_of(hidg->func.fi, struct f_hid_opts, func_inst);
+
+	mutex_lock(&opts->lock);
+	kfree(hidg->report_desc);
+	kfree(hidg->set_report_buf);
+	kfree(hidg);
+	--opts->refcnt;
+	mutex_unlock(&opts->lock);
+}
 
 /*-------------------------------------------------------------------------*/
 /*                              Char Device                                */
@@ -539,7 +555,13 @@ static __poll_t f_hidg_poll(struct file *file, poll_table *wait)
 
 static int f_hidg_release(struct inode *inode, struct file *fd)
 {
+	struct f_hidg *hidg =
+		container_of(inode->i_cdev, struct f_hidg, cdev);
+
 	fd->private_data = NULL;
+
+	kref_put(&hidg->refcount, hidg_free_resources);
+
 	return 0;
 }
 
@@ -547,6 +569,8 @@ static int f_hidg_open(struct inode *inode, struct file *fd)
 {
 	struct f_hidg *hidg =
 		container_of(inode->i_cdev, struct f_hidg, cdev);
+
+	kref_get(&hidg->refcount);
 
 	fd->private_data = hidg;
 
@@ -1239,17 +1263,9 @@ unlock:
 
 static void hidg_free(struct usb_function *f)
 {
-	struct f_hidg *hidg;
-	struct f_hid_opts *opts;
+	struct f_hidg *hidg = func_to_hidg(f);
 
-	hidg = func_to_hidg(f);
-	opts = container_of(f->fi, struct f_hid_opts, func_inst);
-	kfree(hidg->report_desc);
-	kfree(hidg->set_report_buf);
-	kfree(hidg);
-	mutex_lock(&opts->lock);
-	--opts->refcnt;
-	mutex_unlock(&opts->lock);
+	kref_put(&hidg->refcount, hidg_free_resources);
 }
 
 static void hidg_unbind(struct usb_configuration *c, struct usb_function *f)
@@ -1271,6 +1287,7 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
 	hidg = kzalloc(sizeof(*hidg), GFP_KERNEL);
 	if (!hidg)
 		return ERR_PTR(-ENOMEM);
+	kref_init(&hidg->refcount);
 
 	opts = container_of(fi, struct f_hid_opts, func_inst);
 

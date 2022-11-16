@@ -280,7 +280,6 @@ static void __fput(struct file *file)
 		file->f_op->release(inode, file);
 	if (unlikely(S_ISCHR(inode->i_mode) && inode->i_cdev != NULL &&
 		     !(mode & FMODE_PATH))) {
-		printk("LEE: %s %s()[%d]: Calling cdev_put()\n", __FILE__, __func__, __LINE__);
 		cdev_put(inode->i_cdev);
 	}
 	fops_put(file->f_op);

@@ -77,11 +77,18 @@ struct f_hidg {
 
 	struct usb_ep			*in_ep;
 	struct usb_ep			*out_ep;
+
+	bool				gc;
 };
 
 static inline struct f_hidg *func_to_hidg(struct usb_function *f)
 {
 	return container_of(f, struct f_hidg, func);
+}
+
+static inline bool f_hidg_is_open(struct f_hidg *hidg)
+{
+	return !!kref_read(&hidg->cdev.kobj.kref);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -272,6 +279,18 @@ static struct usb_gadget_strings *ct_func_strings[] = {
 	&ct_func_string_table,
 	NULL,
 };
+
+static void hidg_free_resources(struct f_hidg *hidg)
+{
+       struct f_hid_opts *opts = container_of(hidg->func.fi, struct f_hid_opts, func_inst);
+
+       mutex_lock(&opts->lock);
+       kfree(hidg->report_desc);
+       kfree(hidg->set_report_buf);
+       kfree(hidg);
+       --opts->refcnt;
+       mutex_unlock(&opts->lock);
+}
 
 /*-------------------------------------------------------------------------*/
 /*                              Char Device                                */
@@ -539,7 +558,16 @@ static __poll_t f_hidg_poll(struct file *file, poll_table *wait)
 
 static int f_hidg_release(struct inode *inode, struct file *fd)
 {
+	struct f_hidg *hidg  = fd->private_data;
+
+	if (hidg->gc) {
+		/* Gadget has already been disconnected and we are the last f_hidg user */
+		cdev_put(&hidg->cdev);
+		hidg_free_resources(hidg);
+	}
+
 	fd->private_data = NULL;
+
 	return 0;
 }
 
@@ -1239,17 +1267,16 @@ unlock:
 
 static void hidg_free(struct usb_function *f)
 {
-	struct f_hidg *hidg;
-	struct f_hid_opts *opts;
+	struct f_hidg *hidg = func_to_hidg(f);
 
-	hidg = func_to_hidg(f);
-	opts = container_of(f->fi, struct f_hid_opts, func_inst);
-	kfree(hidg->report_desc);
-	kfree(hidg->set_report_buf);
-	kfree(hidg);
-	mutex_lock(&opts->lock);
-	--opts->refcnt;
-	mutex_unlock(&opts->lock);
+	if (f_hidg_is_open(hidg))
+		/*
+		 * Gadget disconnected whilst an open dev node exists
+		 * delay freeing resources until it closes
+		 */
+		hidg->gc = true;
+	else
+		hidg_free_resources(hidg);
 }
 
 static void hidg_unbind(struct usb_configuration *c, struct usb_function *f)

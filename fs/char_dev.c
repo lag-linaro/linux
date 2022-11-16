@@ -353,8 +353,10 @@ static struct kobject *cdev_get(struct cdev *p)
 	if (owner && !try_module_get(owner))
 		return NULL;
 	kobj = kobject_get_unless_zero(&p->kobj);
-	if (!kobj)
+	if (!kobj) {
 		module_put(owner);
+	}
+
 	return kobj;
 }
 
@@ -602,6 +604,8 @@ static void cdev_default_release(struct kobject *kobj)
 {
 	struct cdev *p = container_of(kobj, struct cdev, kobj);
 	struct kobject *parent = kobj->parent;
+
+	printk("LEE: %s %s()[%d]: \n", __FILE__, __func__, __LINE__);
 
 	cdev_purge(p);
 	kobject_put(parent);

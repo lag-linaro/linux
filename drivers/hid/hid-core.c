@@ -11,6 +11,7 @@
 /*
  */
 
+#include "linux/printk.h"
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/module.h>
@@ -1981,7 +1982,7 @@ int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,
 		rsize = HID_MAX_BUFFER_SIZE;
 
 	if (csize < rsize) {
-		dbg_hid("report %d is too short, (%d < %d)\n", report->id,
+		printk("report %d is too short, (%d < %d)\n", report->id,
 				csize, rsize);
 		memset(cdata + csize, 0, rsize - csize);
 	}

@@ -266,6 +266,8 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
 	unsigned int i;
 	unsigned int application;
 
+	printk("LEE: %s %s()[%d]: Enter <================================================\n", __FILE__, __func__, __LINE__);
+
 	application = hid_lookup_collection(parser, HID_COLLECTION_APPLICATION);
 
 	report = hid_register_report(parser->device, report_type,
@@ -1663,6 +1665,8 @@ static void hid_process_report(struct hid_device *hid,
 	struct hid_field_entry *entry;
 	struct hid_field *field;
 
+	printk("LEE: %s %s()[%d]: HERE\n", __FILE__, __func__, __LINE__);
+
 	/* first retrieve all incoming values in data */
 	for (a = 0; a < report->maxfield; a++)
 		hid_input_fetch_field(hid, report->field[a], data);
@@ -1829,9 +1833,10 @@ static void hid_output_field(const struct hid_device *hid,
  */
 static size_t hid_compute_report_size(struct hid_report *report)
 {
-	if (report->size)
+	if (report->size) {
+		printk("LEE: %s %s()[%d]: report->size (bits): %d (0x%x)\n", __FILE__, __func__, __LINE__, report->size, report->size);
 		return ((report->size - 1) >> 3) + 1;
-
+	}
 	return 0;
 }
 
@@ -1883,6 +1888,9 @@ int hid_set_field(struct hid_field *field, unsigned offset, __s32 value)
 		return -1;
 
 	size = field->report_size;
+
+	printk("LEE: %s %s()[%d]: field->report_size: %d (0x%x)\n", __FILE__, __func__, __LINE__, size, size);
+	printk("                  field->report_count: %d (0x%x)\n", field->report_count, field->report_count);
 
 	hid_dump_input(field->report->device, field->usage + offset, value);
 
@@ -1936,6 +1944,8 @@ int __hid_request(struct hid_device *hid, struct hid_report *report,
 
 	len = hid_report_len(report);
 
+	printk("LEE: %s %s()[%d]: Allocated buf of size: %d (%x)\n", __FILE__, __func__, __LINE__, len, len);
+
 	if (reqtype == HID_REQ_SET_REPORT)
 		hid_output_report(report, buf);
 
@@ -1967,6 +1977,8 @@ int hid_report_raw_event(struct hid_device *hid, enum hid_report_type type, u8 *
 	u8 *cdata = data;
 	int ret = 0;
 
+	printk("LEE: %s %s()[%d]: size: %d (%x)\n", __FILE__, __func__, __LINE__, size, size);
+
 	report = hid_get_report(report_enum, data);
 	if (!report)
 		goto out;
@@ -1978,16 +1990,18 @@ int hid_report_raw_event(struct hid_device *hid, enum hid_report_type type, u8 *
 
 	rsize = hid_compute_report_size(report);
 
+	printk("LEE: %s %s()[%d]: rsize: %d (%x)\n", __FILE__, __func__, __LINE__, rsize, rsize);
+
 	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
 		rsize = HID_MAX_BUFFER_SIZE - 1;
 	else if (rsize > HID_MAX_BUFFER_SIZE)
 		rsize = HID_MAX_BUFFER_SIZE;
 
-	if (csize < rsize) {
+	printk("LEE: %s %s()[%d]: csize: %d (%x) < rsize %d (%x)\n", __FILE__, __func__, __LINE__, csize, csize, rsize, rsize);
+
+	if (csize < rsize)
 		dbg_hid("report %d is too short, (%d < %d)\n", report->id,
 				csize, rsize);
-		memset(cdata + csize, 0, rsize - csize);
-	}
 
 	if ((hid->claimed & HID_CLAIMED_HIDDEV) && hid->hiddev_report_event)
 		hid->hiddev_report_event(hid, report);

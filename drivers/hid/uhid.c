@@ -70,8 +70,6 @@ static void uhid_device_add_worker(struct work_struct *work)
 	struct uhid_device *uhid = container_of(work, struct uhid_device, worker);
 	int ret;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	ret = hid_add_device(uhid->hid);
 	if (ret) {
 		hid_err(uhid->hid, "Cannot register HID device: error %d\n", ret);
@@ -95,8 +93,6 @@ static void uhid_queue(struct uhid_device *uhid, struct uhid_event *ev)
 {
 	__u8 newhead;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	newhead = (uhid->head + 1) % UHID_BUFSIZE;
 
 	if (newhead != uhid->tail) {
@@ -114,8 +110,6 @@ static int uhid_queue_event(struct uhid_device *uhid, __u32 event)
 	unsigned long flags;
 	struct uhid_event *ev;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	ev = kzalloc(sizeof(*ev), GFP_KERNEL);
 	if (!ev)
 		return -ENOMEM;
@@ -131,21 +125,9 @@ static int uhid_queue_event(struct uhid_device *uhid, __u32 event)
 
 static int uhid_hid_start(struct hid_device *hid)
 {
-	struct hid_report *input_report = hid->report_enum[HID_INPUT_REPORT].report_id_hash[0];
 	struct uhid_device *uhid = hid->driver_data;
 	struct uhid_event *ev;
 	unsigned long flags;
-
-	while (input_report) {
-		int report_size = BITS_TO_BYTES(input_report->size);
-
-		if (report_size > UHID_DATA_MAX) {
-			hid_err(uhid->hid,
-				"Requested data buffer is too large (%d)\n", report_size);
-			return -EINVAL;
-		}
-		input_report++;
-	}
 
 	ev = kzalloc(sizeof(*ev), GFP_KERNEL);
 	if (!ev)
@@ -171,8 +153,6 @@ static void uhid_hid_stop(struct hid_device *hid)
 {
 	struct uhid_device *uhid = hid->driver_data;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	hid->claimed = 0;
 	uhid_queue_event(uhid, UHID_STOP);
 }
@@ -181,8 +161,6 @@ static int uhid_hid_open(struct hid_device *hid)
 {
 	struct uhid_device *uhid = hid->driver_data;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	return uhid_queue_event(uhid, UHID_OPEN);
 }
 
@@ -190,16 +168,12 @@ static void uhid_hid_close(struct hid_device *hid)
 {
 	struct uhid_device *uhid = hid->driver_data;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	uhid_queue_event(uhid, UHID_CLOSE);
 }
 
 static int uhid_hid_parse(struct hid_device *hid)
 {
 	struct uhid_device *uhid = hid->driver_data;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	return hid_parse_report(hid, uhid->rd_data, uhid->rd_size);
 }
@@ -211,8 +185,6 @@ static int __uhid_report_queue_and_wait(struct uhid_device *uhid,
 {
 	unsigned long flags;
 	int ret;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	spin_lock_irqsave(&uhid->qlock, flags);
 	*report_id = ++uhid->report_id;
@@ -241,8 +213,6 @@ static void uhid_report_wake_up(struct uhid_device *uhid, u32 id,
 {
 	unsigned long flags;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	spin_lock_irqsave(&uhid->qlock, flags);
 
 	/* id for old report; drop it silently */
@@ -266,8 +236,6 @@ static int uhid_hid_get_report(struct hid_device *hid, unsigned char rnum,
 	struct uhid_get_report_reply_req *req;
 	struct uhid_event *ev;
 	int ret;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	if (!READ_ONCE(uhid->running))
 		return -EIO;
@@ -295,8 +263,6 @@ static int uhid_hid_get_report(struct hid_device *hid, unsigned char rnum,
 	if (req->err) {
 		ret = -EIO;
 	} else {
-		printk("LEE: %s %s()[%d]: count %d (%x) req->size %d (%x) UHID_DATA_MAX %d (%x)\n",
-			__FILE__, __func__, __LINE__, count, count, req->size, req->size, UHID_DATA_MAX, UHID_DATA_MAX);
 		ret = min3(count, (size_t)req->size, (size_t)UHID_DATA_MAX);
 		memcpy(buf, req->data, ret);
 	}
@@ -312,8 +278,6 @@ static int uhid_hid_set_report(struct hid_device *hid, unsigned char rnum,
 	struct uhid_device *uhid = hid->driver_data;
 	struct uhid_event *ev;
 	int ret;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	if (!READ_ONCE(uhid->running) || count > UHID_DATA_MAX)
 		return -EIO;
@@ -355,8 +319,6 @@ static int uhid_hid_raw_request(struct hid_device *hid, unsigned char reportnum,
 {
 	u8 u_rtype;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	switch (rtype) {
 	case HID_FEATURE_REPORT:
 		u_rtype = UHID_FEATURE_REPORT;
@@ -388,8 +350,6 @@ static int uhid_hid_output_raw(struct hid_device *hid, __u8 *buf, size_t count,
 	__u8 rtype;
 	unsigned long flags;
 	struct uhid_event *ev;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	switch (report_type) {
 	case HID_FEATURE_REPORT:
@@ -424,8 +384,6 @@ static int uhid_hid_output_raw(struct hid_device *hid, __u8 *buf, size_t count,
 static int uhid_hid_output_report(struct hid_device *hid, __u8 *buf,
 				  size_t count)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	return uhid_hid_output_raw(hid, buf, count, HID_OUTPUT_REPORT);
 }
 
@@ -461,8 +419,6 @@ struct uhid_create_req_compat {
 static int uhid_event_from_user(const char __user *buffer, size_t len,
 				struct uhid_event *event)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (in_compat_syscall()) {
 		u32 type;
 
@@ -523,8 +479,6 @@ static int uhid_event_from_user(const char __user *buffer, size_t len,
 static int uhid_event_from_user(const char __user *buffer, size_t len,
 				struct uhid_event *event)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (copy_from_user(event, buffer, min(len, sizeof(*event))))
 		return -EFAULT;
 
@@ -539,8 +493,6 @@ static int uhid_dev_create2(struct uhid_device *uhid,
 	size_t rd_size, len;
 	void *rd_data;
 	int ret;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	if (uhid->hid)
 		return -EALREADY;
@@ -602,8 +554,6 @@ static int uhid_dev_create(struct uhid_device *uhid,
 {
 	struct uhid_create_req orig;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	orig = ev->u.create;
 
 	if (orig.rd_size <= 0 || orig.rd_size > HID_MAX_DESCRIPTOR_SIZE)
@@ -626,8 +576,6 @@ static int uhid_dev_create(struct uhid_device *uhid,
 
 static int uhid_dev_destroy(struct uhid_device *uhid)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (!uhid->hid)
 		return -EINVAL;
 
@@ -645,8 +593,6 @@ static int uhid_dev_destroy(struct uhid_device *uhid)
 
 static int uhid_dev_input(struct uhid_device *uhid, struct uhid_event *ev)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (!READ_ONCE(uhid->running))
 		return -EINVAL;
 
@@ -658,12 +604,8 @@ static int uhid_dev_input(struct uhid_device *uhid, struct uhid_event *ev)
 
 static int uhid_dev_input2(struct uhid_device *uhid, struct uhid_event *ev)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (!READ_ONCE(uhid->running))
 		return -EINVAL;
-
-	printk("LEE: %s %s()[%d]: ev->u.input2.size: %d (%x)\n", __FILE__, __func__, __LINE__, ev->u.input2.size, ev->u.input2.size);
 
 	hid_input_report(uhid->hid, HID_INPUT_REPORT, ev->u.input2.data,
 			 min_t(size_t, ev->u.input2.size, UHID_DATA_MAX), 0);
@@ -674,8 +616,6 @@ static int uhid_dev_input2(struct uhid_device *uhid, struct uhid_event *ev)
 static int uhid_dev_get_report_reply(struct uhid_device *uhid,
 				     struct uhid_event *ev)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (!READ_ONCE(uhid->running))
 		return -EINVAL;
 
@@ -686,8 +626,6 @@ static int uhid_dev_get_report_reply(struct uhid_device *uhid,
 static int uhid_dev_set_report_reply(struct uhid_device *uhid,
 				     struct uhid_event *ev)
 {
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	if (!READ_ONCE(uhid->running))
 		return -EINVAL;
 
@@ -698,8 +636,6 @@ static int uhid_dev_set_report_reply(struct uhid_device *uhid,
 static int uhid_char_open(struct inode *inode, struct file *file)
 {
 	struct uhid_device *uhid;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	uhid = kzalloc(sizeof(*uhid), GFP_KERNEL);
 	if (!uhid)
@@ -724,8 +660,6 @@ static int uhid_char_release(struct inode *inode, struct file *file)
 	struct uhid_device *uhid = file->private_data;
 	unsigned int i;
 
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
-
 	uhid_dev_destroy(uhid);
 
 	for (i = 0; i < UHID_BUFSIZE; ++i)
@@ -743,8 +677,6 @@ static ssize_t uhid_char_read(struct file *file, char __user *buffer,
 	int ret;
 	unsigned long flags;
 	size_t len;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	/* they need at least the "type" member of uhid_event */
 	if (count < sizeof(__u32))
@@ -792,8 +724,6 @@ static ssize_t uhid_char_write(struct file *file, const char __user *buffer,
 	struct uhid_device *uhid = file->private_data;
 	int ret;
 	size_t len;
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	/* we need at least the "type" member of uhid_event */
 	if (count < sizeof(__u32))
@@ -858,8 +788,6 @@ static __poll_t uhid_char_poll(struct file *file, poll_table *wait)
 {
 	struct uhid_device *uhid = file->private_data;
 	__poll_t mask = EPOLLOUT | EPOLLWRNORM; /* uhid is always writable */
-
-	printk("LEE: %s %s()[%d]: Enter\n", __FILE__, __func__, __LINE__);
 
 	poll_wait(file, &uhid->waitq, wait);
 

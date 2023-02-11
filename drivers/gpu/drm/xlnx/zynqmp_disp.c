@@ -128,8 +128,11 @@ struct zynqmp_disp_layer {
  * struct zynqmp_disp - Display controller
  * @dev: Device structure
  * @dpsub: Display subsystem
+ * @blend: blender struct
  * @blend.base: Register I/O base address for the blender
+ * @avbuf: audio/video buffer manager struct
  * @avbuf.base: Register I/O base address for the audio/video buffer manager
+ * @audio: audio mixer struct
  * @audio.base: Registers I/O base address for the audio mixer
  * @layers: Layers (planes)
  */

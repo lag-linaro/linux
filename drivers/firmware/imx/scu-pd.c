@@ -421,4 +421,3 @@ builtin_platform_driver(imx_sc_pd_driver);
 
 MODULE_AUTHOR("Dong Aisheng <aisheng.dong@nxp.com>");
 MODULE_DESCRIPTION("IMX SCU Power Domain driver");
-MODULE_LICENSE("GPL v2");

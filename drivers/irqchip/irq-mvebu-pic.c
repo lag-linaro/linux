@@ -195,6 +195,5 @@ module_platform_driver(mvebu_pic_driver);
 
 MODULE_AUTHOR("Yehuda Yitschak <yehuday@marvell.com>");
 MODULE_AUTHOR("Thomas Petazzoni <thomas.petazzoni@free-electrons.com>");
-MODULE_LICENSE("GPL v2");
 MODULE_ALIAS("platform:mvebu_pic");
 

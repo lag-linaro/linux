@@ -576,4 +576,3 @@ module_init(mmphw_init);
 
 MODULE_AUTHOR("Li Guoqing<ligq@marvell.com>");
 MODULE_DESCRIPTION("Framebuffer driver for mmp");
-MODULE_LICENSE("GPL");

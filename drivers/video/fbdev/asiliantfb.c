@@ -632,4 +632,3 @@ static void __exit asiliantfb_exit(void)
 	pci_unregister_driver(&asiliantfb_driver);
 }
 
-MODULE_LICENSE("GPL");

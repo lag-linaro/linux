@@ -7,7 +7,6 @@
  * both usually compiled in and the module overhead goes away.
  */
 MODULE_DESCRIPTION("glob(7) matching");
-MODULE_LICENSE("Dual MIT/GPL");
 
 /**
  * glob_match - Shell-style pattern matching, like !fnmatch(pat, str, 0)

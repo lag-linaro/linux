@@ -18,6 +18,30 @@ void free_screen_info(struct screen_info *si)
 }
 #endif
 
+static struct screen_info *setup_graphics(void)
+{
+	unsigned long size;
+	efi_status_t status;
+	efi_guid_t gop_proto = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
+	void **gop_handle = NULL;
+	struct screen_info *si = NULL;
+
+	size = 0;
+	status = efi_bs_call(locate_handle, EFI_LOCATE_BY_PROTOCOL,
+			     &gop_proto, NULL, &size, gop_handle);
+	if (status == EFI_BUFFER_TOO_SMALL) {
+		si = alloc_screen_info();
+		if (!si)
+			return NULL;
+		status = efi_setup_gop(si, &gop_proto, size);
+		if (status != EFI_SUCCESS) {
+			free_screen_info(si);
+			return NULL;
+		}
+	}
+	return si;
+}
+
 /*
  * EFI entry point for the generic EFI stub used by ARM, arm64, RISC-V and
  * LoongArch. This is the entrypoint that is described in the PE/COFF header
@@ -35,6 +59,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
 	efi_guid_t loaded_image_proto = LOADED_IMAGE_PROTOCOL_GUID;
 	unsigned long reserve_addr = 0;
 	unsigned long reserve_size = 0;
+	struct screen_info *si;
 
 	WRITE_ONCE(efi_system_table, systab);
 
@@ -60,6 +85,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
 
 	efi_info("Booting Linux Kernel...\n");
 
+	si = setup_graphics();
+
 	status = handle_kernel_image(&image_addr, &image_size,
 				     &reserve_addr,
 				     &reserve_size,
@@ -75,6 +102,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
 #endif
 
 	status = efi_stub_common(handle, image, image_addr, cmdline_ptr);
+
+	free_screen_info(si);
 
 	efi_free(image_size, image_addr);
 	efi_free(reserve_size, reserve_addr);

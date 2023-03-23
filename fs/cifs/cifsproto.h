@@ -278,7 +278,8 @@ extern void cifs_add_deferred_close(struct cifsFileInfo *cfile,
 
 extern void cifs_del_deferred_close(struct cifsFileInfo *cfile);
 
-extern void cifs_close_deferred_file(struct cifsInodeInfo *cifs_inode);
+extern void cifs_close_deferred_file(struct cifsInodeInfo *cifs_inode,
+				     bool wait_oplock_handler);
 
 extern void cifs_close_all_deferred_files(struct cifs_tcon *cifs_tcon);
 

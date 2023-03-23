@@ -1429,7 +1429,7 @@ create_kernel_context(struct intel_engine_cs *engine)
 }
 
 /**
- * intel_engines_init_common - initialize cengine state which might require hw access
+ * engine_init_common - initialize cengine state which might require hw access
  * @engine: Engine to initialize.
  *
  * Initializes @engine@ structure members shared between legacy and execlists
@@ -1515,8 +1515,8 @@ int intel_engines_init(struct intel_gt *gt)
 }
 
 /**
- * intel_engines_cleanup_common - cleans up the engine state created by
- *                                the common initiailizers.
+ * intel_engine_cleanup_common - cleans up the engine state created by
+ *                               the common initiailizers.
  * @engine: Engine to cleanup.
  *
  * This cleans up everything created by the common helpers.

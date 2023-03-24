@@ -1283,4 +1283,3 @@ static void __exit gbefb_exit(void)
 module_init(gbefb_init);
 module_exit(gbefb_exit);
 
-MODULE_LICENSE("GPL");

@@ -1346,4 +1346,3 @@ postcore_initcall(mipi_dsi_bus_init);
 
 MODULE_AUTHOR("Andrzej Hajda <a.hajda@samsung.com>");
 MODULE_DESCRIPTION("MIPI DSI Bus");
-MODULE_LICENSE("GPL and additional rights");

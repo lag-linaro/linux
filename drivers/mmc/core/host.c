@@ -590,7 +590,7 @@ EXPORT_SYMBOL(mmc_alloc_host);
 
 static void devm_mmc_host_release(struct device *dev, void *res)
 {
-	mmc_free_host(*(struct mmc_host **)res);
+	mmc_free_host(res);
 }
 
 struct mmc_host *devm_mmc_alloc_host(struct device *dev, int extra)

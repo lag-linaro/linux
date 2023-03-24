@@ -735,7 +735,7 @@ cifs_del_deferred_close(struct cifsFileInfo *cfile)
 }
 
 void
-cifs_close_deferred_file(struct cifsInodeInfo *cifs_inode)
+cifs_close_deferred_file(struct cifsInodeInfo *cifs_inode, bool wait_oplock_handler)
 {
 	struct cifsFileInfo *cfile = NULL;
 	struct file_list *tmp_list, *tmp_next_list;
@@ -762,7 +762,7 @@ cifs_close_deferred_file(struct cifsInodeInfo *cifs_inode)
 	spin_unlock(&cifs_inode->open_file_lock);
 
 	list_for_each_entry_safe(tmp_list, tmp_next_list, &file_head, list) {
-		_cifsFileInfo_put(tmp_list->cfile, true, false);
+		_cifsFileInfo_put(tmp_list->cfile, wait_oplock_handler, false);
 		list_del(&tmp_list->list);
 		kfree(tmp_list);
 	}

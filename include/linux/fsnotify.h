@@ -93,8 +93,10 @@ static inline int fsnotify_file(struct file *file, __u32 mask)
 	if (mask & FS_OPEN) {
 		if (path->dentry->d_op &&
 		    path->dentry->d_op->d_canonical_path) {
-			struct path lower_path = {0};
+			struct path lower_path;
 			int ret;
+
+			memset(lower_path, 0, sizeof(lower_path);
 
 			path->dentry->d_op->d_canonical_path(path, &lower_path);
 			if (IS_ERR(lower_path.dentry))

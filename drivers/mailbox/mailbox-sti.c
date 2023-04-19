@@ -123,11 +123,11 @@ static void sti_mbox_enable_channel(struct mbox_chan *chan)
 	unsigned int instance = chan_info->instance;
 	unsigned int channel = chan_info->channel;
 	unsigned long flags;
-	void __iomem *base = MBOX_BASE(mdev, instance);
+	// void __iomem *base = MBOX_BASE(mdev, instance);
 
 	spin_lock_irqsave(&mdev->lock, flags);
 	mdev->enabled[instance] |= BIT(channel);
-	writel_relaxed(BIT(channel), base + STI_ENA_SET_OFFSET);
+	// writel_relaxed(BIT(channel), base + STI_ENA_SET_OFFSET);
 	spin_unlock_irqrestore(&mdev->lock, flags);
 }
 
@@ -138,135 +138,137 @@ static void sti_mbox_disable_channel(struct mbox_chan *chan)
 	unsigned int instance = chan_info->instance;
 	unsigned int channel = chan_info->channel;
 	unsigned long flags;
-	void __iomem *base = MBOX_BASE(mdev, instance);
+	// void __iomem *base = MBOX_BASE(mdev, instance);
 
 	spin_lock_irqsave(&mdev->lock, flags);
 	mdev->enabled[instance] &= ~BIT(channel);
-	writel_relaxed(BIT(channel), base + STI_ENA_CLR_OFFSET);
+	// writel_relaxed(BIT(channel), base + STI_ENA_CLR_OFFSET);
 	spin_unlock_irqrestore(&mdev->lock, flags);
 }
 
 static void sti_mbox_clear_irq(struct mbox_chan *chan)
 {
-	struct sti_channel *chan_info = chan->con_priv;
-	struct sti_mbox_device *mdev = chan_info->mdev;
-	unsigned int instance = chan_info->instance;
-	unsigned int channel = chan_info->channel;
-	void __iomem *base = MBOX_BASE(mdev, instance);
+	// struct sti_channel *chan_info = chan->con_priv;
+	// struct sti_mbox_device *mdev = chan_info->mdev;
+	// unsigned int instance = chan_info->instance;
+	// unsigned int channel = chan_info->channel;
+	// void __iomem *base = MBOX_BASE(mdev, instance);
 
-	writel_relaxed(BIT(channel), base + STI_IRQ_CLR_OFFSET);
+	// writel_relaxed(BIT(channel), base + STI_IRQ_CLR_OFFSET);
 }
 
-static struct mbox_chan *sti_mbox_irq_to_channel(struct sti_mbox_device *mdev,
-						 unsigned int instance)
-{
-	struct mbox_controller *mbox = mdev->mbox;
-	struct mbox_chan *chan = NULL;
-	unsigned int channel;
-	unsigned long bits;
-	void __iomem *base = MBOX_BASE(mdev, instance);
-
-	bits = readl_relaxed(base + STI_IRQ_VAL_OFFSET);
-	if (!bits)
-		/* No IRQs fired in specified instance */
-		return NULL;
-
-	/* An IRQ has fired, find the associated channel */
-	for (channel = 0; bits; channel++) {
-		if (!test_and_clear_bit(channel, &bits))
-			continue;
-
-		chan = sti_mbox_to_channel(mbox, instance, channel);
-		if (chan) {
-			dev_dbg(mbox->dev,
-				"IRQ fired on instance: %d channel: %d\n",
-				instance, channel);
-			break;
-		}
-	}
-
-	return chan;
-}
-
-static irqreturn_t sti_mbox_thread_handler(int irq, void *data)
-{
-	struct sti_mbox_device *mdev = data;
-	struct sti_mbox_pdata *pdata = dev_get_platdata(mdev->dev);
-	struct mbox_chan *chan;
-	unsigned int instance;
-
-	for (instance = 0; instance < pdata->num_inst; instance++) {
-keep_looking:
-		chan = sti_mbox_irq_to_channel(mdev, instance);
-		if (!chan)
-			continue;
-
-		mbox_chan_received_data(chan, NULL);
-		sti_mbox_clear_irq(chan);
-		sti_mbox_enable_channel(chan);
-		goto keep_looking;
-	}
-
-	return IRQ_HANDLED;
-}
-
-static irqreturn_t sti_mbox_irq_handler(int irq, void *data)
-{
-	struct sti_mbox_device *mdev = data;
-	struct sti_mbox_pdata *pdata = dev_get_platdata(mdev->dev);
-	struct sti_channel *chan_info;
-	struct mbox_chan *chan;
-	unsigned int instance;
-	int ret = IRQ_NONE;
-
-	for (instance = 0; instance < pdata->num_inst; instance++) {
-		chan = sti_mbox_irq_to_channel(mdev, instance);
-		if (!chan)
-			continue;
-		chan_info = chan->con_priv;
-
-		if (!sti_mbox_channel_is_enabled(chan)) {
-			dev_warn(mdev->dev,
-				 "Unexpected IRQ: %s\n"
-				 "  instance: %d: channel: %d [enabled: %x]\n",
-				 mdev->name, chan_info->instance,
-				 chan_info->channel, mdev->enabled[instance]);
-
-			/* Only handle IRQ if no other valid IRQs were found */
-			if (ret == IRQ_NONE)
-				ret = IRQ_HANDLED;
-			continue;
-		}
-
-		sti_mbox_disable_channel(chan);
-		ret = IRQ_WAKE_THREAD;
-	}
-
-	if (ret == IRQ_NONE)
-		dev_err(mdev->dev, "Spurious IRQ - was a channel requested?\n");
-
-	return ret;
-}
+// static struct mbox_chan *sti_mbox_irq_to_channel(struct sti_mbox_device *mdev,
+// 						 unsigned int instance)
+// {
+// 	struct mbox_controller *mbox = mdev->mbox;
+// 	struct mbox_chan *chan = NULL;
+// 	unsigned int channel;
+// 	unsigned long bits;
+// 	void __iomem *base = MBOX_BASE(mdev, instance);
+//
+// 	bits = readl_relaxed(base + STI_IRQ_VAL_OFFSET);
+// 	if (!bits)
+// 		/* No IRQs fired in specified instance */
+// 		return NULL;
+//
+// 	/* An IRQ has fired, find the associated channel */
+// 	for (channel = 0; bits; channel++) {
+// 		if (!test_and_clear_bit(channel, &bits))
+// 			continue;
+//
+// 		chan = sti_mbox_to_channel(mbox, instance, channel);
+// 		if (chan) {
+// 			dev_dbg(mbox->dev,
+// 				"IRQ fired on instance: %d channel: %d\n",
+// 				instance, channel);
+// 			break;
+// 		}
+// 	}
+//
+// 	return chan;
+// }
+//
+// static irqreturn_t sti_mbox_thread_handler(int irq, void *data)
+// {
+// 	struct sti_mbox_device *mdev = data;
+// 	struct sti_mbox_pdata *pdata = dev_get_platdata(mdev->dev);
+// 	struct mbox_chan *chan;
+// 	unsigned int instance;
+//
+// 	printk("LEE: %s %s()[%d]: Handling IRQ\n", __FILE__, __func__, __LINE__);
+//
+// 	for (instance = 0; instance < pdata->num_inst; instance++) {
+// keep_looking:
+// 		chan = sti_mbox_irq_to_channel(mdev, instance);
+// 		if (!chan)
+// 			continue;
+//
+// 		mbox_chan_received_data(chan, NULL);
+// 		sti_mbox_clear_irq(chan);
+// 		sti_mbox_enable_channel(chan);
+// 		goto keep_looking;
+// 	}
+//
+// 	return IRQ_HANDLED;
+// }
+//
+// static irqreturn_t sti_mbox_irq_handler(int irq, void *data)
+// {
+// 	struct sti_mbox_device *mdev = data;
+// 	struct sti_mbox_pdata *pdata = dev_get_platdata(mdev->dev);
+// 	struct sti_channel *chan_info;
+// 	struct mbox_chan *chan;
+// 	unsigned int instance;
+// 	int ret = IRQ_NONE;
+//
+// 	for (instance = 0; instance < pdata->num_inst; instance++) {
+// 		chan = sti_mbox_irq_to_channel(mdev, instance);
+// 		if (!chan)
+// 			continue;
+// 		chan_info = chan->con_priv;
+//
+// 		if (!sti_mbox_channel_is_enabled(chan)) {
+// 			dev_warn(mdev->dev,
+// 				 "Unexpected IRQ: %s\n"
+// 				 "  instance: %d: channel: %d [enabled: %x]\n",
+// 				 mdev->name, chan_info->instance,
+// 				 chan_info->channel, mdev->enabled[instance]);
+//
+// 			/* Only handle IRQ if no other valid IRQs were found */
+// 			if (ret == IRQ_NONE)
+// 				ret = IRQ_HANDLED;
+// 			continue;
+// 		}
+//
+// 		sti_mbox_disable_channel(chan);
+// 		ret = IRQ_WAKE_THREAD;
+// 	}
+//
+// 	if (ret == IRQ_NONE)
+// 		dev_err(mdev->dev, "Spurious IRQ - was a channel requested?\n");
+//
+// 	return ret;
+//}
 
 static bool sti_mbox_tx_is_ready(struct mbox_chan *chan)
 {
-	struct sti_channel *chan_info = chan->con_priv;
-	struct sti_mbox_device *mdev = chan_info->mdev;
-	unsigned int instance = chan_info->instance;
-	unsigned int channel = chan_info->channel;
-	void __iomem *base = MBOX_BASE(mdev, instance);
-
-	if (!(readl_relaxed(base + STI_ENA_VAL_OFFSET) & BIT(channel))) {
-		dev_dbg(mdev->dev, "Mbox: %s: inst: %d, chan: %d disabled\n",
-			mdev->name, instance, channel);
-		return false;
-	}
-
-	if (readl_relaxed(base + STI_IRQ_VAL_OFFSET) & BIT(channel)) {
-		dev_dbg(mdev->dev, "Mbox: %s: inst: %d, chan: %d not ready\n",
-			mdev->name, instance, channel);
-		return false;
-	}
+	// struct sti_channel *chan_info = chan->con_priv;
+	// struct sti_mbox_device *mdev = chan_info->mdev;
+	// unsigned int instance = chan_info->instance;
+	// unsigned int channel = chan_info->channel;
+	// void __iomem *base = MBOX_BASE(mdev, instance);
+	//
+	// if (!(readl_relaxed(base + STI_ENA_VAL_OFFSET) & BIT(channel))) {
+	// 	dev_dbg(mdev->dev, "Mbox: %s: inst: %d, chan: %d disabled\n",
+	// 		mdev->name, instance, channel);
+	// 	return false;
+	// }
+	//
+	// if (readl_relaxed(base + STI_IRQ_VAL_OFFSET) & BIT(channel)) {
+	// 	dev_dbg(mdev->dev, "Mbox: %s: inst: %d, chan: %d not ready\n",
+	// 		mdev->name, instance, channel);
+	// 	return false;
+	// }
 
 	return true;
 }
@@ -277,14 +279,17 @@ static int sti_mbox_send_data(struct mbox_chan *chan, void *data)
 	struct sti_mbox_device *mdev = chan_info->mdev;
 	unsigned int instance = chan_info->instance;
 	unsigned int channel = chan_info->channel;
-	void __iomem *base = MBOX_BASE(mdev, instance);
+	// void __iomem *base = MBOX_BASE(mdev, instance);
+
+	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
 
 	/* Send event to co-processor */
-	writel_relaxed(BIT(channel), base + STI_IRQ_SET_OFFSET);
+//	writel_relaxed(BIT(channel), base + STI_IRQ_SET_OFFSET);
 
-	dev_dbg(mdev->dev,
-		"Sent via Mailbox %s: instance: %d channel: %d\n",
-		mdev->name, instance, channel);
+	// dev_err(mdev->dev, "Sent via Mailbox %s: instance: %d channel: %d\n",
+	// 	mdev->name, instance, channel);
+	//
+	printk("  data: %s\n", data);
 
 	return 0;
 }
@@ -408,8 +413,10 @@ static int sti_mbox_probe(struct platform_device *pdev)
 	struct sti_mbox_device *mdev;
 	struct device_node *np = pdev->dev.of_node;
 	struct mbox_chan *chans;
-	int irq;
+	// int irq;
 	int ret;
+
+	printk("LEE: %s %s()[%d]: ###################################################### ENTER\n", __FILE__, __func__, __LINE__);
 
 	match = of_match_device(sti_mailbox_match, &pdev->dev);
 	if (!match) {
@@ -424,9 +431,9 @@ static int sti_mbox_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, mdev);
 
-	mdev->base = devm_platform_ioremap_resource(pdev, 0);
-	if (IS_ERR(mdev->base))
-		return PTR_ERR(mdev->base);
+	// mdev->base = devm_platform_ioremap_resource(pdev, 0);
+	// if (IS_ERR(mdev->base))
+	// 	return PTR_ERR(mdev->base);
 
 	ret = of_property_read_string(np, "mbox-name", &mdev->name);
 	if (ret)
@@ -461,21 +468,21 @@ static int sti_mbox_probe(struct platform_device *pdev)
 		return ret;
 
 	/* It's okay for Tx Mailboxes to not supply IRQs */
-	irq = platform_get_irq(pdev, 0);
-	if (irq < 0) {
-		dev_info(&pdev->dev,
-			 "%s: Registered Tx only Mailbox\n", mdev->name);
-		return 0;
-	}
-
-	ret = devm_request_threaded_irq(&pdev->dev, irq,
-					sti_mbox_irq_handler,
-					sti_mbox_thread_handler,
-					IRQF_ONESHOT, mdev->name, mdev);
-	if (ret) {
-		dev_err(&pdev->dev, "Can't claim IRQ %d\n", irq);
-		return -EINVAL;
-	}
+	// irq = platform_get_irq(pdev, 0);
+	// if (irq < 0) {
+	// 	dev_info(&pdev->dev,
+	// 		 "%s: Registered Tx only Mailbox\n", mdev->name);
+	// 	return 0;
+	// }
+	//
+	// ret = devm_request_threaded_irq(&pdev->dev, irq,
+	// 				sti_mbox_irq_handler,
+	// 				sti_mbox_thread_handler,
+	// 				IRQF_ONESHOT, mdev->name, mdev);
+	// if (ret) {
+	// 	dev_err(&pdev->dev, "Can't claim IRQ %d\n", irq);
+	// 	return -EINVAL;
+	// }
 
 	dev_info(&pdev->dev, "%s: Registered Tx/Rx Mailbox\n", mdev->name);
 

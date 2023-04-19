@@ -219,6 +219,6 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count)
 
 void __copy_overflow(int size, unsigned long count)
 {
-	WARN(1, "Buffer overflow detected (%d < %lu)!\n", size, count);
+	//WARN(1, "Buffer overflow detected (%d < %lu)!\n", size, count);
 }
 EXPORT_SYMBOL(__copy_overflow);

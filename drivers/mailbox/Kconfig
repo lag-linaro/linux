@@ -128,7 +128,7 @@ config BCM2835_MBOX
 
 config STI_MBOX
 	tristate "STI Mailbox framework support"
-	depends on ARCH_STI && OF
+	depends on OF
 	help
 	  Mailbox implementation for STMicroelectonics family chips with
 	  hardware for interprocessor communication.

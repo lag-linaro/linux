@@ -19,8 +19,6 @@
 #include <linux/uaccess.h>
 #include <linux/sched/signal.h>
 
-#include <linux/delay.h>
-
 #define MBOX_MAX_SIG_LEN	8
 #define MBOX_MAX_MSG_LEN	128
 #define MBOX_BYTES_PER_LINE	16
@@ -51,19 +49,17 @@ static ssize_t mbox_test_signal_write(struct file *filp,
 {
 	struct mbox_test_device *tdev = filp->private_data;
 
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	if (!tdev->tx_channel) {
 		dev_err(tdev->dev, "Channel cannot do Tx\n");
 		return -EINVAL;
 	}
 
-	// if (count > MBOX_MAX_SIG_LEN) {
-	// 	dev_err(tdev->dev,
-	// 		"Signal length %zd greater than max allowed %d\n",
-	// 		count, MBOX_MAX_SIG_LEN);
-	// 	return -EINVAL;
-	// }
+	if (count > MBOX_MAX_SIG_LEN) {
+		dev_err(tdev->dev,
+			"Signal length %zd greater than max allowed %d\n",
+			count, MBOX_MAX_SIG_LEN);
+		return -EINVAL;
+	}
 
 	/* Only allocate memory if we need to */
 	if (!tdev->signal) {
@@ -100,23 +96,19 @@ static ssize_t mbox_test_message_write(struct file *filp,
 {
 	struct mbox_test_device *tdev = filp->private_data;
 	void *data;
-	int ret, i;
-
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
+	int ret;
 
 	if (!tdev->tx_channel) {
 		dev_err(tdev->dev, "Channel cannot do Tx\n");
 		return -EINVAL;
 	}
 
-	// if (count > MBOX_MAX_MSG_LEN) {
-	// 	dev_err(tdev->dev,
-	// 		"Message length %zd greater than max allowed %d\n",
-	// 		count, MBOX_MAX_MSG_LEN);
-	// 	return -EINVAL;
-	// }
-
-	mutex_lock(&tdev->mutex);
+	if (count > MBOX_MAX_MSG_LEN) {
+		dev_err(tdev->dev,
+			"Message length %zd greater than max allowed %d\n",
+			count, MBOX_MAX_MSG_LEN);
+		return -EINVAL;
+	}
 
 	tdev->message = kzalloc(MBOX_MAX_MSG_LEN, GFP_KERNEL);
 	if (!tdev->message)
@@ -124,7 +116,6 @@ static ssize_t mbox_test_message_write(struct file *filp,
 
 	ret = copy_from_user(tdev->message, userbuf, count);
 	if (ret) {
-		// dev_err(tdev->dev, "Failed to copy data from userspace\n");
 		ret = -EFAULT;
 		goto out;
 	}
@@ -161,8 +152,6 @@ static bool mbox_test_message_data_ready(struct mbox_test_device *tdev)
 	bool data_ready;
 	unsigned long flags;
 
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	spin_lock_irqsave(&tdev->lock, flags);
 	data_ready = mbox_data_ready;
 	spin_unlock_irqrestore(&tdev->lock, flags);
@@ -180,8 +169,6 @@ static ssize_t mbox_test_message_read(struct file *filp, char __user *userbuf,
 	int ret;
 
 	DECLARE_WAITQUEUE(wait, current);
-
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
 
 	touser = kzalloc(MBOX_HEXDUMP_MAX_LEN + 1, GFP_KERNEL);
 	if (!touser)
@@ -249,8 +236,6 @@ mbox_test_message_poll(struct file *filp, struct poll_table_struct *wait)
 {
 	struct mbox_test_device *tdev = filp->private_data;
 
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	poll_wait(filp, &tdev->waitq, wait);
 
 	if (mbox_test_message_data_ready(tdev))
@@ -293,8 +278,6 @@ static void mbox_test_receive_message(struct mbox_client *client, void *message)
 	struct mbox_test_device *tdev = dev_get_drvdata(client->dev);
 	unsigned long flags;
 
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	spin_lock_irqsave(&tdev->lock, flags);
 	if (tdev->rx_mmio) {
 		memcpy_fromio(tdev->rx_buffer, tdev->rx_mmio, MBOX_MAX_MSG_LEN);
@@ -317,8 +300,6 @@ static void mbox_test_prepare_message(struct mbox_client *client, void *message)
 {
 	struct mbox_test_device *tdev = dev_get_drvdata(client->dev);
 
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	if (tdev->tx_mmio) {
 		if (tdev->signal)
 			memcpy_toio(tdev->tx_mmio, tdev->message, MBOX_MAX_MSG_LEN);
@@ -330,14 +311,12 @@ static void mbox_test_prepare_message(struct mbox_client *client, void *message)
 static void mbox_test_message_sent(struct mbox_client *client,
 				   void *message, int r)
 {
-	// printk("LEE: %s %s()[%d]: ENTER\n", __FILE__, __func__, __LINE__);
-
 	if (r)
 		dev_warn(client->dev,
 			 "Client: Message could not be sent: %d\n", r);
-	// else
-	// 	dev_info(client->dev,
-	// 		 "Client: Message sent\n");
+	else
+		dev_info(client->dev,
+			 "Client: Message sent\n");
 }
 
 static struct mbox_chan *
@@ -373,8 +352,6 @@ static int mbox_test_probe(struct platform_device *pdev)
 	struct resource *res;
 	resource_size_t size;
 	int ret;
-
-	printk("LEE: %s %s()[%d]: MAILBOX TEST ---------------------------------------------\n", __FILE__, __func__, __LINE__);
 
 	tdev = devm_kzalloc(&pdev->dev, sizeof(*tdev), GFP_KERNEL);
 	if (!tdev)

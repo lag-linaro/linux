@@ -15,7 +15,8 @@ struct ucounts init_ucounts = {
 };
 
 #define UCOUNTS_HASHTABLE_BITS 10
-static struct hlist_head ucounts_hashtable[(1 << UCOUNTS_HASHTABLE_BITS)];
+#define UCOUNTS_NUM_HLISTS (1 << UCOUNTS_HASHTABLE_BITS)
+static struct hlist_head ucounts_hashtable[UCOUNTS_NUM_HLISTS];
 static DEFINE_SPINLOCK(ucounts_lock);
 
 #define ucounts_hashfn(ns, uid)						\
@@ -354,6 +355,7 @@ bool is_rlimit_overlimit(struct ucounts *ucounts, enum rlimit_type type, unsigne
 
 static __init int user_namespace_sysctl_init(void)
 {
+	int i;
 #ifdef CONFIG_SYSCTL
 	static struct ctl_table_header *user_header;
 	static struct ctl_table empty[1];
@@ -367,6 +369,9 @@ static __init int user_namespace_sysctl_init(void)
 	BUG_ON(!user_header);
 	BUG_ON(!setup_userns_sysctls(&init_user_ns));
 #endif
+	for (i = 0; i < UCOUNTS_NUM_HLISTS; i++)
+		ucounts_hashtable[i].first = NULL;
+
 	hlist_add_ucounts(&init_ucounts);
 	inc_rlimit_ucounts(&init_ucounts, UCOUNT_RLIMIT_NPROC, 1);
 	return 0;

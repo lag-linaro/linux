@@ -90,7 +90,7 @@ static void fill_background(const struct pixel_argb_u16 *background_color,
 }
 
 /**
- * blend
+ * blend - blend pixels from a given row and calculate CRC
  * @wb: The writeback frame buffer metadata
  * @crtc_state: The crtc state
  * @crc32: The crc output of the final frame

@@ -499,7 +499,7 @@ int led_compose_name(struct device *dev, struct led_init_data *init_data,
 				 devicename, props.label);
 		}
 	} else if (props.function || props.color_present) {
-		char tmp_buf[LED_MAX_NAME_SIZE];
+		char tmp_buf[LED_MAX_NAME_SIZE - 1];
 
 		if (props.func_enum_present) {
 			snprintf(tmp_buf, LED_MAX_NAME_SIZE, "%s:%s-%d",
@@ -511,6 +511,9 @@ int led_compose_name(struct device *dev, struct led_init_data *init_data,
 				 props.function ?: "");
 		}
 		if (init_data->devname_mandatory) {
+			if (strlen(devicename) + strlen(tmp_buf) >= LED_MAX_NAME_SIZE)
+				dev_warn(dev, "led_classdev_name has been truncated");
+
 			snprintf(led_classdev_name, LED_MAX_NAME_SIZE, "%s:%s",
 				 devicename, tmp_buf);
 		} else {

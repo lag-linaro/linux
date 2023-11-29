@@ -221,22 +221,22 @@ static ssize_t aat2870_dump_reg(struct aat2870_data *aat2870, char *buf)
 
 	count += sprintf(buf, "aat2870 registers\n");
 	for (addr = 0; addr < AAT2870_REG_NUM; addr++) {
-		count += snprintf(buf + count, PAGE_SIZE - count, "0x%02x: ", addr);
+		count += scnprintf(buf + count, PAGE_SIZE - count, "0x%02x: ", addr);
 		if (count >= PAGE_SIZE - 1)
 			break;
 
 		ret = aat2870->read(aat2870, addr, &val);
 		if (ret == 0)
-			count += snprintf(buf + count, PAGE_SIZE - count,
+			count += scnprintf(buf + count, PAGE_SIZE - count,
 					  "0x%02x", val);
 		else
-			count += snprintf(buf + count, PAGE_SIZE - count,
+			count += scnprintf(buf + count, PAGE_SIZE - count,
 					  "<read fail: %d>", ret);
 
 		if (count >= PAGE_SIZE - 1)
 			break;
 
-		count += snprintf(buf + count, PAGE_SIZE - count, "\n");
+		count += scnprintf(buf + count, PAGE_SIZE - count, "\n");
 		if (count >= PAGE_SIZE - 1)
 			break;
 	}

@@ -1432,6 +1432,7 @@ void __weak free_initmem(void)
 static int __ref kernel_init(void *unused)
 {
 	int ret;
+	char buf[10];
 
 	/*
 	 * Wait until kthreadd is all set-up.
@@ -1493,6 +1494,25 @@ static int __ref kernel_init(void *unused)
 		else
 			return 0;
 	}
+
+	ret = snprintf(buf, 10, "%s", "012345678");
+	printk("snprintf: %d\n", ret);
+
+	ret = scnprintf(buf, 10, "%s", "012345678");
+	printk("scnprintf: %d\n", ret);
+
+	ret = ssprintf(buf, 10, "%s", "012345678");
+	printk("ssprintf: %d\n", ret);
+
+	ret = snprintf(buf, 10, "%s", "0123456789");
+	printk("snprintf: %d\n", ret);
+
+	ret = scnprintf(buf, 10, "%s", "0123456789");
+	printk("scnprintf: %d\n", ret);
+
+	ret = ssprintf(buf, 10, "%s", "0123456789");
+	printk("ssprintf: %d\n", ret);
+
 
 	if (!try_to_run_init_process("/sbin/init") ||
 	    !try_to_run_init_process("/etc/init") ||

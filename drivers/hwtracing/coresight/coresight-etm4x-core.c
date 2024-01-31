@@ -1031,6 +1031,7 @@ static void etm4_init_arch_data(void *info)
 	struct etm4_init_arg *init_arg = info;
 	struct etmv4_drvdata *drvdata;
 	struct csdev_access *csa;
+	struct device *dev = init_arg->dev;
 	int i;
 
 	drvdata = init_arg->drvdata;
@@ -1043,6 +1044,10 @@ static void etm4_init_arch_data(void *info)
 	 */
 	if (!etm4_init_csdev_access(drvdata, csa))
 		return;
+
+	if (!csa->io_mem ||
+	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+		drvdata->skip_power_up = true;
 
 	/* Detect the support for OS Lock before we actually use it */
 	etm_detect_os_lock(drvdata, csa);
@@ -1938,11 +1943,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
 
 	if (!drvdata->arch)
 		return -EINVAL;
-
-	/* TRCPDCR is not accessible with system instructions. */
-	if (!desc.access.io_mem ||
-	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
-		drvdata->skip_power_up = true;
 
 	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
 	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);

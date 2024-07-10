@@ -4,7 +4,6 @@
  */
 
 #include <linux/bitfield.h>
-#include <linux/cleanup.h>
 #include <linux/delay.h>
 #include <linux/firmware.h>
 #include <linux/i2c.h>
@@ -397,17 +396,17 @@ static ssize_t lp5569_selftest(struct device *dev,
 	struct lp55xx_chip *chip = led->chip;
 	int i, pos = 0;
 
-	guard(mutex, &chip->lock);
+	mutex_lock(&chip->lock);
 
 	/* Test LED Open */
 	pos = lp5569_led_open_test(led, buf);
 	if (pos < 0)
-		return sprintf(buf, "FAIL\n");
+		goto fail;
 
 	/* Test LED Shorted */
 	pos += lp5569_led_short_test(led, buf);
 	if (pos < 0)
-		return sprintf(buf, "FAIL\n");
+		goto fail;
 
 	for (i = 0; i < chip->pdata->num_channels; i++) {
 		/* Restore current */
@@ -420,7 +419,16 @@ static ssize_t lp5569_selftest(struct device *dev,
 		led++;
 	}
 
-	return pos == 0 ? sysfs_emit(buf, "OK\n") : pos;
+	if (pos == 0)
+		pos = sysfs_emit(buf, "OK\n");
+	goto release_lock;
+fail:
+	pos = sysfs_emit(buf, "FAIL\n");
+
+release_lock:
+	mutex_unlock(&chip->lock);
+
+	return pos;
 }
 
 LP55XX_DEV_ATTR_ENGINE_MODE(1);

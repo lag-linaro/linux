@@ -7,7 +7,6 @@
  * Author: Milo(Woogyom) Kim <milo.kim@ti.com>
  */
 
-#include <linux/cleanup.h>
 #include <linux/delay.h>
 #include <linux/firmware.h>
 #include <linux/i2c.h>
@@ -172,9 +171,9 @@ static int lp5562_led_brightness(struct lp55xx_led *led)
 	};
 	int ret;
 
-	guard(mutex, &chip->lock);
-
+	mutex_lock(&chip->lock);
 	ret = lp55xx_write(chip, addr[led->chan_nr], led->brightness);
+	mutex_unlock(&chip->lock);
 
 	return ret;
 }
@@ -269,9 +268,9 @@ static ssize_t lp5562_store_pattern(struct device *dev,
 	if (mode > num_patterns || !ptn)
 		return -EINVAL;
 
-	guard(mutex, &chip->lock);
-
+	mutex_lock(&chip->lock);
 	ret = lp5562_run_predef_led_pattern(chip, mode);
+	mutex_unlock(&chip->lock);
 
 	if (ret)
 		return ret;
@@ -321,9 +320,9 @@ static ssize_t lp5562_store_engine_mux(struct device *dev,
 		return -EINVAL;
 	}
 
-	guard(mutex, &chip->lock);
-
+	mutex_lock(&chip->lock);
 	lp55xx_update_bits(chip, LP5562_REG_ENG_SEL, mask, val);
+	mutex_unlock(&chip->lock);
 
 	return len;
 }

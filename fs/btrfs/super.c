@@ -2465,6 +2465,11 @@ static int __init btrfs_print_mod_info(void)
 #else
 			", fsverity=no"
 #endif
+#ifdef CONFIG_BTRFS_EXPERIMENTAL
+			", experimental=yes"
+#else
+			", experimental=no"
+#endif
 			;
 	pr_info("Btrfs loaded%s\n", options);
 	return 0;

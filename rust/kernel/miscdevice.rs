@@ -19,7 +19,11 @@ use crate::{
     str::CStr,
     types::{ForeignOwnable, Opaque},
 };
-use core::{marker::PhantomData, mem::MaybeUninit, pin::Pin};
+use core::{marker::PhantomData, mem::MaybeUninit, pin::Pin, ptr::NonNull};
+
+/// The kernel `loff_t` type.
+#[allow(non_camel_case_types)]
+pub type loff_t = bindings::loff_t;
 
 /// Options for creating a misc device.
 #[derive(Copy, Clone)]
@@ -119,6 +123,11 @@ pub trait MiscDevice: Sized {
         drop(device);
     }
 
+    /// Read from this miscdevice.
+    fn read_iter(_kiocb: Kiocb<'_, Self::Ptr>, _iov: &mut IovIter) -> Result<usize> {
+        kernel::build_error(VTABLE_DEFAULT_ERROR)
+    }
+
     /// Handler for ioctls.
     ///
     /// The `cmd` argument is usually manipulated using the utilties in [`kernel::ioctl`].
@@ -160,6 +169,48 @@ pub trait MiscDevice: Sized {
     }
 }
 
+/// Wrapper for the kernel's `struct kiocb`.
+///
+/// The type `T` represents the private data of the file.
+pub struct Kiocb<'a, T> {
+    inner: NonNull<bindings::kiocb>,
+    _phantom: PhantomData<&'a T>,
+}
+
+impl<'a, T: ForeignOwnable> Kiocb<'a, T> {
+    /// Get the private data in this kiocb.
+    pub fn private_data(&self) -> <T as ForeignOwnable>::Borrowed<'a> {
+        // SAFETY: The `kiocb` lets us access the private data.
+        let private = unsafe { (*(*self.inner.as_ptr()).ki_filp).private_data };
+        // SAFETY: The kiocb has shared access to the private data.
+        unsafe { <T as ForeignOwnable>::borrow(private) }
+    }
+
+    /// Gets the current value of `ki_pos`.
+    pub fn ki_pos(&self) -> loff_t {
+        // SAFETY: The `kiocb` can access `ki_pos`.
+        unsafe { (*self.inner.as_ptr()).ki_pos }
+    }
+
+    /// Gets a mutable reference to the `ki_pos` field.
+    pub fn ki_pos_mut(&mut self) -> &mut loff_t {
+        // SAFETY: The `kiocb` can access `ki_pos`.
+        unsafe { &mut (*self.inner.as_ptr()).ki_pos }
+    }
+}
+
+/// Wrapper for the kernel's `struct iov_iter`.
+pub struct IovIter {
+    inner: Opaque<bindings::iov_iter>,
+}
+
+impl IovIter {
+    /// Gets a raw pointer to the contents.
+    pub fn as_raw(&self) -> *mut bindings::iov_iter {
+        self.inner.get()
+    }
+}
+
 const fn create_vtable<T: MiscDevice>() -> &'static bindings::file_operations {
     const fn maybe_fn<T: Copy>(check: bool, func: T) -> Option<T> {
         if check {
@@ -176,6 +227,7 @@ const fn create_vtable<T: MiscDevice>() -> &'static bindings::file_operations {
         const VTABLE: bindings::file_operations = bindings::file_operations {
             open: Some(fops_open::<T>),
             release: Some(fops_release::<T>),
+            read_iter: maybe_fn(T::HAS_READ_ITER, fops_read_iter::<T>),
             unlocked_ioctl: maybe_fn(T::HAS_IOCTL, fops_ioctl::<T>),
             #[cfg(CONFIG_COMPAT)]
             compat_ioctl: if T::HAS_COMPAT_IOCTL {
@@ -255,6 +307,27 @@ unsafe extern "C" fn fops_release<T: MiscDevice>(
     T::release(ptr, unsafe { File::from_raw_file(file) });
 
     0
+}
+
+/// # Safety
+///
+/// `kiocb` and `iter` must be related to the file that is associated with a `MiscDeviceRegistration<T>`. <----- CHECK ME -------
+unsafe extern "C" fn fops_read_iter<T: MiscDevice>(
+    kiocb: *mut bindings::kiocb,
+    iter: *mut bindings::iov_iter,
+) -> isize {
+    let kiocb = Kiocb {
+        // SAFETY: The `kiocb` related to a give file is always valid ------------------------------------------ CHECK ME -------
+        inner: unsafe { NonNull::new_unchecked(kiocb) },
+        _phantom: PhantomData,
+    };
+    // SAFETY: Be still compiler <------------------------------------------------------------------------------ CHECK ME -------
+    let iov = unsafe { &mut *iter.cast::<IovIter>() };
+
+    match T::read_iter(kiocb, iov) {
+        Ok(res) => res as isize,
+        Err(err) => err.to_errno() as isize,
+    }
 }
 
 /// # Safety

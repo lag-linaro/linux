@@ -208,6 +208,35 @@ impl MiscDevice for RustMiscDevice {
         Ok(read)
     }
 
+    fn write_iter(
+        me: Pin<&RustMiscDevice>,
+        _kiocb: kernel::miscdevice::Kiocb<'_, Self::Ptr>,
+        iov: &mut kernel::miscdevice::IovIter,
+    ) -> Result<usize> {
+        dev_info!(me.dev, "Writing to Rust Misc Device Sample\n");
+
+        let iov_raw = iov.as_raw();
+        let mut guard = me.inner.lock();
+        let buffer = &mut guard.buffer;
+        let length = buffer.len();
+        // SAFETY: iov is guaranteed to be populated with the user specified Byte count by this point.
+        let count = unsafe { bindings::iov_iter_count(iov_raw) };
+
+        buffer.reserve(count, GFP_KERNEL)?;
+
+        let capacity = buffer.spare_capacity_mut()[length..]
+            .as_mut_ptr()
+            .cast::<c_void>();
+
+        // SAFETY: Capacity is as least as big as the user data to be copied.
+        let count: usize = unsafe { bindings::copy_from_iter(capacity, count, iov.as_raw()) };
+
+        // SAFETY: Even if the above call failed and returned 0, adding that to the length would be a noop
+        unsafe { buffer.set_len(buffer.len() + count) };
+
+        Ok(count)
+    }
+
     fn ioctl(me: Pin<&RustMiscDevice>, _file: &File, cmd: u32, arg: usize) -> Result<isize> {
         dev_info!(me.dev, "IOCTLing Rust Misc Device Sample\n");
 

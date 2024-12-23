@@ -124,7 +124,11 @@ pub trait MiscDevice: Sized {
     }
 
     /// Read from this miscdevice.
-    fn read_iter(_kiocb: Kiocb<'_, Self::Ptr>, _iov: &mut IovIter) -> Result<usize> {
+    fn read_iter(
+        _device: <Self::Ptr as ForeignOwnable>::Borrowed<'_>,
+        _kiocb: Kiocb<'_, Self::Ptr>,
+        _iov: &mut IovIter,
+    ) -> Result<usize> {
         kernel::build_error(VTABLE_DEFAULT_ERROR)
     }
 
@@ -323,8 +327,14 @@ unsafe extern "C" fn fops_read_iter<T: MiscDevice>(
     };
     // SAFETY: Be still compiler <------------------------------------------------------------------------------ CHECK ME -------
     let iov = unsafe { &mut *iter.cast::<IovIter>() };
+    // SAFETY: Be still compiler <------------------------------------------------------------------------------ CHECK ME -------
+    let file = unsafe { (*kiocb.inner.as_ptr()).ki_filp };
+    // SAFETY: The ioctl call of a file can access the private data.
+    let private = unsafe { (*file).private_data };
+    // SAFETY: read_iter calls can borrow the private data of the file.
+    let device = unsafe { <T::Ptr as ForeignOwnable>::borrow(private) };
 
-    match T::read_iter(kiocb, iov) {
+    match T::read_iter(device, kiocb, iov) {
         Ok(res) => res as isize,
         Err(err) => err.to_errno() as isize,
     }

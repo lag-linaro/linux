@@ -94,13 +94,14 @@
 ///   return 0;
 /// }
 /// ```
-use core::pin::Pin;
+use core::{ffi::c_void, pin::Pin};
 
 use kernel::{
-    c_str,
+    bindings, c_str,
     device::Device,
     fs::File,
     ioctl::{_IO, _IOC_SIZE, _IOR, _IOW},
+    kvec,
     miscdevice::{MiscDevice, MiscDeviceOptions, MiscDeviceRegistration},
     new_mutex,
     prelude::*,
@@ -143,6 +144,7 @@ impl kernel::InPlaceModule for RustMiscDeviceModule {
 
 struct Inner {
     value: i32,
+    buffer: KVec<u8>,
 }
 
 #[pin_data(PinnedDrop)]
@@ -164,12 +166,46 @@ impl MiscDevice for RustMiscDevice {
         KBox::try_pin_init(
             try_pin_init! {
                 RustMiscDevice {
-                    inner <- new_mutex!( Inner{ value: 0_i32 } ),
+                    inner <- new_mutex!( Inner {
+                        value: 0_i32,
+                        buffer: kvec![],
+                    } ),
                     dev: dev,
                 }
             },
             GFP_KERNEL,
         )
+    }
+
+    fn read_iter(
+        me: Pin<&RustMiscDevice>,
+        _kiocb: kernel::miscdevice::Kiocb<'_, Self::Ptr>,
+        iov: &mut kernel::miscdevice::IovIter,
+    ) -> Result<usize> {
+        dev_info!(me.dev, "Reading from Rust Misc Device Sample\n");
+
+        let iov_raw = iov.as_raw();
+        let guard = me.inner.lock();
+        let buffer = &guard.buffer;
+        // SAFETY: iov is guaranteed to be populated with the user requested Byte count by this point.
+        let mut count = unsafe { bindings::iov_iter_count(iov_raw) };
+
+        // If there is no data in the buffer, always return EOF.
+        if buffer.is_empty() {
+            dev_info!(me.dev, "The Rust Misc Device Sample buffer is empty\n");
+            return Ok(0);
+        }
+
+        // We cannot read back any more data than we have
+        if count > buffer.len() {
+            count = buffer.len();
+        }
+
+        // SAFETY: The buffer contains at least count Bytes.  Let's copy them over.
+        let read: usize =
+            unsafe { bindings::copy_to_iter(buffer.as_ptr().cast::<c_void>(), count, iov_raw) };
+
+        Ok(read)
     }
 
     fn ioctl(me: Pin<&RustMiscDevice>, _file: &File, cmd: u32, arg: usize) -> Result<isize> {

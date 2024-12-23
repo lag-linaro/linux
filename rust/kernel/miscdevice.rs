@@ -132,6 +132,15 @@ pub trait MiscDevice: Sized {
         kernel::build_error(VTABLE_DEFAULT_ERROR)
     }
 
+    /// Write to this miscdevice.
+    fn write_iter(
+        _device: <Self::Ptr as ForeignOwnable>::Borrowed<'_>,
+        _kiocb: Kiocb<'_, Self::Ptr>,
+        _iov: &mut IovIter,
+    ) -> Result<usize> {
+        kernel::build_error(VTABLE_DEFAULT_ERROR)
+    }
+
     /// Handler for ioctls.
     ///
     /// The `cmd` argument is usually manipulated using the utilties in [`kernel::ioctl`].
@@ -232,6 +241,7 @@ const fn create_vtable<T: MiscDevice>() -> &'static bindings::file_operations {
             open: Some(fops_open::<T>),
             release: Some(fops_release::<T>),
             read_iter: maybe_fn(T::HAS_READ_ITER, fops_read_iter::<T>),
+            write_iter: maybe_fn(T::HAS_WRITE_ITER, fops_write_iter::<T>),
             unlocked_ioctl: maybe_fn(T::HAS_IOCTL, fops_ioctl::<T>),
             #[cfg(CONFIG_COMPAT)]
             compat_ioctl: if T::HAS_COMPAT_IOCTL {
@@ -335,6 +345,33 @@ unsafe extern "C" fn fops_read_iter<T: MiscDevice>(
     let device = unsafe { <T::Ptr as ForeignOwnable>::borrow(private) };
 
     match T::read_iter(device, kiocb, iov) {
+        Ok(res) => res as isize,
+        Err(err) => err.to_errno() as isize,
+    }
+}
+
+/// # Safety
+///
+/// `kiocb` and `iter` must be related to the file that is associated with a `MiscDeviceRegistration<T>`. <----- CHECK ME -------
+unsafe extern "C" fn fops_write_iter<T: MiscDevice>(
+    kiocb: *mut bindings::kiocb,
+    iter: *mut bindings::iov_iter,
+) -> isize {
+    let kiocb = Kiocb {
+        // SAFETY: The `kiocb` related to a give file is always valid ------------------------------------------ CHECK ME -------
+        inner: unsafe { NonNull::new_unchecked(kiocb) },
+        _phantom: PhantomData,
+    };
+    // SAFETY: Be still compiler <------------------------------------------------------------------------------ CHECK ME -------
+    let iov = unsafe { &mut *iter.cast::<IovIter>() };
+    // SAFETY: Be still compiler <------------------------------------------------------------------------------ CHECK ME -------
+    let file = unsafe { (*kiocb.inner.as_ptr()).ki_filp };
+    // SAFETY: The ioctl call of a file can access the private data.
+    let private = unsafe { (*file).private_data };
+    // SAFETY: write_iter calls can borrow the private data of the file.
+    let device = unsafe { <T::Ptr as ForeignOwnable>::borrow(private) };
+
+    match T::write_iter(device, kiocb, iov) {
         Ok(res) => res as isize,
         Err(err) => err.to_errno() as isize,
     }

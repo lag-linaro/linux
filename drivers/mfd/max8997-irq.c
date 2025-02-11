@@ -335,7 +335,7 @@ int max8997_irq_init(struct max8997_dev *max8997)
 	}
 	max8997->irq_domain = domain;
 
-	ret = request_threaded_irq(max8997->irq, NULL, max8997_irq_thread,
+	ret = devm_request_threaded_irq(max8997->irq, NULL, max8997_irq_thread,
 			IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 			"max8997-irq", max8997);
 
@@ -348,7 +348,7 @@ int max8997_irq_init(struct max8997_dev *max8997)
 	if (!max8997->ono)
 		return 0;
 
-	ret = request_threaded_irq(max8997->ono, NULL, max8997_irq_thread,
+	ret = devm_request_threaded_irq(max8997->ono, NULL, max8997_irq_thread,
 			IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING |
 			IRQF_ONESHOT, "max8997-ono", max8997);
 
@@ -357,13 +357,4 @@ int max8997_irq_init(struct max8997_dev *max8997)
 				max8997->ono, ret);
 
 	return 0;
-}
-
-void max8997_irq_exit(struct max8997_dev *max8997)
-{
-	if (max8997->ono)
-		free_irq(max8997->ono, max8997);
-
-	if (max8997->irq)
-		free_irq(max8997->irq, max8997);
 }

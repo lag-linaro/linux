@@ -2001,6 +2001,7 @@ static void report_features(struct hid_device *hid)
 
 	rep_enum = &hid->report_enum[HID_FEATURE_REPORT];
 	list_for_each_entry(rep, &rep_enum->report_list, list)
+		//printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
 		for (i = 0; i < rep->maxfield; i++) {
 			/* Ignore if report count is out of bounds. */
 			if (rep->field[i]->report_count < 1)
@@ -2296,6 +2297,13 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 	struct hid_input *next, *hidinput = NULL;
 	unsigned int application;
 	int i, k;
+
+	struct hid_report_enum *rep_enum;
+	struct hid_report *rep;
+	rep_enum = &hid->report_enum[HID_FEATURE_REPORT];
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+	if (rep)
+	;//	printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
 
 	INIT_LIST_HEAD(&hid->inputs);
 	INIT_WORK(&hid->led_work, hidinput_led_worker);

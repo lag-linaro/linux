@@ -110,6 +110,9 @@ struct hid_report *hid_register_report(struct hid_device *device,
 	list_add_tail(&report->list, &report_enum->report_list);
 	INIT_LIST_HEAD(&report->field_entry_list);
 
+	if (id == 18)
+		dump_stack();
+
 	return report;
 }
 EXPORT_SYMBOL_GPL(hid_register_report);
@@ -316,8 +319,14 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
 		return -1;
 	}
 
+printk("LEE: %s %s()[%d]: Before: ID: %d report->size: %d (size: %d (0x%x) count: %d (0x%x))\n",
+       __FILE__, __func__, __LINE__,
+       report->id, report->size, parser->global.report_size, parser->global.report_size,
+       parser->global.report_count, parser->global.report_count);
+
 	offset = report->size;
 	report->size += parser->global.report_size * parser->global.report_count;
+printk("LEE: %s %s()[%d]: After: ID: %d report->size: %d\n", __FILE__, __func__, __LINE__, report->id, report->size);
 
 	if (parser->device->ll_driver->max_buffer_size)
 		max_buffer_size = parser->device->ll_driver->max_buffer_size;
@@ -358,6 +367,7 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
 	field->flags = flags;
 	field->report_offset = offset;
 	field->report_type = report_type;
+printk("LEE: %s %s()[%d]: parser->global.report_size: %d\n", __FILE__, __func__, __LINE__, parser->global.report_size);
 	field->report_size = parser->global.report_size;
 	field->report_count = parser->global.report_count;
 	field->logical_minimum = parser->global.logical_minimum;
@@ -1274,6 +1284,12 @@ int hid_open_report(struct hid_device *device)
 		hid_parser_reserved
 	};
 
+	struct hid_report_enum *rep_enum;
+	struct hid_report *rep;
+	rep_enum = &device->report_enum[HID_FEATURE_REPORT];
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+		printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
+
 	if (WARN_ON(device->status & HID_STAT_PARSED))
 		return -EBUSY;
 
@@ -1305,6 +1321,9 @@ int hid_open_report(struct hid_device *device)
 		if (start == NULL)
 			return -ENOMEM;
 	}
+
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+		printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
 
 	device->rdesc = start;
 	device->rsize = size;
@@ -1344,6 +1363,9 @@ int hid_open_report(struct hid_device *device)
 				(unsigned)item.type, (unsigned)item.tag);
 			goto err;
 		}
+
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+		printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
 
 		if (start == end) {
 			if (parser->collection_stack_ptr) {
@@ -1903,6 +1925,8 @@ u8 *hid_alloc_report_buf(struct hid_report *report, gfp_t flags)
 
 	u32 len = hid_report_len(report) + 7 + (report->id == 0);
 
+printk("LEE: %s %s()[%d]: Report: %d Allocating: %d (0x%x) Bytes\n", __FILE__, __func__, __LINE__, report->id, len, len);
+
 	return kzalloc(len, flags);
 }
 EXPORT_SYMBOL_GPL(hid_alloc_report_buf);
@@ -1979,6 +2003,9 @@ static struct hid_report *hid_get_report(struct hid_report_enum *report_enum,
 	if (report == NULL)
 		dbg_hid("undefined report_id %u received\n", n);
 
+printk("LEE: %s %s()[%d]: Report: %d size: %d - hash number: %d\n",
+       __FILE__, __func__, __LINE__, report->id, report->size, n);
+
 	return report;
 }
 
@@ -2037,6 +2064,8 @@ int hid_report_raw_event(struct hid_device *hid, enum hid_report_type type, u8 *
 	u8 *cdata = data;
 	int ret = 0;
 
+printk("LEE: %s %s()[%d]: data[0]: %d\n", __FILE__, __func__, __LINE__, data[0]);
+
 	report = hid_get_report(report_enum, data);
 	if (!report)
 		goto out;
@@ -2047,6 +2076,8 @@ int hid_report_raw_event(struct hid_device *hid, enum hid_report_type type, u8 *
 	}
 
 	rsize = hid_compute_report_size(report);
+
+printk("LEE: %s %s()[%d]: Report: %d size: %d rsize: %d\n", __FILE__, __func__, __LINE__, report->id, report->size, rsize);
 
 	if (hid->ll_driver->max_buffer_size)
 		max_buffer_size = hid->ll_driver->max_buffer_size;
@@ -2059,6 +2090,13 @@ int hid_report_raw_event(struct hid_device *hid, enum hid_report_type type, u8 *
 	if (csize < rsize) {
 		dbg_hid("report %d is too short, (%d < %d)\n", report->id,
 				csize, rsize);
+printk("LEE: %s %s()[%d]: TRIGGERED: Report: %d cdata: %p (csize: %d <  rsize: %d)\n",
+	__FILE__, __func__, __LINE__, report->id, cdata, csize, rsize);
+printk("LEE: %s %s()[%d]:            cdata + csize): %p (rsize - csize): %d\n",
+       __FILE__, __func__, __LINE__, (cdata + csize), (rsize - csize));
+
+		dump_stack();
+
 		memset(cdata + csize, 0, rsize - csize);
 	}
 
@@ -2245,6 +2283,13 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
 	int len;
 	int ret;
 
+	struct hid_report_enum *rep_enum;
+	struct hid_report *rep;
+	rep_enum = &hdev->report_enum[HID_FEATURE_REPORT];
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+	if (rep)
+;// 		printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
+
 	ret = hid_bpf_connect_device(hdev);
 	if (ret)
 		return ret;
@@ -2371,6 +2416,12 @@ int hid_hw_start(struct hid_device *hdev, unsigned int connect_mask)
 {
 	int error;
 
+	struct hid_report_enum *rep_enum;
+	struct hid_report *rep;
+	rep_enum = &hdev->report_enum[HID_FEATURE_REPORT];
+	list_for_each_entry(rep, &rep_enum->report_list, list)
+		printk("LEE: %s %s()[%d]: report[%d]->size: %d\n", __FILE__, __func__, __LINE__, rep->id, rep->size);
+
 	error = hdev->ll_driver->start(hdev);
 	if (error)
 		return error;
@@ -2490,6 +2541,11 @@ int __hid_hw_raw_request(struct hid_device *hdev,
 	if (ret)
 		return ret;
 
+printk("LEE: %s %s()[%d]: Report: %d size: %zu buf[0]: %d\n",
+       __FILE__, __func__, __LINE__, reportnum, len, buf[0]);
+
+
+	// LEE: uhid_hid_raw_request()
 	return hdev->ll_driver->raw_request(hdev, reportnum, buf, len,
 					    rtype, reqtype);
 }

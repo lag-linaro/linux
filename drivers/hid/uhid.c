@@ -254,8 +254,6 @@ static int uhid_hid_get_report(struct hid_device *hid, unsigned char rnum,
 		return ret;
 	}
 
-printk("LEE: %s %s()[%d]: Report Num: %d, Report ID: %d\n", __FILE__, __func__, __LINE__, rnum, ev->u.get_report.id);
-
 	/* this _always_ takes ownership of @ev */
 	ret = __uhid_report_queue_and_wait(uhid, ev, &ev->u.get_report.id);
 	if (ret)
@@ -266,7 +264,7 @@ printk("LEE: %s %s()[%d]: Report Num: %d, Report ID: %d\n", __FILE__, __func__, 
 		ret = -EIO;
 	} else {
 		ret = min3(count, (size_t)req->size, (size_t)UHID_DATA_MAX);
-		memcpy(buf, req->data, ret);  // <----- LEE: This is the problem
+		memcpy(buf, req->data, ret);
 	}
 
 unlock:
@@ -280,8 +278,6 @@ static int uhid_hid_set_report(struct hid_device *hid, unsigned char rnum,
 	struct uhid_device *uhid = hid->driver_data;
 	struct uhid_event *ev;
 	int ret;
-
-printk("LEE: %s %s()[%d]: rnum: %d buf[0]: %d\n", __FILE__, __func__, __LINE__, rnum, buf[0]);
 
 	if (!READ_ONCE(uhid->running) || count > UHID_DATA_MAX)
 		return -EIO;
@@ -314,7 +310,6 @@ printk("LEE: %s %s()[%d]: rnum: %d buf[0]: %d\n", __FILE__, __func__, __LINE__, 
 
 unlock:
 	mutex_unlock(&uhid->report_lock);
-printk("LEE: %s %s()[%d]: rnum: %d buf[0]: %d\n", __FILE__, __func__, __LINE__, rnum, buf[0]);
 	return ret;
 }
 
@@ -323,8 +318,6 @@ static int uhid_hid_raw_request(struct hid_device *hid, unsigned char reportnum,
 				int reqtype)
 {
 	u8 u_rtype;
-
-printk("LEE: %s %s()[%d]: Report: %d len: %zu buf[0]: %d\n", __FILE__, __func__, __LINE__, reportnum, len, buf[0]);
 
 	switch (rtype) {
 	case HID_FEATURE_REPORT:
